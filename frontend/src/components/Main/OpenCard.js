@@ -716,12 +716,12 @@ const OpenCard = () => {
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
                   Add to card
                 </p>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                {/* <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
                   <FontAwesomeIcon icon={faUser} size="sm" className="mr-2 " />
                   <p className="font-sans text-sm font-semibold text-[#172b4d]">
                     Members
                   </p>
-                </div>
+                </div> */}
 
                 <div
                   className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
@@ -738,7 +738,7 @@ const OpenCard = () => {
                   </p>
                 </div>
 
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                {/* <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
                   <FontAwesomeIcon
                     icon={faListCheck}
                     size="sm"
@@ -779,10 +779,10 @@ const OpenCard = () => {
                   <p className="font-sans text-sm font-semibold text-[#172b4d]">
                     Custom Fields
                   </p>
-                </div>
+                </div> */}
               </div>
 
-              <div className="pb-1">
+              {/* <div className="pb-1">
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
                   Power-Ups
                 </p>
@@ -792,9 +792,9 @@ const OpenCard = () => {
                     Add Power-ups
                   </p>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="pb-1">
+              {/* <div className="pb-1">
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
                   Automation
                 </p>
@@ -804,7 +804,7 @@ const OpenCard = () => {
                     Add button
                   </p>
                 </div>
-              </div>
+              </div> */}
 
               <div className="relative pb-1">
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">

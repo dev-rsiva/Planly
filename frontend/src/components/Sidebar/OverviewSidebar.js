@@ -1,4 +1,7 @@
+import React from "react";
+
 import { useState, useContext } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -107,6 +110,14 @@ const OverviewSidebar = (
   // addHighlights();
   console.log(hoveredOption);
   console.log(sidebarSelection);
+
+  const heading = React.createElement(
+    "h1",
+    { id: "heading" },
+    "this is heading"
+  );
+  console.log(heading);
+
   return (
     <div className="w-full">
       <div>
