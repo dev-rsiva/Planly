@@ -14,6 +14,7 @@ import Members from "../components/Main/Members.js";
 import TemplateHomePage from "../components/Main/TemplateHomePage.js";
 import WorkspaceHome from "../pages/WorkspaceHome.js";
 import App from "../App.js";
+import Login from "../pages/Login";
 import { createBrowserRouter } from "react-router-dom";
 
 export const appRouter = createBrowserRouter([
