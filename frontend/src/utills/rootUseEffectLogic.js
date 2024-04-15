@@ -12,10 +12,6 @@ const rootUseEffectLogic = (templatesData, workspaceData, allCardData) => {
   useEffect(() => {
     localStorage.setItem("allCardData", JSON.stringify(allCardData));
   }, [allCardData]);
-
-  useEffect(() => {
-    console.log("workspaceData changes:", workspaceData);
-  }, [workspaceData]);
 };
 
 export default rootUseEffectLogic;

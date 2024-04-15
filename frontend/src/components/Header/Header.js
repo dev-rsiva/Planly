@@ -2,9 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGrip } from "@fortawesome/free-solid-svg-icons";
-
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-
 import DropdownComp from "./dropdowns/DropdownComp.js";
 import Create from "./dropdowns/Create.js";
 import { Navigate } from "react-router-dom";
@@ -16,8 +14,10 @@ import { navItemInfo } from "../../utills/constants.js";
 import SearchBarContainerHeader from "./SearchBarContainerHeader.js";
 import NotificationContainer from "./NotificationContainer.js";
 import { useHandleResize } from "./useHandleResize.js";
+import { auth } from "../../utills/firebase.js";
+import { signOut } from "firebase/auth";
 
-const Header = () => {
+const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
   console.log("render start");
 
   const {
@@ -56,6 +56,17 @@ const Header = () => {
   console.log(createDropdownStatus);
 
   useHandleResize(setNavItemStatus, navItemInfo);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        setIsUserAuthenticated(false);
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
 
   useEffect(() => {
     function handleOutsideClick(e, index) {
@@ -192,6 +203,18 @@ const Header = () => {
       <div className="flex items-center mr-4">
         <SearchBarContainerHeader />
         <NotificationContainer />
+        <div className="flex items-center text-sm text-custom font-semibold">
+          <span className="mr-2">{auth?.currentUser?.displayName}</span>
+          <img className="w-8 mr-2" src={auth?.currentUser?.photoURL} />
+          <button
+            className={`font-sans text-sm font-medium text-white ${
+              isUserAuthenticated ? "bg-orange-700" : "bg-blue-600"
+            } rounded mr-4 w-[65px] h-[33px]`}
+            onClick={() => handleSignOut()}
+          >
+            {isUserAuthenticated ? "Log out" : "Login"}
+          </button>
+        </div>
       </div>
       {console.log("render end")}
     </div>

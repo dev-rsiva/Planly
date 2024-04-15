@@ -68,7 +68,10 @@ const App = () => {
         <sideBarSelectionContext.Provider
           value={{ sidebarSelection, setSidebarSelection }}
         >
-          <Header />
+          <Header
+            isUserAuthenticated={isUserAuthenticated}
+            setIsUserAuthenticated={setIsUserAuthenticated}
+          />
           <Outlet />
         </sideBarSelectionContext.Provider>
       </dataContext.Provider>

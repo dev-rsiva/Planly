@@ -2,32 +2,152 @@ import backgroundImg from "./Planly-login-bg-image2.jpg";
 import planlyLogo from "../../Planly-workflow-organiser.png";
 import img1 from "./8451586_3914790.jpg";
 import img2 from "./12085888_20944370.jpg";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { checkValidData } from "../utills/validate";
+import { auth } from "../utills/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { randomAvatar } from "../utills/avatarGenerator";
 
 const Login = ({ setIsUserAuthenticated }) => {
   const [isSignInForm, setIsSignInForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [user, setUser] = useState({});
+  const [userData, setUserData] = useState({});
+  console.log("userData", userData);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("outhState running");
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const uid = user.uid;
+        console.log("outhStateChanged", user);
+        setIsUserAuthenticated(true);
+      } else {
+        // User is signed out
+        // ...
+        console.log("User is signed out");
+      }
+    });
+  }, []);
 
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
-
+  console.log(randomAvatar);
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
   };
 
   const handleSignInClick = () => {
+    //email and password validation
     const message = checkValidData(
       email.current.value,
       password.current.value,
-      name.current.value,
+      name.current?.value,
       isSignInForm
     );
     console.log(message);
+    //updating the error message, message return null if validation success else return the validation error message when validation fails
+    setErrorMessage(message);
 
+    //if message returns null, then validation success and allow code execution futher. If message returns validation error message(Eg.Email ID is not valid) then do not allow code execution further
+    if (message) return;
 
-    
+    if (!isSignInForm) {
+      //sign up logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+
+          // Update user profile
+          return updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: randomAvatar,
+          });
+        })
+        .then(() => {
+          // Profile updated successfully
+          console.log("Profile updated!");
+          const user = auth.currentUser;
+          const { uid, email, displayName, photoURL } = user;
+          console.log(uid, email, displayName, photoURL);
+          setUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          });
+        })
+        .catch((error) => {
+          // Handle errors
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+
+      // createUserWithEmailAndPassword(
+      //   auth,
+      //   email.current.value,
+      //   password.current.value
+      // )
+      //   .then((userCredential) => {
+      //     // Signed up
+      //     const user = userCredential.user;
+      //     console.log(user);
+      //     // Profile updated!
+      //     updateProfile(auth.currentUser, {
+      //       displayName: name.current.value,
+      //       photoURL: randomAvatar,
+      //     });
+      //   })
+      //   .then(() => {
+      //     console.log("Profile updated!");
+      //     console.log(auth.currentUser);
+      //     const { uid, email, displayName, photoURL } = auth.currentUser;
+      //     console.log(uid, email, displayName, photoURL);
+      //     setUser({
+      //       uid: uid,
+      //       email: email,
+      //       displayName: displayName,
+      //       photoURL: photoURL,
+      //     });
+      //   })
+      //   .catch((error) => {
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+      //     setErrorMessage(errorCode + "-" + errorMessage);
+      //   });
+    } else if (isSignInForm) {
+      //sign in logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
 
   return (
