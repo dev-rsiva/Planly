@@ -14,7 +14,6 @@ const App = () => {
   console.log(paramObj);
 
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
-  const [isSignInForm, setIsSignInForm] = useState(true);
   const {
     workspaceData,
     setWorkspaceData,
@@ -38,7 +37,8 @@ const App = () => {
     setSidebarSelection,
   } = useAppState();
 
-  if (!isUserAuthenticated) return <Login />;
+  if (!isUserAuthenticated)
+    return <Login setIsUserAuthenticated={setIsUserAuthenticated} />;
 
   return (
     <>
