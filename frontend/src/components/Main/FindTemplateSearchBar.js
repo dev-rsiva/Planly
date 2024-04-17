@@ -10,7 +10,7 @@ const FindTemplateSearchBar = () => {
   const { templatesData, setTemplatesData } = useContext(dataContext);
   const navigate = useNavigate();
 
-  const filteredTemplatesList = templatesData
+  const filteredTemplatesList = templatesData.templates
     .map((templateCategory) => {
       return templateCategory.templateList;
     })
@@ -20,9 +20,8 @@ const FindTemplateSearchBar = () => {
     );
 
   const handleSearchResultClick = (templateSelected) => {
-    const templateCategoryFound = templatesData.find((templateCategory) =>
+    const templateCategoryFound = templatesData.templates.find((templateCategory) =>
       templateCategory.templateList.some((template) => {
-        console.log(template.templateId === templateSelected.templateId);
         return template.templateId === templateSelected.templateId;
       })
     );
@@ -34,10 +33,8 @@ const FindTemplateSearchBar = () => {
     );
 
     setSearchQuery("");
-    console.log(templateCategoryFound);
   };
 
-  console.log(filteredTemplatesList);
 
   return (
     <>

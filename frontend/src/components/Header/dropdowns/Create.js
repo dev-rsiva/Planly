@@ -26,12 +26,7 @@ const Create = ({
   // currWorkspace,
   // setCurrWorkspace,
 }) => {
-  console.log("render on create.js start");
-  console.log(workspaceData, setWorkspaceData);
 
-  console.log(backFromTemplateBtn?.current);
-
-  console.log(createDropdownStatus);
 
   const {
     createBoardWithTemplateCard,
@@ -41,17 +36,13 @@ const Create = ({
   } = useContext(dataContext);
 
   const { templateSelected, setTemplateSelected } = useContext(dataContext);
-  console.log(templateSelected);
 
-  console.log(createDropdownDetails[1]?.Template?.isShowing);
-  console.log(createBoardWithTemplateCard);
+
 
   return (
     <div
       onClick={() => {
-        console.log("onClick");
         setNavbarBtn((prev) => {
-          console.log("setting navbar btn");
           let updatedNavBarBtn = { ...prev };
           updatedNavBarBtn.selected = "";
           updatedNavBarBtn.hovered = "";
@@ -125,7 +116,6 @@ const Create = ({
           setNavbarBtn={setNavbarBtn}
         />
       )}
-      {console.log("render on create.js end")}
     </div>
   );
 };

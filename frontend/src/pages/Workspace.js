@@ -7,7 +7,6 @@ import { data } from "../utills/utills.js";
 // import { useOutletContext } from "react-router-dom";
 import dataContext from "../utills/dataContext.js";
 const Workspace = () => {
-  console.log("Workspace started");
 
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
@@ -31,7 +30,6 @@ const Workspace = () => {
     });
   }, [workspaceData, paramObj]);
 
-  console.log(paramObj);
   return (
     <div className="flex relative top-[45px]">
       <div className="mr-2 flex fixed h-[85vh]">
@@ -50,7 +48,6 @@ const Workspace = () => {
         <hr className="" />
         <Outlet context={[workspaceInfo]} />
       </div>
-      {console.log("Workspace ended")}
     </div>
   );
 };

@@ -52,19 +52,12 @@ const CommonBoard = ({ board, typeOfBoard }) => {
         : "#E2B203"
       : "";
 
-  console.log(
-    "typeOfBoard:",
-    typeOfBoard,
-    commonClassName,
-    fillClassName,
-    strokeClassName
-  );
+ 
 
   const workspaceName = workspaceData?.workspaces?.find((workspace) =>
     workspace?.boards?.find((eachBoard) => eachBoard?.title === board?.title)
   )?.name;
 
-  console.log(workspaceName);
 
   return (
     <div
@@ -88,27 +81,11 @@ const CommonBoard = ({ board, typeOfBoard }) => {
         onClick={(e) => {
           e.stopPropagation();
           setWorkspaceData((prev) => {
-            console.log(prev.workspaces);
             let updatedWorkspaces = [...prev.workspaces];
 
-            // let ty = updatedWorkspaces.map((eachWorkspace) => {
-            //   console.log(eachWorkspace);
-            //   const boardIndex = eachWorkspace?.boards?.findIndex(
-            //     (eachBoard) => {
-            //       console.log(eachBoard.id);
-            //       console.log(board?.id);
-
-            //       return eachBoard?.id === board?.id;
-            //     }
-            //   );
-
-            //   console.log(boardIndex);
-            // });
-
-            console.log("Updated Workspaces before map:", updatedWorkspaces);
+         
 
             updatedWorkspaces = updatedWorkspaces?.map((eachWorkspace) => {
-              console.log(eachWorkspace);
               const boardIndex = eachWorkspace?.boards?.findIndex(
                 (eachBoard) => eachBoard?.id === board?.id
               );
@@ -126,8 +103,6 @@ const CommonBoard = ({ board, typeOfBoard }) => {
                   boards: updatedBoards,
                 };
 
-                console.log(updatedBoards);
-                console.log(eachWorkspace);
 
                 return eachWorkspace;
               }
@@ -135,7 +110,6 @@ const CommonBoard = ({ board, typeOfBoard }) => {
               return eachWorkspace;
             });
 
-            console.log("Updated Workspaces after map:", updatedWorkspaces);
             return { ...prev, workspaces: updatedWorkspaces };
           });
         }}

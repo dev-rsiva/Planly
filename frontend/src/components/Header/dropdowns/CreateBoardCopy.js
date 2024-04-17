@@ -18,15 +18,12 @@ const CreateBoardCopy = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-  console.log("createBoard start");
-  console.log(workspaceData);
 
   const [currImage, setCurrImage] = useState(
     "https://images.unsplash.com/photo-1703002917693-e51692232c81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA0MTY0ODgyfA&ixlib=rb-4.0.3&q=80&w=400&quot"
   );
 
   const paramObj = useParams();
-  console.log(paramObj);
 
   const [visibility, setVisibility] = useState(visibilityDetails);
   const [visibiltyDropdown, setVisibilityDropdown] = useState(false);
@@ -47,7 +44,7 @@ const CreateBoardCopy = ({
       ).name
     : workspaceData.workspaces[0].name;
 
-  console.log(currWorkspaceNameIntialData);
+
 
   const [currWorkspaceName, setCurrWorkspaceName] = useState(
     currWorkspaceNameIntialData
@@ -73,10 +70,6 @@ const CreateBoardCopy = ({
     "https://trello.com/assets/aec98becb6d15a5fc95e.svg",
   ];
 
-  console.log(currImage);
-  console.log(editedData);
-  console.log(workspaceData);
-  console.log(setWorkspaceData);
   const createBoard = useRef(null);
   const angleLeft = useRef(null);
 
@@ -91,14 +84,11 @@ const CreateBoardCopy = ({
       // visibility: visibility.find((each) => each.isShowing === true).name,
       lists: [],
     };
-    console.log(updatedBoard);
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
       const currWorkspaceData = updatedWorkspaceData.workspaces.find(
         (workspace) => workspace.name === currWorkspaceName
       );
-
-      console.log(currWorkspaceData);
       const workspaceIndex =
         currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
       if (!currWorkspaceData.boards) {
@@ -123,7 +113,6 @@ const CreateBoardCopy = ({
 
   useEffect(() => {
     function handleOutside(e) {
-      console.log("handleOutside 2");
       if (createBoard?.current && !createBoard?.current?.contains(e.target)) {
         setCreateDropdownDetails((prev) => {
           let updatedCreateDropdownDetails = [...prev];
@@ -153,7 +142,6 @@ const CreateBoardCopy = ({
         <div
           ref={angleLeft}
           onClick={() => {
-            console.log("createboard6");
             setCreateDropdownStatus(true);
             setCreateDropdownDetails((prev) => {
               let updatedDropdownDetails = [...prev];
@@ -173,7 +161,6 @@ const CreateBoardCopy = ({
         <div>CreateBoard</div>
         <div
           onClick={() => {
-            console.log("createboard5");
             setCreateDropdownDetails((prev) => {
               let updatedCreateDropdownDetails = [...prev];
               updatedCreateDropdownDetails[0] = {
@@ -213,7 +200,6 @@ const CreateBoardCopy = ({
                 className="relative mb-4 mr-2 w-[55px] h-[38px]"
                 key={i}
                 onClick={() => {
-                  console.log("createboard4");
                   setCurrImage(each);
                   setEditedData((prev) => {
                     return (prev = { ...prev, backgroundImg: each });
@@ -240,20 +226,7 @@ const CreateBoardCopy = ({
             );
           })}
         </ul>
-        {/* <ul className="flex">
-          {bgColors.map((each, i) => {
-            return (
-              <li
-                className="mr-2 h-[30px] object-cover overflow-hidden rounded"
-                key={i}
-              >
-                <button>
-                  <img src={each} alt="bgColors" />
-                </button>
-              </li>
-            );
-          })}
-        </ul> */}
+      
       </div>
 
       <div>
@@ -300,7 +273,6 @@ const CreateBoardCopy = ({
         <div
           className="w-full border-2 px-1 border-black rounded flex justify-between items-center"
           onClick={() => {
-            console.log("createboard3");
             setVisibilityDropdown(!visibiltyDropdown);
           }}
         >
@@ -322,7 +294,6 @@ const CreateBoardCopy = ({
                       eachCategory.isShowing && "bg-blue-200"
                     }`}
                     onClick={(e) => {
-                      console.log("createboard2");
                       e.stopPropagation();
                       setVisibility((prev) => {
                         let updatedVisibility = prev.map((eachObj, i) => {
@@ -371,7 +342,7 @@ const CreateBoardCopy = ({
         <button
           className="bg-blue-600 rounded py-1 px-3 mb-3"
           onClick={() => {
-            console.log("createboard1");
+     
             addBoard();
           }}
         >
@@ -379,7 +350,6 @@ const CreateBoardCopy = ({
         </button>
         <button className="pb-3">Start With a Template</button>
       </div>
-      {console.log("createBoard end")}
     </div>
   );
 };

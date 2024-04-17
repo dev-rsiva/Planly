@@ -13,10 +13,6 @@ export const checkValidData = (email, password, fullname, isSignInForm) => {
       password
     );
 
-  console.log(isPasswordValid);
-  console.log(!isFullNameValid(fullname));
-  console.log(fullname !== null && !isFullNameValid(fullname));
-
   if (!isSignInForm && !isFullNameValid(fullname))
     return "Full name is not valid";
 

@@ -14,22 +14,17 @@ const ListActionCard = ({
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
-      console.log("handleClickOutside");
-      console.log(listActionCard?.current);
-      console.log(listActionCard?.current?.contains(e.target));
       if (
         listActionCard?.current &&
         !listActionCard?.current?.contains(e.target) &&
         !listActionCardBtn?.current?.contains(e.target)
       ) {
-        console.log("inside if");
         setShowListActionCard(false);
       }
     };
     document.addEventListener("click", handleOutsideClick);
 
     return () => {
-      console.log("ListActionCard Unmounts");
       document.removeEventListener("click", handleOutsideClick);
     };
   }, []);
@@ -54,7 +49,6 @@ const ListActionCard = ({
         <h1
           className="py-1 cursor-pointer"
           onClick={() => {
-            console.log("listactioncard1");
             setShowCardInput((prev) => {
               return (prev = { ...prev, top: true });
             });

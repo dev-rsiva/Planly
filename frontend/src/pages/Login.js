@@ -12,37 +12,62 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { randomAvatar } from "../utills/avatarGenerator";
+import { data } from "../utills/utills";
+import { cardData } from "../utills/cardData";
+import allTemplatesData from "../utills/allTemplatesData";
+import { doc, collection, setDoc, getDocs, query } from "firebase/firestore";
+import { db } from "../utills/firebase";
 
-const Login = ({ setIsUserAuthenticated }) => {
+const Login = ({
+  setIsUserAuthenticated,
+  user,
+  setUser,
+  workspaceData,
+  setWorkspaceData,
+  setAllCardData,
+  setTemplatesData,
+}) => {
   const [isSignInForm, setIsSignInForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [user, setUser] = useState({});
-  const [userData, setUserData] = useState({});
-  console.log("userData", userData);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log("outhState running");
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
-        const uid = user.uid;
         console.log("outhStateChanged", user);
         setIsUserAuthenticated(true);
+        console.log("workspaces in outhState changed:", workspaceData);
+        // if (performance.getEntriesByType("navigation").length === 1) {
+        const { uid, email, displayName, photoURL } = user;
+        console.log(uid, email, displayName, photoURL);
+        setUser({
+          uid: uid,
+          email: email,
+          displayName: displayName,
+          photoURL: photoURL,
+        });
+        // }
       } else {
         // User is signed out
         // ...
         console.log("User is signed out");
       }
     });
+    console.log(auth.currentUser);
   }, []);
 
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
-  console.log(randomAvatar);
+  console.log(
+    name?.current?.value,
+    email?.current?.value,
+    password?.current?.value
+  );
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
+    setErrorMessage(null);
   };
 
   const handleSignInClick = () => {
@@ -90,6 +115,127 @@ const Login = ({ setIsUserAuthenticated }) => {
             displayName: displayName,
             photoURL: photoURL,
           });
+
+          const updateUserWorkspacesData = async () => {
+            // if (!workspaceData || !userId) return;
+
+            const userDocRef = doc(db, "users", uid);
+            const workspacesCollectionsRef = collection(
+              userDocRef,
+              "workspaces"
+            );
+            const workspaceDocRef = doc(
+              workspacesCollectionsRef,
+              "workspacesDoc"
+            );
+
+            try {
+              // Check if the document exists
+              const querySnapshot = await getDocs(workspacesCollectionsRef);
+
+              if (querySnapshot.empty) {
+                // Document doesn't exist, create it with the new data
+                console.log(data);
+                // const newData = JSON.parse(JSON.stringify(data));
+                await setDoc(workspaceDocRef, data);
+                console.log(data);
+                setWorkspaceData((prev) => ({ ...data }));
+                console.log("workspaces", workspaceData);
+                console.log("New Workspaces data added to Firestore");
+              }
+            } catch (error) {
+              console.error(
+                "Error updating Workspaces data in Firestore:",
+                error
+              );
+            }
+
+            // const getWorkspaceData = async () => {
+            //   const userDocRef = doc(db, "users", user?.uid);
+            //   const workspacesCollectionRef = collection(userDocRef, "workspaces");
+            //   const workspaceQuery = query(workspacesCollectionRef);
+            //   const querySnapshot = await getDocs(workspaceQuery);
+            //   const updatedWorkspaceData = querySnapshot?.docs[0]?.data();
+            //   console.log(updatedWorkspaceData);
+            //   setWorkspaceData(updatedWorkspaceData);
+            // };
+            // await getWorkspaceData();
+          };
+
+          const updateUserAllCardData = async () => {
+            // if (!allCardData || !userId) return;
+
+            const userDocRef = doc(db, "users", uid);
+            const allCardCollectionsRef = collection(userDocRef, "allCardData");
+            const allCardDocRef = doc(allCardCollectionsRef, "allCardDataDoc");
+
+            try {
+              const querySnapshot = await getDocs(allCardCollectionsRef);
+
+              if (querySnapshot.empty) {
+                await setDoc(allCardDocRef, cardData);
+                setAllCardData((prev) => ({ ...cardData }));
+                console.log("New allCardData added to Firestore");
+              }
+            } catch (error) {
+              console.error("Error updating allCardData in Firestore:", error);
+            }
+
+            // const getAllCardData = async () => {
+            //   const userDocRef = doc(db, "users", user?.uid);
+            //   const allcardDataCollectionRef = collection(userDocRef, "allCardData");
+            //   const allcardDataQuery = query(allcardDataCollectionRef);
+            //   const querySnapshot = await getDocs(allcardDataQuery);
+            //   const updatedAllCardData = querySnapshot?.docs[0]?.data();
+            //   setAllCardData(updatedAllCardData);
+            // };
+            // await getAllCardData();
+          };
+
+          const updateUserTemplatesData = async () => {
+            // if (!templatesData || !userId) return;
+
+            const userDocRef = doc(db, "users", uid);
+            const templatesCollectionsRef = collection(userDocRef, "templates");
+            const templatesDocRef = doc(
+              templatesCollectionsRef,
+              "templatesDoc"
+            );
+
+            try {
+              const querySnapshot = await getDocs(templatesCollectionsRef);
+
+              if (querySnapshot.empty) {
+                await setDoc(templatesDocRef, allTemplatesData);
+                setTemplatesData((prev) => ({ ...allTemplatesData }));
+                console.log("New Templates data added to Firestore");
+              }
+            } catch (error) {
+              console.error(
+                "Error updating Templates data in Firestore:",
+                error
+              );
+            }
+
+            // const getTemplatesData = async () => {
+            //   const userDocRef = doc(db, "users", user?.uid);
+            //   const templatesDataCollectionRef = collection(userDocRef, "templates");
+            //   const templatesDataQuery = query(templatesDataCollectionRef);
+            //   const querySnapshot = await getDocs(templatesDataQuery);
+            //   const updatedTemplatesData = querySnapshot?.docs[0]?.data();
+            //   setTemplatesData(updatedTemplatesData);
+            // };
+            // await getTemplatesData();
+          };
+
+          // Call update functions for each data type
+          if (uid) {
+            updateUserWorkspacesData();
+            updateUserAllCardData();
+            updateUserTemplatesData();
+          }
+
+          navigate("/");
         })
         .catch((error) => {
           // Handle errors
@@ -97,39 +243,6 @@ const Login = ({ setIsUserAuthenticated }) => {
           const errorMessage = error.message;
           setErrorMessage(errorCode + "-" + errorMessage);
         });
-
-      // createUserWithEmailAndPassword(
-      //   auth,
-      //   email.current.value,
-      //   password.current.value
-      // )
-      //   .then((userCredential) => {
-      //     // Signed up
-      //     const user = userCredential.user;
-      //     console.log(user);
-      //     // Profile updated!
-      //     updateProfile(auth.currentUser, {
-      //       displayName: name.current.value,
-      //       photoURL: randomAvatar,
-      //     });
-      //   })
-      //   .then(() => {
-      //     console.log("Profile updated!");
-      //     console.log(auth.currentUser);
-      //     const { uid, email, displayName, photoURL } = auth.currentUser;
-      //     console.log(uid, email, displayName, photoURL);
-      //     setUser({
-      //       uid: uid,
-      //       email: email,
-      //       displayName: displayName,
-      //       photoURL: photoURL,
-      //     });
-      //   })
-      //   .catch((error) => {
-      //     const errorCode = error.code;
-      //     const errorMessage = error.message;
-      //     setErrorMessage(errorCode + "-" + errorMessage);
-      //   });
     } else if (isSignInForm) {
       //sign in logic
       signInWithEmailAndPassword(
@@ -141,6 +254,136 @@ const Login = ({ setIsUserAuthenticated }) => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
+
+          const { uid, email, displayName, photoURL } = user;
+          console.log(uid, email, displayName, photoURL);
+          setUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          });
+
+          const updateUserWorkspacesData = async () => {
+            // if (!workspaceData || !userId) return;
+
+            const userDocRef = doc(db, "users", uid);
+            const workspacesCollectionsRef = collection(
+              userDocRef,
+              "workspaces"
+            );
+            const workspaceDocRef = doc(
+              workspacesCollectionsRef,
+              "workspacesDoc"
+            );
+
+            try {
+              // Check if the document exists
+              const querySnapshot = await getDocs(workspacesCollectionsRef);
+
+              if (!querySnapshot.empty) {
+                // Document exist, update local state variabel with the existing firestore data
+                const updatedWorkspaceData = querySnapshot?.docs[0]?.data();
+                console.log(updatedWorkspaceData);
+                setWorkspaceData(updatedWorkspaceData);
+                console.log("Workspaces data added to local state variable");
+              }
+            } catch (error) {
+              console.error(
+                "Error updating Workspaces data in local state variable:",
+                error
+              );
+            }
+
+            // const getWorkspaceData = async () => {
+            //   const userDocRef = doc(db, "users", user?.uid);
+            //   const workspacesCollectionRef = collection(userDocRef, "workspaces");
+            //   const workspaceQuery = query(workspacesCollectionRef);
+            //   const querySnapshot = await getDocs(workspaceQuery);
+            //   const updatedWorkspaceData = querySnapshot?.docs[0]?.data();
+            //   console.log(updatedWorkspaceData);
+            //   setWorkspaceData(updatedWorkspaceData);
+            // };
+            // await getWorkspaceData();
+          };
+
+          const updateUserAllCardData = async () => {
+            // if (!allCardData || !userId) return;
+
+            const userDocRef = doc(db, "users", uid);
+            const allCardCollectionsRef = collection(userDocRef, "allCardData");
+            const allCardDocRef = doc(allCardCollectionsRef, "allCardDataDoc");
+
+            try {
+              const querySnapshot = await getDocs(allCardCollectionsRef);
+
+              if (!querySnapshot.empty) {
+                const updatedAllCardData = querySnapshot?.docs[0]?.data();
+                setAllCardData(updatedAllCardData);
+                console.log("allCardData data added to local state variable");
+              }
+            } catch (error) {
+              console.error(
+                "Error updating allCardData in local state variable:",
+                error
+              );
+            }
+
+            // const getAllCardData = async () => {
+            //   const userDocRef = doc(db, "users", user?.uid);
+            //   const allcardDataCollectionRef = collection(userDocRef, "allCardData");
+            //   const allcardDataQuery = query(allcardDataCollectionRef);
+            //   const querySnapshot = await getDocs(allcardDataQuery);
+            //   const updatedAllCardData = querySnapshot?.docs[0]?.data();
+            //   setAllCardData(updatedAllCardData);
+            // };
+            // await getAllCardData();
+          };
+
+          const updateUserTemplatesData = async () => {
+            // if (!templatesData || !userId) return;
+
+            const userDocRef = doc(db, "users", uid);
+            const templatesCollectionsRef = collection(userDocRef, "templates");
+            const templatesDocRef = doc(
+              templatesCollectionsRef,
+              "templatesDoc"
+            );
+
+            try {
+              const querySnapshot = await getDocs(templatesCollectionsRef);
+
+              if (!querySnapshot.empty) {
+                const updatedTemplatesData = querySnapshot?.docs[0]?.data();
+                setTemplatesData(updatedTemplatesData);
+                console.log("Templates data added to local state variable");
+              }
+            } catch (error) {
+              console.error(
+                "Error updating templatesData in local state variable::",
+                error
+              );
+            }
+
+            // const getTemplatesData = async () => {
+            //   const userDocRef = doc(db, "users", user?.uid);
+            //   const templatesDataCollectionRef = collection(userDocRef, "templates");
+            //   const templatesDataQuery = query(templatesDataCollectionRef);
+            //   const querySnapshot = await getDocs(templatesDataQuery);
+            //   const updatedTemplatesData = querySnapshot?.docs[0]?.data();
+            //   setTemplatesData(updatedTemplatesData);
+            // };
+            // await getTemplatesData();
+          };
+
+          // Call update functions for each data type
+          if (uid) {
+            updateUserWorkspacesData();
+            updateUserAllCardData();
+            updateUserTemplatesData();
+          }
+
+          navigate("/");
         })
         .catch((error) => {
           const errorCode = error.code;

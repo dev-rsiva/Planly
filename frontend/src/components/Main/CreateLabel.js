@@ -16,7 +16,6 @@ const CreateLabel = ({
   userActionOnLabel,
   cardInfo,
 }) => {
-  console.log("CreateLabel Started");
 
   const [title, setTitle] = useState(editLabelInfo?.title);
   const [colorSelected, setColorSelected] = useState(editLabelInfo?.color);
@@ -24,37 +23,8 @@ const CreateLabel = ({
   const { newCardData, setNewCardData } = useContext(cardDataContext);
 
   const { allCardData, setAllCardData } = useContext(dataContext);
-  console.log(newCardData);
-  console.log(allCardData);
-
-  console.log(title);
-  console.log(colorSelected);
   const createLabelRef = useRef();
   const titleRef = useRef();
-
-  // const handleOutsideClickCL = (e) => {
-  //   console.log(e);
-  //   console.log(createLabelIsShowing);
-  //   console.log(createLabelRef.current);
-  //   console.log(!createLabelRef.current.contains(e.target));
-  //   if (createLabelRef.current && !createLabelRef.current.contains(e.target)) {
-  //     console.log("createLabel If");
-  //     setCreateLabelIsShowing(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   console.log("CreateLabel useEffect started");
-  //   if (createLabelRef.current) {
-  //     console.log("click evetListener added");
-  //     document.addEventListener("click", handleOutsideClickCL);
-  //   }
-
-  //   return () => {
-  //     document.removeEventListener("click", handleOutsideClickCL);
-  //     console.log("CreateLabel component unmounted");
-  //   };
-  // }, [createLabelIsShowing]);
 
   useEffect(() => {
     titleRef?.current?.focus();
@@ -79,7 +49,6 @@ const CreateLabel = ({
         <h1 className="flex-grow text-center">Create label</h1>
         <div
           onClick={() => {
-            console.log("createlabel1");
             setCreateLabelIsShowing(false);
           }}
         >
@@ -158,13 +127,7 @@ const CreateLabel = ({
                   });
 
                   let updatedNewCardData = { ...prev, labels: updatedLabels };
-                  console.log(updatedNewCardData);
                   setAllCardData((prev) => {
-                    console.log(cardInfo.id);
-                    console.log({
-                      ...prev,
-                      [newCardData.id]: updatedNewCardData,
-                    });
                     return { ...prev, [cardInfo.id]: updatedNewCardData };
                   });
 
@@ -188,7 +151,6 @@ const CreateLabel = ({
           </div>
         )}
       </div>
-      {console.log("CreateLabel ended")}
     </div>
   );
 };

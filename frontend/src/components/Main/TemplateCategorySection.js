@@ -10,25 +10,18 @@ const TemplateCategorySection = () => {
   const navigate = useNavigate();
   const paramObj = useParams();
 
-  console.log(paramObj);
 
   const { templatesData, setTemplatesData } = useContext(dataContext);
 
-  const templateCategory = templatesData.find((eachCategory) => {
+  const templateCategory = templatesData.templates.find((eachCategory) => {
     return eachCategory.templateCategory === paramObj.templateCategory;
   });
 
   const templateDetails = templateCategory.templateList.find((template) => {
-    console.log(template.templateId.replace(/ /g, "-"));
-    console.log(paramObj.templateId);
 
     return template.templateId.replace(/ /g, "-") === paramObj.templateId;
   });
 
-  console.log(templateCategory);
-
-  console.log(templateDetails);
-  console.log(`/templates/${templateCategory.templateCategory}`);
 
   return (
     <div>

@@ -195,7 +195,6 @@ labelColors.forEach(
     (each.id = generateUniqueNumber(each.colorName.split(" ").join(""), 5))
 );
 
-console.log(labelColors);
 
 const allowedColors = [
   "green",
@@ -211,7 +210,6 @@ const labels = labelColors.filter((eachItem) =>
   allowedColors.includes(eachItem.colorName)
 );
 
-console.log(labels);
 
 // Custom sorting function
 const customSort = (a, b) => {

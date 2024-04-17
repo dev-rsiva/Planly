@@ -9,7 +9,6 @@ export const useHandleResize = (setNavItemStatus, navItemInfo) => {
   }, []);
 
   const handleResize = () => {
-    console.log("handleResize");
     const currScreenWidth = window.innerWidth;
     const updatedNavItemInfo = navItemInfo.map((each) => {
       return { ...each, isShowing: false };

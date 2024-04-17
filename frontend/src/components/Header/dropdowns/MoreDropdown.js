@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const MoreDropdown = ({ info, setNavItemStatus }) => {
-  console.log(info);
   return (
     <div className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-4 bg-white">
       <ul>
@@ -11,15 +10,6 @@ const MoreDropdown = ({ info, setNavItemStatus }) => {
             <li
               key={i}
               onClick={() => {
-                // setNavItemStatus((prev) => {
-                //   const updatedNavItemStatus = [...prev];
-                //   updatedNavItemStatus[i] = {
-                //     ...updatedNavItemStatus[i],
-                //     dropdownIsShowing:
-                //       !updatedNavItemStatus[i].dropdownIsShowing,
-                //   };
-                //   return updatedNavItemStatus;
-                // });
               }}
             >
               <div className="flex items-center pb-4">

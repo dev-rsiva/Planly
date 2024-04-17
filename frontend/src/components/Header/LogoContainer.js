@@ -10,8 +10,6 @@ const LogoContainer = ({ setSidebarSelection }) => {
       id="logo-container"
       className="ml-8 mr-8 flex justify-center items-center cursor-pointer"
       onClick={() => {
-        console.log("header3");
-        console.log("onClicked logo");
         setSidebarSelection("Boards");
         navigate("/user");
       }}

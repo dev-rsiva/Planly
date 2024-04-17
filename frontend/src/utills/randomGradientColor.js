@@ -6,7 +6,6 @@ export const randomGradientColor = () => {
     return randomNum;
   }
 
-  console.log(getRandomNum());
 
   let randomColor = "#";
 
@@ -14,6 +13,5 @@ export const randomGradientColor = () => {
     randomColor += letters[getRandomNum()];
   }
 
-  console.log(randomColor);
   return randomColor;
 };

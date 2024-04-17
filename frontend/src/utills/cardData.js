@@ -25,4 +25,3 @@ data.workspaces.forEach((workspace) =>
   )
 );
 
-console.log(cardData);

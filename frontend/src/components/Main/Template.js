@@ -24,7 +24,7 @@ const Template = () => {
   const shareCardRef = useRef();
   const shareBtn = useRef();
 
-  console.log(showShareCard);
+
 
   const {
     createBoardWithTemplateCard,
@@ -35,8 +35,7 @@ const Template = () => {
   } = useContext(dataContext);
 
   const { templateSelected, setTemplateSelected } = useContext(dataContext);
-  console.log(templateSelected);
-  console.log(templateDetails);
+
 
   const renderParagraphs = (text) => {
     return text?.split("\n\n")?.map((eachPara) => {
@@ -52,19 +51,15 @@ const Template = () => {
   }, [showShareCard]);
 
   useEffect(() => {
-    console.log(showShareCard);
     const handleOutsideClick = (e) => {
       e.stopPropagation();
-      console.log(shareCardRef?.current);
-      console.log(!shareCardRef?.current?.contains(e.target));
-      console.log(shareBtn?.current);
+
 
       if (
         shareCardRef?.current &&
         !shareCardRef?.current.contains(e.target) &&
         !shareBtn?.current.contains(e.target)
       ) {
-        console.log("inside");
         setShowShareCard(false);
       }
     };
@@ -111,7 +106,6 @@ const Template = () => {
             ref={shareBtn}
             className="bg-gray-100 py-3 px-4 rounded font-sans text-custom font-medium text-sm mr-4 hover:bg-gray-200 cursor-pointer"
             onClick={() => {
-              console.log(showShareCard);
               setShowShareCard(!showShareCard);
             }}
           >
@@ -129,7 +123,6 @@ const Template = () => {
                 <div
                   className="cursor-pointer"
                   onClick={(e) => {
-                    console.log("faX");
                     e.stopPropagation();
                     setShowShareCard(false);
                   }}

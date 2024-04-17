@@ -5,7 +5,6 @@ import { faGrip } from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import DropdownComp from "./dropdowns/DropdownComp.js";
 import Create from "./dropdowns/Create.js";
-import { Navigate } from "react-router-dom";
 import dataContext from "../../utills/dataContext.js";
 import sideBarSelectionContext from "../../utills/sideBarSelectionContext.js";
 import LogoContainer from "./LogoContainer.js";
@@ -17,12 +16,18 @@ import { useHandleResize } from "./useHandleResize.js";
 import { auth } from "../../utills/firebase.js";
 import { signOut } from "firebase/auth";
 
-const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
-  console.log("render start");
+const Header = ({
+  isUserAuthenticated,
+  setIsUserAuthenticated,
+  setIsLoading,
+}) => {
+  ("render start");
 
   const {
     workspaceData,
     setWorkspaceData,
+    setAllCardData,
+    setTemplatesData,
     createDropdownDetails,
     setCreateDropdownDetails,
   } = useContext(dataContext);
@@ -42,7 +47,7 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
   const createBtn = useRef(null);
   const createTemplate = useRef(null);
   const backFromTemplateBtn = useRef(null);
-  console.log(backFromTemplateBtn?.current);
+  backFromTemplateBtn?.current;
 
   const windowSize = window.innerWidth;
 
@@ -51,9 +56,9 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
 
   const [navbarBtn, setNavbarBtn] = useState({ hovered: "", selected: "" });
 
-  console.log(navItemStatus[3]?.dropdownIsShowing);
+  navItemStatus[3]?.dropdownIsShowing;
 
-  console.log(createDropdownStatus);
+  createDropdownStatus;
 
   useHandleResize(setNavItemStatus, navItemInfo);
 
@@ -62,6 +67,8 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
       .then(() => {
         // Sign-out successful.
         setIsUserAuthenticated(false);
+        setIsLoading(false);
+        navigate("/");
       })
       .catch((error) => {
         // An error happened.
@@ -70,17 +77,13 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
 
   useEffect(() => {
     function handleOutsideClick(e, index) {
-      console.log("handleOutside");
-      console.log(dropdownCompRef?.current);
       if (
         dynamicRefs.current[index] &&
         !dynamicRefs.current[index].contains(e.target) &&
         !dropdownCompRef?.current?.contains(e.target) &&
         navItemStatus[index]?.dropdownIsShowing
       ) {
-        console.log("inside if");
         setNavItemStatus((prev) => {
-          console.log("inside");
           let updatedNavItemStatus = [...prev];
           updatedNavItemStatus[index] = {
             ...updatedNavItemStatus[index],
@@ -103,7 +106,6 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
             updatedNavBarBtn.selected = "";
             updatedNavBarBtn.hovered = "";
           }
-          console.log(updatedNavBarBtn);
           return updatedNavBarBtn;
         });
       }
@@ -126,15 +128,9 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
     navItemStatus[4].dropdownIsShowing,
   ]);
 
-  useEffect(() => {
-    console.log("createDropdownStatus Changed:", createDropdownStatus);
-  }, [createDropdownStatus]);
+  useEffect(() => {}, [createDropdownStatus]);
 
-  useEffect(() => {
-    console.log("navItemStatus Changed:", navItemStatus);
-  }, [navItemStatus]);
-
-  console.log(sidebarSelection);
+  useEffect(() => {}, [navItemStatus]);
 
   return (
     <div className="flex justify-between items-center bg-white max-h-[60px] border border-b-gray-200 px-4 py-[6px] w-full fixed top-0 z-[2000]">
@@ -157,8 +153,6 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
             ref={createBtn}
             className="font-sans text-sm font-medium text-white bg-blue-600 rounded mr-4 w-[65px] h-[33px]"
             onClick={() => {
-              console.log("header1");
-              console.log("onClicked create");
               setCreateDropdownStatus((prevState) => !prevState);
 
               setCreateDropdownDetails((prev) => {
@@ -216,7 +210,6 @@ const Header = ({ isUserAuthenticated, setIsUserAuthenticated }) => {
           </button>
         </div>
       </div>
-      {console.log("render end")}
     </div>
   );
 };

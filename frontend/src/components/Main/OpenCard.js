@@ -38,7 +38,6 @@ import CreateLabel from "./CreateLabel";
 import Boards from "../../pages/Boards.js";
 
 const OpenCard = () => {
-  console.log("OpenCard started");
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
   const navigate = useNavigate();
   const paramObj = useParams();
@@ -52,11 +51,6 @@ const OpenCard = () => {
 
   const { allCardData, setAllCardData } = useContext(dataContext);
 
-  console.log(allCardData);
-
-  // console.log(descriptionRef?.current);
-
-  // console.log(paramObj);
 
   const workspaceInfo = workspaceData.workspaces.find((workspace) =>
     workspace.boards.some((board) =>
@@ -74,37 +68,18 @@ const OpenCard = () => {
     )
   );
 
-  // console.log(boardInfo);
+
 
   const listInfo = boardInfo.lists.find((list) =>
     list.cards.some((card) => card.id === paramObj.cardId)
   );
-  // console.log(listInfo);
+
 
   const cardInfo = listInfo.cards.find((card) => card.id == paramObj.cardId);
-  console.log(cardInfo);
 
-  // console.log(workspaceInfo);
-
-  console.log(allCardData[cardInfo.id]);
 
   const [cardDetails, setCardDetails] = useState(cardInfo);
 
-  // {
-  //   description: "",
-  //   Activities: [{ user: "", comment: "" }],
-  //   labels: [],
-  //   members: [],
-  //   covers: [],
-  //   dates: { start: null, due: null },
-  //   attachments: [],
-  //   cover: [],
-  //   customFields: [],
-  //   archived: false,
-  //   watching: false,
-  // }
-
-  // const cardDataContext = createContext()
 
   const [newCardData, setNewCardData] = useState(allCardData[cardInfo.id]);
 
@@ -115,10 +90,7 @@ const OpenCard = () => {
   );
   const [comment, setComment] = useState("");
 
-  console.log(comment.trim());
-  console.log(newCardData);
-  console.log(cardInfo.id);
-  console.log(allCardData[cardInfo.id]);
+
 
   const [cardDescDetails, setCardDescDetails] = useState({
     showInput: false,
@@ -139,36 +111,29 @@ const OpenCard = () => {
   });
 
   const [labelsIsShowing, setLabelsIsShowing] = useState(false);
-  console.log(labelsIsShowing);
   const [newLabelListPosition, setNewLabelListPosition] = useState(false);
 
-  console.log(cardDescDetails);
-  console.log(allCardData[cardInfo.id]);
-  // console.log(cardDetails.id);
-  console.log(newCardData);
-  console.log(editCommentFor);
+
 
   const labelsForThisCard = newCardData?.labels?.filter(
     (eachLabel) =>
       eachLabel.isChecked !== undefined && eachLabel.isChecked === true
   );
-  console.log(labelsForThisCard);
+
 
   const descriptionDisplay = useMemo(() => {
-    console.log("display logic");
+
     if (cardDescDetails?.showDesc && !cardDescDetails?.showInput) {
       return (
         <div
           className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[480px] font-semibold text-[14px] hover:bg-gray-400 cursor-pointer"
           onClick={() => {
-            console.log("opencard14");
-            console.log("parent1");
+        
             setCardDescDetails((prev) => {
               return (prev = { ...prev, showInput: true });
             });
           }}
         >
-          {console.log(newCardData?.description?.split(" ").join(""))}
           {newCardData?.description?.split(" ").join("") === "" ? (
             <p>Add a more detailed description...</p>
           ) : (
@@ -187,7 +152,6 @@ const OpenCard = () => {
   const commentList = useMemo(
     () =>
       newCardData?.Activities?.map((eachUser) => {
-        console.log("comment List");
         return (
           <div className="flex mb-4">
             <div className="flex justify-center text-white font-bold items-center bg-violet-900 rounded-full w-[30px] h-[30px] mr-4">
@@ -202,13 +166,11 @@ const OpenCard = () => {
                   {formatTimeDifference(eachUser?.commentTime)}
                 </p>
               </div>
-              {console.log(editCommentFor.id !== eachUser?.id)}
-              {console.log(editCommentFor.id)}
-              {console.log(eachUser?.id)}
+       
               {editCommentFor.id !== eachUser?.id && (
                 <div>
                   <div className="px-2 py-2 bg-white rounded-lg font-semibold text-[14px] w-full cursor-pointer">
-                    {console.log(eachUser?.comment)}
+            
                     <p>{eachUser?.comment}</p>
                   </div>
 
@@ -216,7 +178,7 @@ const OpenCard = () => {
                     <button
                       className="text-sm mr-2 underline"
                       onClick={() => {
-                        console.log("opencard13");
+                      
                         setEditCommentFor((prev) => {
                           return {
                             ...prev,
@@ -257,7 +219,7 @@ const OpenCard = () => {
                       }`}
                       disabled={editCommentFor.comment.trim() === ""}
                       onClick={(e) => {
-                        console.log("opencard12");
+                    
                         let updatedActivitiesList = newCardData?.Activities.map(
                           (eachActivity) => {
                             if (eachActivity?.id === editCommentFor.id) {
@@ -271,7 +233,7 @@ const OpenCard = () => {
                             return eachActivity;
                           }
                         );
-                        console.log(updatedActivitiesList);
+            
 
                         setAllCardData((prev) => {
                           return {
@@ -301,7 +263,7 @@ const OpenCard = () => {
                     <button
                       className="bg-gray-400 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-700 mr-4"
                       onClick={() => {
-                        console.log("opencard11");
+                   
 
                         setEditCommentFor((prev) => {
                           return { ...prev, id: "" };
@@ -321,20 +283,14 @@ const OpenCard = () => {
   );
 
   function updateCardDescription() {
-    console.log("updateDescription:", newCardData?.description);
+
 
     setAllCardData((prev) => {
       setNewCardData((prev) => {
         return { ...prev, description: cardDesc };
       });
 
-      console.log({
-        ...prev,
-        [cardDetails.id]: {
-          ...newCardData,
-          description: cardDesc,
-        },
-      });
+   
       return {
         ...prev,
         [cardDetails.id]: {
@@ -345,9 +301,7 @@ const OpenCard = () => {
     });
 
     setCardDescDetails((prev) => {
-      console.log(newCardData?.description);
-      console.log(cardDescDetails);
-      console.log(newCardData?.description?.split(" ").join("") !== "");
+
 
       return {
         ...prev,
@@ -359,7 +313,6 @@ const OpenCard = () => {
   }
 
   function formatTimeDifference(commentTime) {
-    console.log("formatTimeDifference");
     const now = new Date();
     const commentDate = new Date(commentTime);
 
@@ -392,21 +345,9 @@ const OpenCard = () => {
     }
   }, [editCommentFor.comment]);
 
-  useEffect(() => {
-    console.log("useEffect showInput");
-  }, [cardDescDetails]);
-  useEffect(() => {
-    console.log("useEffect showDesc");
-  }, [cardDescDetails?.showDesc]);
-  useEffect(() => {
-    console.log("useEffect showEdit");
-  }, [cardDescDetails?.showEdit]);
-  useEffect(() => {
-    console.log("useEffect allCardData");
-  }, [allCardData]);
+
 
   useEffect(() => {
-    console.log("useEffect");
     if (cardDescDetails?.showInput) {
       descriptionRef.current.focus();
     }
@@ -416,12 +357,9 @@ const OpenCard = () => {
     <>
       <Boards />
       <cardDataContext.Provider value={{ newCardData, setNewCardData }}>
-        {console.log("OpenCard rendering process")}
         <div
           className="fixed left-0 top-0 right-0 bottom-0 bg-black bg-opacity-60 z-[999]"
           onClick={() => {
-            console.log("opencard10");
-            console.log("setting showOpenCard false");
             navigate(-1);
           }}
         ></div>
@@ -449,7 +387,6 @@ const OpenCard = () => {
             </div>
             <div
               onClick={() => {
-                console.log("opencard9");
                 navigate(-1);
               }}
             >
@@ -460,7 +397,6 @@ const OpenCard = () => {
           <div className="flex justify-between ">
             <div className="flex flex-col mr-2 w-full">
               <div className="flex mb-8 p-2 ml-[42px] ">
-                {console.log(newCardData?.labels)}
                 {labelsForThisCard && labelsForThisCard.length > 0 && (
                   <div className="mr-4 ">
                     <div className="mb-2 font-semibold text-[14px]">Labels</div>
@@ -481,7 +417,6 @@ const OpenCard = () => {
                       <div
                         className="w-[30px] h-[30px] bg-gray-400 rounded flex justify-center items-center"
                         onClick={() => {
-                          console.log("opencard8");
                           setNewLabelListPosition(true);
                           setLabelsIsShowing(true);
                         }}
@@ -522,7 +457,6 @@ const OpenCard = () => {
                     <div
                       className="bg-gray-300 font-semibold hover:bg-gray-400 py-1 px-2 rounded"
                       onClick={() => {
-                        console.log("opencard7");
                         setCardDescDetails((prev) => {
                           return (prev = {
                             ...prev,
@@ -553,7 +487,6 @@ const OpenCard = () => {
                         <button
                           className="bg-blue-600 rounded py-1 px-2 text-white border-blue-400 hover:bg-blue-700 mr-4"
                           onClick={(e) => {
-                            console.log("opencard6");
                             e.stopPropagation();
                             updateCardDescription();
                           }}
@@ -563,7 +496,6 @@ const OpenCard = () => {
                         <button
                           className="bg-gray-200 rounded py-1 px-2 text-gray-900 border-blue-400 hover:bg-gray-400 mr-4"
                           onClick={() => {
-                            console.log("opencard5");
                             setCardDesc(newCardData.description);
                             setCardDescDetails((prev) => {
                               return {
@@ -609,7 +541,6 @@ const OpenCard = () => {
                     <div
                       className="px-2 py-1 mb-4 bg-white rounded-lg font-sans text-sm font-semibold text-[#172b4d] w-full cursor-pointer"
                       onClick={() => {
-                        console.log("opencard4");
 
                         setCommentDetails((prev) => {
                           return { ...prev, showInput: true };
@@ -631,8 +562,6 @@ const OpenCard = () => {
                         onChange={(e) => setComment(e.target.value)}
                       />
                       <div className="flex">
-                        {console.log(comment.trim())}
-                        {console.log(comment.trim() === "")}
                         <button
                           className={`rounded py-1 px-2 text-white border-blue-400 mr-4 ${
                             comment.trim() === ""
@@ -641,9 +570,7 @@ const OpenCard = () => {
                           }`}
                           disabled={comment.trim() === ""}
                           onClick={() => {
-                            console.log("opencard3");
                             setAllCardData((prev) => {
-                              console.log("inside setallcard data");
                               let newActivity = {
                                 id: generateUniqueNumber(
                                   comment.slice(0, 3),
@@ -653,12 +580,8 @@ const OpenCard = () => {
                                 comment: comment.trim(),
                                 commentTime: new Date(),
                               };
-                              console.log(newActivity);
-                              console.log(setNewCardData);
                               setNewCardData((prev) => {
-                                console.log("inside  newActivity Card Data");
                                 let updatedNewCardData = { ...prev };
-                                console.log(updatedNewCardData);
                                 updatedNewCardData.Activities = [
                                   ...updatedNewCardData?.Activities,
                                 ];
@@ -666,7 +589,6 @@ const OpenCard = () => {
                                   newActivity
                                 );
 
-                                console.log(updatedNewCardData);
                                 return updatedNewCardData;
                               });
 
@@ -694,7 +616,6 @@ const OpenCard = () => {
                         <button
                           className="bg-gray-400 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-700 mr-4"
                           onClick={() => {
-                            console.log("opencard2");
                             setCommentDetails((prev) => {
                               return { ...prev, showInput: false };
                             });
@@ -726,7 +647,6 @@ const OpenCard = () => {
                 <div
                   className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
                   onClick={() => {
-                    console.log("opencard1");
                     setLabelsIsShowing(true);
                     setNewLabelListPosition(false);
                   }}
@@ -738,73 +658,9 @@ const OpenCard = () => {
                   </p>
                 </div>
 
-                {/* <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
-                  <FontAwesomeIcon
-                    icon={faListCheck}
-                    size="sm"
-                    className="mr-2 "
-                  />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Checklist
-                  </p>
-                </div>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
-                  <FontAwesomeIcon icon={faClock} size="sm" className="mr-2 " />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Dates
-                  </p>
-                </div>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
-                  <FontAwesomeIcon
-                    icon={faPaperclip}
-                    size="sm"
-                    className="mr-2 "
-                  />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Attachment
-                  </p>
-                </div>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
-                  <FontAwesomeIcon icon={faImage} size="sm" className="mr-2 " />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Cover
-                  </p>
-                </div>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
-                  <FontAwesomeIcon
-                    icon={faPaintRoller}
-                    size="sm"
-                    className="mr-2 "
-                  />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Custom Fields
-                  </p>
-                </div> */}
+       
               </div>
 
-              {/* <div className="pb-1">
-                <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
-                  Power-Ups
-                </p>
-                <div className="flex justify-start items-center rounded px-2 py-1 w-[175px] mb-2">
-                  <FontAwesomeIcon icon={faPlus} size="sm" className="mr-2 " />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Add Power-ups
-                  </p>
-                </div>
-              </div> */}
-
-              {/* <div className="pb-1">
-                <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
-                  Automation
-                </p>
-                <div className="flex justify-start items-center rounded px-2 py-1 w-[175px] mb-2">
-                  <FontAwesomeIcon icon={faPlus} size="sm" className="mr-2 " />
-                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                    Add button
-                  </p>
-                </div>
-              </div> */}
 
               <div className="relative pb-1">
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
@@ -874,7 +730,6 @@ const OpenCard = () => {
           />
         )}
 
-        {console.log("OpenCard end")}
       </cardDataContext.Provider>
     </>
   );

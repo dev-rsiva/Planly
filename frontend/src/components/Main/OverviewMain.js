@@ -8,7 +8,6 @@ import { randomGradientColor } from "../../utills/randomGradientColor";
 import YourWorkspaces from "./YourWorkspaces";
 const OverviewMain = () => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
-  console.log(workspaceData);
 
   return (
     <div>

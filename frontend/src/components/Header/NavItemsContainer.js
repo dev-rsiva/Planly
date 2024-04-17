@@ -12,13 +12,11 @@ const NavItemsContainer = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-  console.log(dynamicRefs);
   return (
     <div
       id="navItem-container"
       className="mr-4 flex justify-center items-center"
     >
-      {console.log("header rendering process")}
       {navItemStatus?.map((navItem, i) => {
         return (
           navItem?.isShowing && (
@@ -58,9 +56,6 @@ const NavItemsContainer = ({
                       : navItem.Name;
                   return updatedNavBarBtn;
                 });
-                console.log("header2");
-                console.log(`onClicked ${navItem.Name}`);
-                console.log(`${navItem.Name} dropdown changing from Header.js`);
                 setNavItemStatus((prev) => {
                   const updatedNavItemStatus = [...prev];
                   updatedNavItemStatus[i] = {

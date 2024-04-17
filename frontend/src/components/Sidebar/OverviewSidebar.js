@@ -75,7 +75,6 @@ const OverviewSidebar = (
       ),
     },
   ];
-  console.log(sidebarSelection);
 
   const [
     workspaceSideBarDropdownIsShowing,
@@ -83,40 +82,19 @@ const OverviewSidebar = (
   ] = useState(() => {
     const workspaceDropdownBtns = {};
 
-    workspaceData.workspaces.forEach(
+    workspaceData?.workspaces.forEach(
       (workspace) => (workspaceDropdownBtns[workspace.name] = false)
     );
 
     return workspaceDropdownBtns;
   });
-  console.log(workspaceSideBarDropdownIsShowing);
 
-  console.log(workspaceBtns);
-
-  // const addHighlights = () => {
-  //   let workspaceButtons = workspaceBtns.slice(0, workspaceBtns.length);
-  //   console.log(workspaceButtons);
-  //   let highlightsObj = workspaceButtons.slice(0, 1)[0];
-  //   console.log(highlightsObj);
-  //   console.log(workspaceButtons);
-  //   highlightsObj.icon = <FontAwesomeIcon icon={faHeart} />;
-  //   highlightsObj.buttonName = "Highlights";
-  //   console.log(workspaceButtons);
-  //   workspaceButtons.splice(1, 0, highlightsObj);
-  //   console.log(workspaceButtons);
-  //   return workspaceButtons;
-  // };
-
-  // addHighlights();
-  console.log(hoveredOption);
-  console.log(sidebarSelection);
 
   const heading = React.createElement(
     "h1",
     { id: "heading" },
     "this is heading"
   );
-  console.log(heading);
 
   return (
     <div className="w-full">
@@ -139,7 +117,6 @@ const OverviewSidebar = (
                 onMouseLeave={(e) => setHoveredOption("")}
                 onClick={(e) => {
                   setSidebarSelection(e.target.innerText);
-                  console.log(e.target.innerText);
                   if (e.target.innerText === "Templates") {
                     setTemplateCategorySelected
                       ? setTemplateCategorySelected("All")
@@ -198,18 +175,13 @@ const OverviewSidebar = (
           Workspaces
         </h2>
 
-        {workspaceData.workspaces.map((workspace) => {
-          console.log(workspace);
+        {workspaceData?.workspaces?.map((workspace) => {
           return (
             <div>
               <div
                 className="flex justify-between items-center hover:bg-gray-200 rounded-lg my-[6px] py-[5px] cursor-pointer"
                 onClick={() =>
                   setWorkspaceSideBarDropdownIsShowing((prev) => {
-                    console.log({
-                      ...prev,
-                      [workspace.name]: !prev[workspace.name],
-                    });
                     return {
                       ...prev,
                       [workspace.name]: !prev[workspace.name],
@@ -250,7 +222,6 @@ const OverviewSidebar = (
               </div>
 
               {workspaceBtns.map((eachBtn) => {
-                console.log(eachBtn);
                 return (
                   workspaceSideBarDropdownIsShowing[workspace.name] && (
                     <a

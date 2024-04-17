@@ -11,12 +11,10 @@ const WorkspacesDropdown = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-  console.log(info);
 
   const { currWorkspace, setCurrWorkspace } = useContext(dataContext);
 
   const paramObj = useParams();
-  console.log(paramObj);
 
   const currWorkspaceInfo = paramObj.workspaceShortName
     ? workspaceData.workspaces.find(
@@ -28,10 +26,6 @@ const WorkspacesDropdown = ({
       )
     : "";
 
-  console.log(currWorkspaceInfo);
-  console.log(currWorkspaceInfo.name !== "");
-  console.log(currWorkspaceInfo.name !== undefined);
-  console.log(currWorkspaceInfo.name !== null);
 
   const navigate = useNavigate();
 
@@ -93,13 +87,11 @@ const WorkspacesDropdown = ({
         </p>
         <ul>
           {workspaceData.workspaces.map((workspace) => {
-            console.log(workspace);
             return (
               <div>
                 <div
                   className="flex justify-between items-center hover:bg-gray-100 rounded-lg my-[6px] px-2 py-[5px] cursor-pointer"
                   onClick={() => {
-                    console.log("workspacedropdown1");
                     setNavItemStatus((prev) => {
                       let updatedNavItemStatus = [...prev];
                       updatedNavItemStatus[0] = {

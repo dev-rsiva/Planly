@@ -21,7 +21,6 @@ import { faTrello } from "@fortawesome/free-brands-svg-icons";
 import dataContext from "../../utills/dataContext.js";
 
 const Sidebar = ({ workspaceInfo }) => {
-  console.log("sidebar started");
 
   const {
     createDropdownDetails,
@@ -29,7 +28,6 @@ const Sidebar = ({ workspaceInfo }) => {
     createBoardSourceClick,
     setCreateBoardSourceClick,
   } = useContext(dataContext);
-  console.log(createDropdownDetails);
 
   const workspaceSideBarBtns = [
     {
@@ -70,8 +68,6 @@ const Sidebar = ({ workspaceInfo }) => {
 
   const navigate = useNavigate();
 
-  console.log(workspaceInfo.iconColors?.color1);
-  console.log(workspaceInfo.iconColors?.color2);
   return (
     <div>
       <div className="w-[262px] flex justify-between items-center py-3 pl-4 pr-6">
@@ -84,12 +80,12 @@ const Sidebar = ({ workspaceInfo }) => {
           >
             <div className="bg-black opacity-30 absolute w-full h-full rounded" />
             <p className="z-50 rounded text-sm text-white font-bold font-sans">
-              {workspaceInfo.name[0]}
+              {workspaceInfo?.name[0]}
             </p>
           </div>
           <div className="flex flex-col">
             <h1 className="font-semibold font-sans text-sm text-[#172b4d] flex-1">
-              {workspaceInfo.name}
+              {workspaceInfo?.name}
             </h1>
             <h1 className="font-base font-sans text-[12px] text-[#172b4d] flex-1">
               Free
@@ -105,19 +101,6 @@ const Sidebar = ({ workspaceInfo }) => {
 
       <div className="h-[78vh] overflow-y-auto">
         <div>
-          {/* <div
-            className="py-1 pl-4 mb-[8px] flex justify-start items-center rounded-lg hover:bg-gray-200 cursor-pointer"
-            onClick={() => navigate(`/w/${workspace.shortname}/Home`)}
-          >
-            <span className="w-6 pr-2">
-              <FontAwesomeIcon icon={faTrello} color="#455570" />
-            </span>
-            <div className="flex justify-between pr-4">
-              <span className="text-[#172b4d] font-medium font-sans text-sm ">
-                Boards
-              </span>
-            </div>
-          </div> */}
           {workspaceSideBarBtns.slice(0, 3).map((eachBtn, index) => {
             return (
               <div
@@ -128,7 +111,7 @@ const Sidebar = ({ workspaceInfo }) => {
                     ? "cursor-not-allowed"
                     : "cursor-pointer"
                 }`}
-                onClick={() => navigate(`/w/${workspace.shortname}/Home`)}
+                onClick={() => navigate(`/w/${workspaceInfo?.shortname}/Home`)}
               >
                 <span className="w-7">{eachBtn.icon}</span>
                 <div className="w-full flex justify-between items-center pr-4">
@@ -200,7 +183,7 @@ const Sidebar = ({ workspaceInfo }) => {
             </div>
           </div>
           <div>
-            {workspaceInfo.boards
+            {workspaceInfo?.boards
               ?.sort((a, b) => {
                 if (a.starred === b.starred) {
                   return 0;
@@ -241,40 +224,18 @@ const Sidebar = ({ workspaceInfo }) => {
                           className=" pr-3"
                         />
                       )}
-                      {/* <p className="text-xs font-sans text-custom">
-                  {
-                    workspaceData?.workspaces?.find((workspace) =>
-                      workspace?.boards?.some(
-                        (board) => board.id === eachBoard.id
-                      )
-                    ).name
-                  }
-                </p> */}
+                      
                     </div>
                   </div>
                 );
               })}
           </div>
-          {/* <div className="w-full py-1 px-4">Members</div>
-          <div className="flex items-center pb-4">
-            <p className="px-4 font-semibold">Workspace settings</p>
-            <FontAwesomeIcon icon={faAngleDown} className="mb-[2px] pl-1" />
-          </div> */}
-          {/* <hr className="my-4" /> */}
-        </div>
-        {/* <div>
           
-
-          <div className="w-full py-1 px-4">Table</div>
-          <div className="w-full py-1 px-4">Calendar</div>
-        </div> */}
+        </div>
+       
       </div>
 
-      {/* <div className="flex items-center pb-4">
-        <p className="px-4 font-semibold">Your Boards</p>
-        <FontAwesomeIcon icon={faPlus} className="mb-[2px] pl-1" />
-      </div> */}
-      {console.log("sidebar ended")}
+     
     </div>
   );
 };

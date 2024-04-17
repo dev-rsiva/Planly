@@ -10,7 +10,6 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import CommonBoard from "./CommonBoard";
 
 const ListOfBoard = () => {
-  console.log("ListOfBoard started");
   const [sortBy, setSortBy] = useState("Most recently active");
   const [filterBy, setFilterBy] = useState("Choose a collection");
   const [activeFeature, setActiveFeature] = useState("");
@@ -23,43 +22,35 @@ const ListOfBoard = () => {
   const sortByRef = useRef();
   const searchRef = useRef();
 
-  console.log(activeFeature);
-  console.log(activeFeature === "search");
-  console.log(sortByRef.current);
-  // console.log(sortByRef?.current?.contains(e.target));
 
   const navigate = useNavigate();
 
-  console.log(workspaceInfo);
 
   function sortBoards(sortOption) {
     if (sortOption === "Most recently active") {
-      return workspaceInfo.boards.sort((a, b) => b.viewedAt - a.viewedAt);
+      return workspaceInfo?.boards?.sort((a, b) => b.viewedAt - a.viewedAt);
     }
 
     if (sortOption === "Least recently active") {
-      return workspaceInfo.boards.sort((a, b) => a.viewedAt - b.viewedAt);
+      return workspaceInfo?.boards?.sort((a, b) => a.viewedAt - b.viewedAt);
     }
 
     if (sortOption === "Alphabetically A-Z") {
-      return workspaceInfo.boards.sort((a, b) =>
+      return workspaceInfo?.boards?.sort((a, b) =>
         a.title.localeCompare(b.title)
       );
     }
 
     if (sortOption === "Alphabetically Z-A") {
-      return workspaceInfo.boards.sort((a, b) =>
+      return workspaceInfo?.boards.sort((a, b) =>
         b.title.localeCompare(a.title)
       );
     }
-    return workspaceInfo.boards;
+    return workspaceInfo?.boards;
   }
 
   useEffect(() => {
-    console.log("useEffect started in List of Board");
     const handleOutsideClick = (e) => {
-      console.log(sortByRef?.current);
-      console.log(!sortByRef?.current?.contains(e.target));
       if (
         (activeFeature === "sortBy" &&
           sortByRef?.current &&
@@ -68,7 +59,6 @@ const ListOfBoard = () => {
           searchRef?.current &&
           !searchRef?.current?.contains(e.target))
       ) {
-        console.log("inside if");
         setActiveFeature("");
         setShowSortByOption(false);
       }
@@ -128,7 +118,6 @@ const ListOfBoard = () => {
                               : ""
                           } cursor-pointer`}
                           onClick={(e) => {
-                            console.log("Clicked");
                             e.stopPropagation();
                             setShowSortByOption(false);
                             setSortBy(eachOption);
@@ -198,41 +187,23 @@ const ListOfBoard = () => {
           Create new board
         </div>
         {(activeFeature === "search"
-          ? workspaceInfo.boards?.filter((board) =>
+          ? workspaceInfo?.boards?.filter((board) =>
               board.title.toLowerCase().includes(searchQuery.toLowerCase())
             )
           : activeFeature === "sortBy"
           ? sortBoards(sortBy)
-          : workspaceInfo.boards
-        ).map((eachBoard, index) => {
+          : workspaceInfo?.boards
+        )?.map((eachBoard, index) => {
           return (
             <CommonBoard
               key={index}
               board={eachBoard}
               typeOfBoard="yourBoard"
             />
-            // <div
-            //   className="relative mr-4 mb-4"
-            //   onClick={() => {
-            //     console.log("listofboard1");
-            //     navigate(`/b/${board.id}/${board.title.replace(/ /g, "-")}`);
-            //   }}
-            // >
-            //   <div className="w-[250px] h-[100px] overflow-hidden rounded ">
-            //     <div className="absolute w-full h-full left-0 top-0 bg-black opacity-50"></div>
-            //     <img
-            //       src={board.backgroundImg}
-            //       className="w-full h-full object-cover"
-            //     />
-            //   </div>
-            //   <div className="absolute left-[6px] top-[6px] font-bold text-white">
-            //     {board.title}
-            //   </div>
-            // </div>
+            
           );
         })}
       </div>
-      {console.log("ListOfBoard ended")}
       <button className="cursor-not-allowed bg-gray-200 hover:bg-gray-300 mb-3 py-2 px-4 rounded-sm font-sans text-sm text-custom font-semibold">
         View closed boards
       </button>

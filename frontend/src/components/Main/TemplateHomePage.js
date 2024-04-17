@@ -8,7 +8,6 @@ const TemplateHomePage = () => {
   const [templateCategorySelected, setTemplateCategorySelected] =
     useState("All");
 
-  console.log(templateCategorySelected);
 
   return (
     <div className="flex px-32 mt-8 relative top-[45px] ">

@@ -46,8 +46,6 @@ const RecentlyViewedBoard = ({ recentlyViewedBoard }) => {
                     boards: updatedBoards,
                   };
 
-                  console.log(updatedBoards);
-                  console.log(eachWorkspace);
 
                   return eachWorkspace;
                 }

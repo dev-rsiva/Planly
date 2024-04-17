@@ -8,8 +8,6 @@ import { useNavigate } from "react-router-dom";
 import dataContext from "../../utills/dataContext.js";
 
 const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
-  console.log("workspaceHeading started");
-  console.log(data);
 
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
   const [displayWorkspaceEdit, setDisplayWorkspaceEdit] = useState(false);
@@ -23,7 +21,6 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
 
   const navigate = useNavigate();
 
-  console.log(workspaceData);
 
   const handleChange = (value, field) => {
     if (field === "name" || "website" || "description") {
@@ -46,31 +43,16 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   };
 
   workspaceData.workspaces.map((workspace) => {
-    console.log(workspace.shortname);
   });
   const handleSaveClick = (e) => {
     let shortName = shortNameField.split(" ").join("");
-    console.log(workspaceData.workspaces);
 
-    console.log(
-      workspaceData.workspaces.filter((workspace, index) => {
-        console.log(workspaceInfo.id[workspaceInfo.id.length - 1]);
-        console.log(index);
-        return (
-          Number(workspaceInfo.id[workspaceInfo.id.length - 1]) - 1 !== index
-        );
-      })
-    );
+
     let shortNameIsNotTaken = workspaceData.workspaces
       .filter((workspace, index) => {
-        console.log(workspaceInfo.id[workspaceInfo.id.length - 1] - 1);
-        console.log(index);
-        return workspaceInfo.id[workspaceInfo.id.length - 1] - 1 !== index;
+        return workspaceInfo?.id[workspaceInfo?.id.length - 1] - 1 !== index;
       })
       .every((workspace) => {
-        console.log(workspace.shortname?.toLowerCase().slice(0, 3));
-        console.log(shortName?.toLowerCase().slice(0, 3));
-        console.log(workspaceInfo.id[workspaceInfo.id.length - 1]);
 
         return (
           workspace.shortname?.toLowerCase().slice(0, 3) !==
@@ -78,17 +60,12 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
         );
       });
 
-    console.log(shortNameIsNotTaken);
     setIsShortNameTaken(shortNameIsNotTaken ? false : true);
 
     if (shortNameIsNotTaken) {
       const currWorkspaceIndex = Number(
         editedData?.id[editedData.id.length - 1]
       );
-
-      console.log("currWorkspaceIndex:", currWorkspaceIndex - 1);
-
-      console.log(workspaceData.workspaces[currWorkspaceIndex - 1]);
 
       // workspaceData.workspaces[currWorkspaceIndex - 1] = editedData;
       setEditedData((prev) => {
@@ -108,43 +85,25 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
         return updatedEditedData;
       });
 
-      console.log("clicked");
-      console.log(workspaceData.workspaces[currWorkspaceIndex - 1]);
       setDisplayWorkspaceEdit(false);
-      console.log(history);
-      // fromWorkspace
-      //   ? navigate(
-      //       `/w/${editedData.shortname}/${editedData.name.replace(/ /g, "-")}`
-      //     )
-      //   : navigate(`/w/${editedData.shortname}/Home`);
+ 
     }
   };
 
-  console.log(editedData);
-  console.log(nameField);
-  console.log(shortNameField);
 
   useEffect(() => {
-    console.log("useEffect display started");
     const mandFieldsAreFilled = nameField !== "" && shortNameField !== "";
     setIsSaveBtnEnabled(mandFieldsAreFilled);
   }, [nameField, shortNameField]);
 
   useEffect(() => {
-    console.log("useEffect for update EditedData started");
-    console.log(workspaceInfo);
     setEditedData(workspaceInfo);
     setNameField(workspaceInfo?.name);
     setShortNameField(workspaceInfo?.shortname);
   }, [workspaceInfo, workspaceData]);
 
   useEffect(() => {
-    console.log("editedData changed");
   }, [editedData]);
-
-  console.log("workspaceHeading processing");
-  console.log(workspaceInfo.iconColors?.color1);
-  console.log(workspaceInfo.iconColors?.color2);
   return (
     <div className="px-[120px] py-8">
       {!displayWorkspaceEdit && (
@@ -270,7 +229,6 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
         </div>
       )}
 
-      {console.log("workspaceHeading ended")}
     </div>
   );
 };

@@ -2,7 +2,6 @@ import TemplateCards from "./TemplateCards";
 import { useOutletContext } from "react-router-dom";
 const ListOfTemplateCards = () => {
   const [templateCategory] = useOutletContext();
-  console.log(templateCategory);
   return (
     <div className="mb-4 mr-4">
       <div className="flex justify-between items-center mb-8">

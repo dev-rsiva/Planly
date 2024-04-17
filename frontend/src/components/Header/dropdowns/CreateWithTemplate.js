@@ -21,7 +21,6 @@ const CreateWithTemplate = ({
   setCreateBoardWithTemplateCard,
   setTemplateSelected,
 }) => {
-  console.log("CreateWithTemplate Started");
 
   const templateDetails = [
     {
@@ -84,7 +83,6 @@ const CreateWithTemplate = ({
   const { templatesData, setTemplatesData, setDropDownSourceClick } =
     useContext(dataContext);
 
-  console.log(templatesData);
   const [templateListshowing, setTemplateListShowing] = useState(true);
   const [editedData, setEditedData] = useState({
     id: "",
@@ -93,17 +91,12 @@ const CreateWithTemplate = ({
     visibility: visibilityDetails.find((each) => each.isShowing === true).name,
   });
 
-  console.log(createDropdownStatus);
-
-  console.log(backFromTemplateBtn?.current);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     function handleOutside(e) {
-      console.log("handleOutside 3");
-      console.log(createTemplate?.current);
-      console.log(!createTemplate?.current?.contains(e.target));
+
 
       if (
         createTemplate?.current &&
@@ -128,9 +121,7 @@ const CreateWithTemplate = ({
     return () => document.removeEventListener("click", handleOutside);
   }, [createDropdownDetails[1].Template.isShowing]);
 
-  useEffect(() => {
-    return () => console.log("createWithTemplate unmounts");
-  }, []);
+
 
   return (
     <div
@@ -142,7 +133,6 @@ const CreateWithTemplate = ({
           ref={backFromTemplateBtn}
           onClick={(event) => {
             event.stopPropagation();
-            console.log("createwithtemplate2");
             setCreateDropdownStatus(true); // Close CreateTemplate
             setCreateDropdownDetails((prev) => {
               let updatedCreateDropdownDetails = [...prev];
@@ -167,7 +157,6 @@ const CreateWithTemplate = ({
         </div>
         <div
           onClick={() => {
-            console.log("createwithtemplate1");
             setCreateDropdownDetails((prev) => {
               let updatedCreateDropdownDetails = [...prev];
               updatedCreateDropdownDetails[1] = {
@@ -216,7 +205,7 @@ const CreateWithTemplate = ({
 
         {templateListshowing && (
           <ul className="flex flex-col px-2">
-            {templatesData.map((templateCategory) => {
+            {templatesData.templates.map((templateCategory) => {
               return templateCategory.templateList.map((template) => {
                 return (
                   <li

@@ -13,14 +13,9 @@ const DisplayCreate = ({
   const { createBoardSourceClick, setCreateBoardSourceClick } =
     useContext(dataContext);
 
-  console.log(createBoardSourceClick);
   useEffect(() => {
     const handleOutside = (e) => {
-      console.log("handleOutside 1");
-      console.log(createRef?.current);
-      console.log(!createRef?.current?.contains(e.target));
-      console.log(!createBtn?.current?.contains(e.target));
-      console.log(backFromTemplateBtn?.current);
+  
       if (
         createRef?.current &&
         !createRef?.current?.contains(e.target) &&
@@ -39,7 +34,6 @@ const DisplayCreate = ({
     <div
       ref={createRef}
       onClick={(event) => {
-        console.log("displaycreate2");
         event.stopPropagation();
       }}
       className="absolute z-10 top-[140%] rounded-md shadow-2xl w-[308px] min-w-[308px] bg-white border border-gray-200 py-3"
@@ -51,15 +45,12 @@ const DisplayCreate = ({
               className="cursor-pointer hover:bg-gray-200 px-4"
               key={index}
               onClick={() => {
-                console.log("displaycreate1");
+                
                 setCreateDropdownStatus((prev) => {
-                  console.log(
-                    "setCreateDropdownStatus is changing from create.js"
-                  );
+                 
                   return false;
                 });
                 if (Object.keys(each)[0] === "Board") {
-                  console.log("object keys");
                   setCreateBoardSourceClick("createBtn");
                 }
                 setCreateDropdownDetails((prev) => {

@@ -19,6 +19,7 @@ const CreateWorkspace = ({
   // currWorkspace,
   // setCurrWorkspace,
 }) => {
+  console.log(data);
   const workspaceUserInfo = {
     id: "",
     name: "",
@@ -46,9 +47,6 @@ const CreateWorkspace = ({
 
   const navigate = useNavigate();
 
-  console.log(workspaceDetails);
-  console.log(workspaceData);
-  // console.log(currWorkspace);
   function handleInputChange(e) {
     setWorkspaceDetails((prev) => {
       const { name, value } = e.target;
@@ -57,9 +55,10 @@ const CreateWorkspace = ({
   }
 
   function updatedWorkspaceData() {
+    console.log(data);
     let firstTwoChar = workspaceDetails.name.slice(0, 3);
 
-    let workspaceData = {
+    let workspaceIntitalData = {
       id: `workspace-${data.workspaces.length + 1}`,
       name: workspaceDetails.name,
       shortname: generateUniqueNumber(firstTwoChar, 5),
@@ -72,13 +71,16 @@ const CreateWorkspace = ({
       },
       boards: [],
     };
-
+    console.log(data);
     setWorkspaceData((prev) => {
       let updatedData = { ...prev };
-      updatedData.workspaces.push(workspaceData);
+      updatedData.workspaces = [
+        ...updatedData.workspaces,
+        { ...workspaceIntitalData },
+      ];
       return updatedData;
     });
-
+    console.log(data);
     setCreateDropdownDetails((prev) => {
       let updatedCreateDropdownDetails = [...prev];
       updatedCreateDropdownDetails[2] = {
@@ -91,9 +93,11 @@ const CreateWorkspace = ({
       return updatedCreateDropdownDetails;
     });
     console.log(data);
-
     navigate(
-      `/w/${workspaceData.shortname}/${workspaceData.name.replace(/ /g, "-")}`
+      `/w/${workspaceIntitalData.shortname}/${workspaceIntitalData.name.replace(
+        / /g,
+        "-"
+      )}`
     );
   }
 
@@ -103,7 +107,6 @@ const CreateWorkspace = ({
         id="popup-overlay"
         className="fixed left-0 top-0 w-full h-full flex justify-center items-center bg-gray-700 bg-opacity-50 "
         onClick={() => {
-          console.log("createworkspace5");
           setCreateDropdownDetails((prev) => {
             let updatedCreateDropdownDetails = [...prev];
             updatedCreateDropdownDetails[2].Workspace.isShowing = false;
@@ -120,7 +123,6 @@ const CreateWorkspace = ({
             icon={faX}
             className="cursor-pointer"
             onClick={() => {
-              console.log("createworkspace4");
               setCreateDropdownDetails((prev) => {
                 let updatedCreateDropdownDetails = [...prev];
                 updatedCreateDropdownDetails[2] = {
@@ -164,7 +166,6 @@ const CreateWorkspace = ({
               <div
                 className="relative flex items-center justify-between w-full px-2 border border-black text-black rounded-sm h-[30px] cursor-pointer"
                 onClick={() => {
-                  console.log("createworkspace3");
                   setShowWorkspaceType(!showWorkspaceType);
                   handleInputChange;
                 }}
@@ -174,15 +175,14 @@ const CreateWorkspace = ({
                 <FontAwesomeIcon icon={faAngleDown} className="" />
                 {showWorkspaceType && (
                   <ul className="absolute bg-white border-slate-300 border-2 shadow-md rounded w-[102%] left-[-1px] top-8 ">
-                    {listOfBusinessType.map((each) => {
+                    {listOfBusinessType.map((each, index) => {
                       return (
                         <li
+                          key={index}
                           name="businessType"
                           value={workspaceDetails.businessType}
                           className="hover:bg-gray-300 px-2 cursor-pointer"
                           onClick={() => {
-                            console.log("createworkspace2");
-
                             setWorkspaceDetails((prev) => {
                               let updatedWorkspaceDetails = { ...prev };
                               updatedWorkspaceDetails.businessType = each;
@@ -219,7 +219,6 @@ const CreateWorkspace = ({
                   : "cursor-not-allowed text-slate-400"
               }`}
               onClick={() => {
-                console.log("createworkspace1");
                 updatedWorkspaceData();
               }}
             >

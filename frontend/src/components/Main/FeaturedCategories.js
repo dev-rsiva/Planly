@@ -17,7 +17,7 @@ const FeatureCategories = () => {
       </div>
 
       <div className="flex mb-4">
-        {templatesData.map((templateCategory) => {
+        {templatesData.templates.map((templateCategory) => {
           return (
             <div
               className="flex flex-col items-center mr-4 mb-4 cursor-pointer"

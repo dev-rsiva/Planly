@@ -18,56 +18,7 @@ const TemplatesDropdown = ({ setNavItemStatus, setCreateDropdownDetails }) => {
 
   return (
     <div className="absolute top-[160%] left-0 rounded-md shadow-2xl w-[308px] min-w-[308px] border border-gray-200 py-3 max-h-[570px] bg-white">
-      {/* <div className="flex justify-between items-center mb-4 px-4">
-        <div
-          ref={backFromTemplateBtn}
-          onClick={(event) => {
-            event.stopPropagation();
-            console.log("createwithtemplate2");
-            setCreateDropdownStatus(true); // Close CreateTemplate
-            setCreateDropdownDetails((prev) => {
-              let updatedCreateDropdownDetails = [...prev];
-              updatedCreateDropdownDetails[1] = {
-                ...updatedCreateDropdownDetails[1],
-                Template: {
-                  ...updatedCreateDropdownDetails[1].Template,
-                  isShowing: false,
-                },
-              };
-              return updatedCreateDropdownDetails;
-            });
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faAngleLeft}
-            className="cursor-pointer text-sm"
-          />
-        </div>
-        <div className="text-sm text-sans text-custom font-semibold">
-          Create with Template
-        </div>
-        <div
-          onClick={() => {
-            console.log("createwithtemplate1");
-            setCreateDropdownDetails((prev) => {
-              let updatedCreateDropdownDetails = [...prev];
-              updatedCreateDropdownDetails[1] = {
-                ...updatedCreateDropdownDetails[1],
-                Template: {
-                  ...updatedCreateDropdownDetails[1].Template,
-                  isShowing: false,
-                },
-              };
-
-              return updatedCreateDropdownDetails;
-            });
-          }}
-        >
-          <FontAwesomeIcon icon={faX} className="cursor-pointer text-xs" />
-        </div>
-      </div> */}
-
-      <div className="mb-4 max-h-[400px] overflow-y-auto">
+            <div className="mb-4 max-h-[400px] overflow-y-auto">
         <div className="flex justify-between items-center">
           <p className="mb-4 pl-4 text-sans text-xs text-custom font-medium">
             Top Templates
@@ -97,7 +48,7 @@ const TemplatesDropdown = ({ setNavItemStatus, setCreateDropdownDetails }) => {
 
         {templateListshowing && (
           <ul className="flex flex-col px-2">
-            {templatesData.map((templateCategory) => {
+            {templatesData.templates.map((templateCategory) => {
               return templateCategory.templateList.map((template) => {
                 return (
                   <li

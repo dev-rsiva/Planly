@@ -20,110 +20,17 @@ const LabelList = ({
   setUserActionOnLabel,
   // newCardData,
 }) => {
-  console.log("LabelList Started");
   const { allCardData, setAllCardData } = useContext(dataContext);
   const { newCardData, setNewCardData } = useContext(cardDataContext);
 
-  console.log(allCardData[cardInfo.id]);
-  console.log(newCardData.labels);
 
   const [selectedLabel, setSelectedLabel] = useState([]);
 
-  // let initialState = { selectedLabel: [], allCardData };
-
-  // const reducer = (state, action) => {
-  //   switch (action.type) {
-  //     case "SELECT_LABEL":
-  //       const { cardId, payload } = action;
-  //       const updatedCardData = {
-  //         ...state.allCardData[cardId],
-  //         labels: [...state.allCardData[cardId].labels, payload],
-  //       };
-
-  //       setAllCardData((prev) => ({
-  //         ...prev,
-  //         [cardId]: updatedCardData,
-  //       }));
-
-  //       return {
-  //         ...state,
-  //         selectedLabel: [...state.selectedLabel, payload],
-  //         allCardData: {
-  //           ...state.allCardData,
-  //           [cardId]: updatedCardData,
-  //         },
-  //       };
-
-  //     default:
-  //       return state;
-  //   }
-  // };
-
-  // const reducer = (state, action) => {
-  //   switch (action.type) {
-  //     case "SELECT_LABEL":
-  //       console.log({
-  //         ...state,
-  //         selectedLabel: [...state.selectedLabel, action.payload],
-  //         allCardData: {
-  //           ...state.allCardData,
-  //           [action.cardId]: {
-  //             ...state.allCardData[action.cardId],
-  //             labels: [
-  //               ...state.allCardData[action.cardId].labels,
-  //               action.payload,
-  //             ],
-  //           },
-  //         },
-  //       });
-  //       return {
-  //         ...state,
-  //         selectedLabel: [...state.selectedLabel, action.payload],
-  //         allCardData: {
-  //           ...state.allCardData,
-  //           [action.cardId]: {
-  //             ...state.allCardData[action.cardId],
-  //             labels: [
-  //               ...state.allCardData[action.cardId].labels,
-  //               action.payload,
-  //             ],
-  //           },
-  //         },
-  //       };
-
-  //     default:
-  //       return state;
-  //   }
-  // };
-
-  // const [state, dispatch] = useReducer(reducer, initialState);
-
-  // console.log(state);
-
+ 
   const suggestedColor =
     newCardData.labels[Math.floor(Math.random() * 10)]?.color;
 
   const labelListRef = useRef();
-
-  // const handleOutsideClick = (e) => {
-  //   console.log("handleOutsideClick in LabelList");
-
-  //   if (
-  //     labelListRef.current &&
-  //     !labelListRef.current.contains(e.target) &&
-  //     !labelsRef.current.contains(e.target)
-  //   ) {
-  //     console.log("inside in");
-  //     setLabelListIsShowing(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   console.log("useEffect");
-  //   document.addEventListener("click", handleOutsideClick);
-
-  //   return () => document.removeEventListener("click", handleOutsideClick);
-  // }, []);
 
   return (
     <div
@@ -173,7 +80,6 @@ const LabelList = ({
         <h1 className="mb-3">Labels</h1>
         <div>
           {newCardData.labels.map((label) => {
-            console.log(label);
             return (
               <div key={label.id} className="flex items-center mb-2">
                 <input
@@ -182,17 +88,14 @@ const LabelList = ({
                   onChange={() => {
                     setNewCardData((prev) => {
                       let updatedLabels;
-                      console.log(label);
 
                       if (label.isChecked) {
-                        console.log(label.isChecked);
                         updatedLabels = prev.labels.map((eachLabel) =>
                           eachLabel.id === label.id
                             ? { ...eachLabel, isChecked: false }
                             : eachLabel
                         );
 
-                        console.log(updatedLabels);
                       } else {
                         let updatedLabel = { ...label, isChecked: true };
                         updatedLabels = prev.labels.map((eachLabel) =>
@@ -213,7 +116,6 @@ const LabelList = ({
                       setSelectedLabel((prev) => {
                         return updatedLabels;
                       });
-                      console.log(updatedLabels);
                       return updatedNewCardData;
                     });
                   }}
@@ -256,7 +158,6 @@ const LabelList = ({
         className="flex justify-center items-center font-semibold bg-gray-200 hover:bg-gray-300 text-gray-600 py-2 rounded-md"
         ref={createLabelBtn}
         onClick={(e) => {
-          console.log("labellist1");
           setUserActionOnLabel("createLabel");
           setCreateLabelIsShowing(true);
           setLabelListIsShowing(false);
@@ -267,7 +168,6 @@ const LabelList = ({
       >
         <button>Create a new label</button>
       </div>
-      {console.log("LabelList ended")}
     </div>
   );
 };

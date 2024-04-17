@@ -6,13 +6,11 @@ const StarredBoard = ({ starredBoard }) => {
 
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
-  console.log(workspaceData);
 
   const workspaceName = workspaceData.workspaces.find((workspace) =>
     workspace.boards.find((board) => board.title === starredBoard.title)
   ).name;
 
-  console.log(workspaceName);
 
   return (
     <div className="relative w-[195px] h-[95px] mb-8 mr-4 rounded-[3px] cursor-pointer overflow-hidden">
@@ -48,8 +46,6 @@ const StarredBoard = ({ starredBoard }) => {
                     boards: updatedBoards,
                   };
 
-                  console.log(updatedBoards);
-                  console.log(eachWorkspace);
 
                   return eachWorkspace;
                 }

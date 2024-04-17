@@ -4,7 +4,6 @@ const Cards = ({ workspaceData, setWorkspaceData, list, cards }) => {
   return (
     <div>
       {cards.map((card, i) => {
-        console.log(card);
         return (
           <Card
             workspaceData={workspaceData}

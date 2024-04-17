@@ -15,7 +15,6 @@ const CreateList = ({ boardInfo }) => {
 
   const addListInputRef = useRef();
 
-  console.log(workspaceData);
 
   function addList() {
     setListTitle("");
@@ -25,7 +24,6 @@ const CreateList = ({ boardInfo }) => {
       cards: [],
     };
 
-    console.log(newList);
 
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
@@ -47,7 +45,6 @@ const CreateList = ({ boardInfo }) => {
 
       updatedWorkspaceData.workspaces[currWorkspaceIndex] = currWorkspace;
 
-      console.log(updatedWorkspaceData);
       return updatedWorkspaceData;
     });
   }

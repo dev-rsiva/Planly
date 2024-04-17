@@ -9,7 +9,6 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 const BoardHeading = ({ boardInfo }) => {
-  console.log(boardInfo);
   return (
     <div className="flex justify-between items-center px-[30px] py-3">
       <div className="flex items-center">

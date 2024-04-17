@@ -5,12 +5,10 @@ import CreateList from "./CreateList";
 const Lists = ({ workspaceData, setWorkspaceData, boardInfo }) => {
   const paramObj = useParams();
 
-  console.log(boardInfo);
   return (
     <div className="flex px-[15px] pt-[10px] h-[80vh] w-[80vw] overflow-x-auto">
       <div className="flex" style={{ width: "fit-content" }}>
         {boardInfo?.lists?.map((list, i) => {
-          console.log(list);
           return (
             <div className={`mr-2 mb-2`} key={list.id}>
               <List

@@ -21,7 +21,6 @@ const DropdownComp = ({
   // currWorkspace,
   // setCurrWorkspace,
 }) => {
-  console.log("DropdownComp start");
 
   const dropdownDetails = [
     {
@@ -97,63 +96,6 @@ const DropdownComp = ({
       }
     });
   }
-  console.log(updatedMoreDetails);
-
-  // const info = navItemStatus.map((each, index) => {
-  //   const updatedDropdownDetails = { ...dropdownDetails[index] };
-
-  //   // Check if isShowing is false
-  //   if (!each.isShowing) {
-  //     console.log(each);
-  //     // Update the data in the "Dropdown details more" location
-
-  //     const newObj = { hidedItem: each.Name };
-  //     updatedMoreDetails[4].More.push(newObj);
-
-  //     // You can add more conditions and update other locations as needed
-  //     // updatedMoreDetails[5] = "Another updated data";
-
-  //     // Return the updated array
-  //     return updatedMoreDetails;
-  //   }
-
-  //   // Return the previous state if isShowing is true
-  //   return dropdownDetails;
-  // });
-
-  // console.log(info);
-  // console.log(info[4].More);
-  // useEffect(() => {
-  //   console.log("Dropdown UseEffect called");
-  //   function updateMoreDropdown() {
-  //     console.log("updateMoreDropdown");
-  //     navItemStatus.map((each) => {
-  //       return setDropdownState((prev) => {
-  //         const updatedMoreDetails = [...prev];
-
-  //         // Check if isShowing is false
-  //         if (!each.isShowing) {
-  //           console.log(each);
-  //           // Update the data in the "Dropdown details more" location
-
-  //           const newObj = { hidedItem: each.Name };
-  //           updatedMoreDetails[4].More.push(newObj);
-
-  //           // You can add more conditions and update other locations as needed
-  //           // updatedMoreDetails[5] = "Another updated data";
-
-  //           // Return the updated array
-  //           return updatedMoreDetails;
-  //         }
-
-  //         // Return the previous state if isShowing is true
-  //         return prev;
-  //       });
-  //     });
-  //   }
-
-  //   updateMoreDropdown();
-  // }, [navItemStatus]);
 
   return (
     <div
@@ -207,7 +149,6 @@ const DropdownComp = ({
       ) : (
         ""
       )}
-      {console.log("DropdownComp end")}
     </div>
   );
 };

@@ -11,7 +11,6 @@ const Labels = ({
   createLabelBtn,
   setLabelsIsShowing,
 }) => {
-  console.log("labels started");
   const [labelListIsShowing, setLabelListIsShowing] = useState(true);
   const [createLabelIsShowing, setCreateLabelIsShowing] = useState(false);
 
@@ -24,7 +23,6 @@ const Labels = ({
   const [userActionOnLabel, setUserActionOnLabel] = useState("");
   const labelsRef = useRef();
 
-  console.log(createLabelIsShowing);
   const handleOutsideClick = (e) => {
     if (
       labelsRef?.current &&
@@ -32,7 +30,6 @@ const Labels = ({
       labelsBtnRef?.current &&
       !labelsBtnRef?.current.contains(e.target)
     ) {
-      console.log("inside if");
       setLabelsIsShowing(false);
       setLabelListIsShowing(true);
       setCreateLabelIsShowing(false);

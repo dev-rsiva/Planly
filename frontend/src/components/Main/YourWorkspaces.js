@@ -7,7 +7,7 @@ const YourWorkspaces = ({ workspaceData }) => {
         YOUR WORKSPACES
       </h1>
 
-      {workspaceData.workspaces?.map((workspace) => {
+      {workspaceData?.workspaces?.map((workspace) => {
         return <YourWorkspace workspace={workspace} />;
       })}
     </div>

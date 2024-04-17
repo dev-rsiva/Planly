@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { data } from "./utills.js";
@@ -6,49 +6,30 @@ import { cardData } from "./cardData.js";
 import allTemplatesData from "./allTemplatesData.js";
 import { createDropdownInfo } from "./createDropdownInfo.js";
 import rootUseEffectLogic from "./rootUseEffectLogic.js";
+import { auth, db } from "./firebase.js";
+import {
+  doc,
+  collection,
+  query,
+  where,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
-export const useAppState = () => {
-  const [workspaceData, setWorkspaceData] = useState(() => {
-    const storedData = localStorage.getItem("workspaceData");
-    try {
-      return storedData ? JSON.parse(storedData) : data;
-    } catch (error) {
-      console.error("Error parsing JSON from localStorage:", error);
-      return data;
-    }
-  });
+export const useAppState = (user, setUser, isLoading, setIsLoading) => {
+  console.log(user);
+  const [workspaceData, setWorkspaceData] = useState(null);
 
-  const [currWorkspace, setCurrWorkspace] = useState("");
+  // const [currWorkspace, setCurrWorkspace] = useState("");
 
-  const [allCardData, setAllCardData] = useState(() => {
-    let storedCardData = localStorage.getItem("allCardData");
+  const [allCardData, setAllCardData] = useState(null);
 
-    try {
-      if (storedCardData) {
-        return JSON.parse(storedCardData);
-      } else {
-        return cardData;
-      }
-    } catch (error) {
-      console.log("error:", error);
-      return cardData;
-    }
-  });
+  const [templatesData, setTemplatesData] = useState(null);
 
-  const [templatesData, setTemplatesData] = useState(() => {
-    let storedTemplatesData = localStorage.getItem("templatesData");
-
-    return storedTemplatesData
-      ? JSON.parse(storedTemplatesData)
-      : allTemplatesData;
-  });
-
-  console.log(templatesData);
   const location = useLocation();
 
   const isTemplatesPage = location.pathname.endsWith("/templates");
-
-  console.log(isTemplatesPage);
 
   const [createDropdownDetails, setCreateDropdownDetails] =
     useState(createDropdownInfo);
@@ -64,17 +45,94 @@ export const useAppState = () => {
   const [dropDownSourceClick, setDropDownSourceClick] = useState("");
   const [createBoardSourceClick, setCreateBoardSourceClick] = useState("");
 
-  console.log(dropDownSourceClick);
-  console.log(createBoardSourceClick);
-  console.log(cardData);
+  useEffect(() => {
+    const fetchData = async () => {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const userDocRef = doc(db, "users", user.uid);
+          const workspacesCollectionRef = collection(userDocRef, "workspaces");
+          const workspaceDocRef = doc(workspacesCollectionRef, "workspacesDoc");
+          const querySnapshot = await getDocs(workspacesCollectionRef);
 
-  rootUseEffectLogic(templatesData, workspaceData, allCardData);
+          if (!querySnapshot?.docs[0]?.data()) {
+            //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the workspaceData, so, return from the function
+            return;
+          }
+
+          //if the document exist, also the user exist means, the page is refreshing now, so update the workspaceData.
+          const workspaceData = querySnapshot.docs[0].data();
+          console.log(workspaceData);
+          setWorkspaceData(workspaceData);
+          // setUser(user);
+          setIsLoading(false);
+        } else {
+          setWorkspaceData(null);
+          setIsLoading(false);
+        }
+
+        if (user) {
+          const userDocRef = doc(db, "users", user.uid);
+          const workspacesCollectionRef = collection(userDocRef, "workspaces");
+          const querySnapshot = await getDocs(workspacesCollectionRef);
+
+          if (!querySnapshot?.docs[0]?.data()) {
+            //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the allCardData, so, return from the function
+            return;
+          }
+
+          //if the document exist, also the user exist means, the page is refreshing now, so update the allCardData.
+          const allCardData = querySnapshot.docs[0].data();
+          console.log(allCardData);
+          setAllCardData(allCardData);
+          // setUser(user);
+          setIsLoading(false);
+        } else {
+          setAllCardData(null);
+          setIsLoading(false);
+        }
+
+        if (user) {
+          const userDocRef = doc(db, "users", user.uid);
+          const workspacesCollectionRef = collection(userDocRef, "templates");
+          const querySnapshot = await getDocs(workspacesCollectionRef);
+
+          if (!querySnapshot?.docs[0]?.data()) {
+            //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the templatesData, so, return from the function
+            return;
+          }
+
+          const templatesData = querySnapshot.docs[0].data();
+          console.log(templatesData);
+          setTemplatesData(templatesData);
+          // setUser(user);
+          setIsLoading(false);
+        } else {
+          setTemplatesData(null);
+          setIsLoading(false);
+        }
+      });
+
+      return () => unsubscribe();
+    };
+
+    fetchData();
+  }, []);
+
+  rootUseEffectLogic(
+    templatesData,
+    setTemplatesData,
+    workspaceData,
+    setWorkspaceData,
+    allCardData,
+    setAllCardData,
+    user?.uid,
+    isLoading,
+    setIsLoading
+  );
 
   return {
     workspaceData,
     setWorkspaceData,
-    currWorkspace,
-    setCurrWorkspace,
     allCardData,
     setAllCardData,
     templatesData,

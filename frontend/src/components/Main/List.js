@@ -19,7 +19,6 @@ const List = ({
   i,
   boardInfo,
 }) => {
-  console.log("List started");
   const [showListActionCard, setShowListActionCard] = useState(false);
 
   const [listActionCardRightPosition, setListActionCardRightPosition] =
@@ -47,9 +46,6 @@ const List = ({
     }
   }, [showListActionCard]);
 
-  console.log(showListActionCard);
-
-  console.log(showAddCardInput);
 
   return (
     <div
@@ -61,11 +57,9 @@ const List = ({
           <h1 className="mr-2 font-sans text-sm font-semibold text-[#172b4d]">
             {list.title}
           </h1>
-          {console.log(list.title)}
           <div
             ref={listActionCardBtn}
             onClick={() => {
-              console.log("list2");
               setShowListActionCard(true);
             }}
             className="cursor-pointer"
@@ -103,7 +97,6 @@ const List = ({
         <div
           className="flex justify-between items-center"
           onClick={() => {
-            console.log("list1");
             setShowCardInput((prev) => {
               return (prev = { ...prev, bottom: true });
             });
@@ -136,7 +129,6 @@ const List = ({
         </div>
       )}
 
-      {console.log(showListActionCard)}
       {showListActionCard && (
         <ListActionCard
           listActionCardRightPosition={listActionCardRightPosition}
@@ -145,7 +137,6 @@ const List = ({
           listActionCardBtn={listActionCardBtn}
         />
       )}
-      {console.log("List ended")}
     </div>
   );
 };

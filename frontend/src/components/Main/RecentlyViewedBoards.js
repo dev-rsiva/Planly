@@ -13,7 +13,6 @@ const RecentlyViewedBoards = ({
 }) => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
-  console.log(workspaceData);
 
   const recentlyViewedBoards = workspaceData?.workspaces
     .map((workspace) => {
@@ -25,7 +24,7 @@ const RecentlyViewedBoards = ({
 
   return (
     <>
-      {recentlyViewedBoards.length > 0 && (
+      {recentlyViewedBoards?.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-start items-center mb-4">
             <FontAwesomeIcon
@@ -41,7 +40,6 @@ const RecentlyViewedBoards = ({
               .sort((a, b) => b.viewedAt - a.viewedAt)
               .slice(0, 4)
               .map((eachBoard, index) => {
-                console.log("fffff");
                 return (
                   <CommonBoard
                     key={index}

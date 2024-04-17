@@ -18,8 +18,6 @@ const CreateBoard = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-  console.log("createBoard start");
-  console.log(workspaceData);
 
   const [currImage, setCurrImage] = useState(
     "https://images.unsplash.com/photo-1703002917693-e51692232c81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA0MTY0ODgyfA&ixlib=rb-4.0.3&q=80&w=400&quot"
@@ -27,7 +25,6 @@ const CreateBoard = ({
 
   const BoardNameRef = useRef();
   const paramObj = useParams();
-  console.log(paramObj);
 
   const [inputSelection, setInputSelection] = useState("");
   const [visibility, setVisibility] = useState(visibilityDetails);
@@ -40,16 +37,15 @@ const CreateBoard = ({
   });
 
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
-    ? workspaceData.workspaces.find(
+    ? workspaceData?.workspaces?.find(
         (workspace) => workspace.shortname === paramObj.workspaceShortName
-      ).name
+      )?.name
     : paramObj.boardId
-    ? workspaceData.workspaces.find((workspace) =>
-        workspace.boards.some((board) => board.id === paramObj.boardId)
-      ).name
-    : workspaceData.workspaces[0].name;
+    ? workspaceData?.workspaces?.find((workspace) =>
+        workspace?.boards?.some((board) => board.id === paramObj.boardId)
+      )?.name
+    : workspaceData?.workspaces[0]?.name;
 
-  console.log(currWorkspaceNameIntialData);
 
   const [currWorkspaceName, setCurrWorkspaceName] = useState(
     currWorkspaceNameIntialData
@@ -78,10 +74,6 @@ const CreateBoard = ({
     // "https://trello.com/assets/aec98becb6d15a5fc95e.svg",
   ];
 
-  console.log(currImage);
-  console.log(editedData);
-  console.log(workspaceData);
-  console.log(setWorkspaceData);
   const createBoard = useRef(null);
   const angleLeft = useRef(null);
 
@@ -96,17 +88,15 @@ const CreateBoard = ({
       // visibility: visibility.find((each) => each.isShowing === true).name,
       lists: [],
     };
-    console.log(updatedBoard);
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
       const currWorkspaceData = updatedWorkspaceData.workspaces.find(
         (workspace) => workspace.name === currWorkspaceName
       );
 
-      console.log(currWorkspaceData);
       const workspaceIndex =
         currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
-      if (!currWorkspaceData.boards) {
+      if (!currWorkspaceData?.boards) {
         currWorkspaceData.boards = [];
       }
       currWorkspaceData?.boards?.push(updatedBoard);
@@ -130,18 +120,9 @@ const CreateBoard = ({
     BoardNameRef.current.focus();
   }, []);
 
-  // useEffect(() => {
-  //   setEditedData((prev) => {
-  //     return (prev = {
-  //       ...prev,
-  //       visibility: visibility.find((each) => each.isShowing === true).name,
-  //     });
-  //   });
-  // }, [visibility]);
 
   useEffect(() => {
     function handleOutside(e) {
-      console.log("handleOutside 2");
       if (createBoard?.current && !createBoard?.current?.contains(e.target)) {
         setCreateDropdownDetails((prev) => {
           let updatedCreateDropdownDetails = [...prev];
@@ -162,8 +143,6 @@ const CreateBoard = ({
     return () => document.removeEventListener("click", (e) => handleOutside(e));
   }, [createDropdownDetails[0].Board.isShowing]);
 
-  console.log(createBoardSourceClick === "workspaceSidebarBtn");
-  console.log(createBoardSourceClick);
   return (
     <div
       ref={createBoard}
@@ -177,7 +156,6 @@ const CreateBoard = ({
         <div
           ref={angleLeft}
           onClick={() => {
-            console.log("createboard6");
             setCreateDropdownStatus(true);
             setCreateDropdownDetails((prev) => {
               let updatedDropdownDetails = [...prev];
@@ -204,7 +182,6 @@ const CreateBoard = ({
         <div
           className="cursor-pointer"
           onClick={() => {
-            console.log("createboard5");
             setCreateDropdownDetails((prev) => {
               let updatedCreateDropdownDetails = [...prev];
               updatedCreateDropdownDetails[0] = {
@@ -246,7 +223,6 @@ const CreateBoard = ({
                 className="relative mb-4 mr-2 w-[55px] h-[38px]"
                 key={i}
                 onClick={() => {
-                  console.log("createboard4");
                   setCurrImage(each);
                   setEditedData((prev) => {
                     return (prev = { ...prev, backgroundImg: each });
@@ -273,20 +249,7 @@ const CreateBoard = ({
             );
           })}
         </ul>
-        {/* <ul className="flex">
-          {bgColors.map((each, i) => {
-            return (
-              <li
-                className="mr-2 h-[30px] object-cover overflow-hidden rounded"
-                key={i}
-              >
-                <button>
-                  <img src={each} alt="bgColors" />
-                </button>
-              </li>
-            );
-          })}
-        </ul> */}
+     
       </div>
 
       <div>
@@ -354,7 +317,6 @@ const CreateBoard = ({
               : "border-gray-400"
           }`}
           onClick={() => {
-            console.log("createboard3");
             setVisibilityDropdown(!visibiltyDropdown);
             setInputSelection("Visibility");
           }}
@@ -377,7 +339,6 @@ const CreateBoard = ({
                       eachCategory.isShowing && "bg-blue-200"
                     }`}
                     onClick={(e) => {
-                      console.log("createboard2");
                       e.stopPropagation();
                       setVisibility((prev) => {
                         let updatedVisibility = prev.map((eachObj, i) => {
@@ -426,7 +387,6 @@ const CreateBoard = ({
         <button
           className="bg-blue-600 hover:bg-blue-700 rounded py-[6px] px-3 mb-3 font-sans text-white text-sm font-semibold"
           onClick={() => {
-            console.log("createboard1");
             addBoard();
           }}
         >
@@ -436,7 +396,6 @@ const CreateBoard = ({
           Start With a Template
         </button>
       </div>
-      {console.log("createBoard end")}
     </div>
   );
 };

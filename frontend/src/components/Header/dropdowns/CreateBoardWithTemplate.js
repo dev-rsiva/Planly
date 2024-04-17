@@ -27,7 +27,6 @@ const CreateBoardWithTemplate = ({
   setNavbarBtn,
 }) => {
   const paramObj = useParams();
-  console.log(paramObj);
 
   const BoardNameRef = useRef();
 
@@ -48,7 +47,6 @@ const CreateBoardWithTemplate = ({
       ).name
     : workspaceData.workspaces[0].name;
 
-  console.log(currWorkspaceNameIntialData);
 
   const [currWorkspaceName, setCurrWorkspaceName] = useState(
     currWorkspaceNameIntialData
@@ -63,24 +61,17 @@ const CreateBoardWithTemplate = ({
     visibility: visibility.find((each) => each.isShowing === true).name,
   });
 
-  console.log(templateSelected);
-  console.log(templateSelected.templateName);
-  console.log(editedData.title);
 
   const [keepCards, setKeepCards] = useState(true);
 
-  const templateCategoryFound = templatesData.find((templateCategory) =>
+  const templateCategoryFound = templatesData.templates.find((templateCategory) =>
     templateCategory.templateList.some((template) => {
-      console.log(template.templateId === templateSelected.templateId);
       return template.templateId === templateSelected.templateId;
     })
   );
 
-  console.log(templatesData);
-  console.log(templateCategoryFound);
 
   function addBoard() {
-    console.log(templateSelected.lists);
     let firstTwoChar = editedData.title.slice(0, 3);
     const updatedBoard = {
       id: generateUniqueNumber(firstTwoChar, 5),
@@ -89,14 +80,11 @@ const CreateBoardWithTemplate = ({
       // visibility: visibility.find((each) => each.isShowing === true).name,
       lists: templateSelected.lists,
     };
-    console.log(updatedBoard);
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
       const currWorkspaceData = updatedWorkspaceData.workspaces.find(
         (workspace) => workspace.name === currWorkspaceName
       );
-
-      console.log(currWorkspaceData);
       const workspaceIndex =
         currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
       if (!currWorkspaceData.boards) {
@@ -131,7 +119,6 @@ const CreateBoardWithTemplate = ({
         !createBoardwithTemplateRef?.current?.contains(e.target) &&
         !useTemplateBtn?.current?.contains(e.target)
       ) {
-        console.log("setting setCreateBoardWithTemplate as false");
         setCreateBoardWithTemplateCard(false);
       }
     };
@@ -141,15 +128,7 @@ const CreateBoardWithTemplate = ({
     return () => document.addEventListener("click", handleOutsideClick);
   }, [createBoardWithTemplateCard]);
 
-  console.log(
-    dropDownSourceClick === "useTemplateBtn"
-      ? "left-[380px]"
-      : dropDownSourceClick === "templatesDropdownBtn"
-      ? "left-[200px]"
-      : dropDownSourceClick === "createBtn"
-      ? ""
-      : ""
-  );
+
   return (
     <div
       ref={createBoardwithTemplateRef}
@@ -195,7 +174,6 @@ const CreateBoardWithTemplate = ({
         <div
           className="cursor-pointer"
           onClick={(e) => {
-            console.log("createboard5");
             e.stopPropagation();
             setCreateBoardWithTemplateCard(false);
             // setCreateDropdownDetails((prev) => {
@@ -211,7 +189,6 @@ const CreateBoardWithTemplate = ({
             //   return updatedCreateDropdownDetails;
             // });
             setNavbarBtn((prev) => {
-              console.log("setting navbar btn");
               let updatedNavBarBtn = { ...prev };
               updatedNavBarBtn.selected = "";
               updatedNavBarBtn.hovered = "";
@@ -346,7 +323,6 @@ const CreateBoardWithTemplate = ({
               : "border-gray-400"
           }`}
           onClick={() => {
-            console.log("createboard3");
             setVisibilityDropdown(!visibiltyDropdown);
             setInputSelection("Visibility");
           }}
@@ -369,7 +345,6 @@ const CreateBoardWithTemplate = ({
                       eachCategory.isShowing && "bg-blue-200"
                     }`}
                     onClick={(e) => {
-                      console.log("createboard2");
                       e.stopPropagation();
                       setVisibility((prev) => {
                         let updatedVisibility = prev.map((eachObj, i) => {
@@ -431,14 +406,12 @@ const CreateBoardWithTemplate = ({
         <button
           className="bg-blue-600 hover:bg-blue-700 rounded py-[6px] px-3 mb-3 font-sans text-white font-semibold text-sm"
           onClick={() => {
-            console.log("createboard1");
             addBoard();
           }}
         >
           Create
         </button>
       </div>
-      {console.log("createBoard end")}
     </div>
   );
 };

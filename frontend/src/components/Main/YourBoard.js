@@ -45,8 +45,6 @@ const YourBoard = ({ board }) => {
                     boards: updatedBoards,
                   };
 
-                  console.log(updatedBoards);
-                  console.log(eachWorkspace);
 
                   return eachWorkspace;
                 }

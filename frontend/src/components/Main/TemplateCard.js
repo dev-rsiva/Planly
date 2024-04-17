@@ -9,16 +9,14 @@ import dataContext from "../../utills/dataContext";
 
 const TemplateCard = ({ template }) => {
   const navigate = useNavigate();
-  console.log(template.templateId);
 
   const { templatesData, setTemplatesData } = useContext(dataContext);
-  const templateCategory = templatesData.find((templateCategory) =>
+  const templateCategory = templatesData.templates.find((templateCategory) =>
     templateCategory.templateList.some(
       (eachTemplate) => eachTemplate.templateId === template.templateId
     )
   );
 
-  console.log(templateCategory);
 
   return (
     <div
