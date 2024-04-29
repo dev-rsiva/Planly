@@ -1,6 +1,6 @@
 import Overview from "../pages/Overview.js";
 import Home from "../components/Main/Home.js";
-import Template from "../components/main/Template.js";
+import Template from "../components/Main/Template.js";
 import About from "../../About.js";
 import Contact from "../../Contact.js";
 import TemplateGallery from "../components/Main/TemplateGallery.js";
