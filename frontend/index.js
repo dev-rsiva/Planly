@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { appRouter } from "./utills/routerConfiguration";
+import { appRouter } from "./src/utills/routerConfiguration";
 import { RouterProvider } from "react-router-dom";
 
 const rootEl = document.getElementById("root");
