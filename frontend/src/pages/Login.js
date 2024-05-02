@@ -21,7 +21,7 @@ import { db } from "../utills/firebase";
 const Login = ({
   setIsUserAuthenticated,
   user,
-  user, setUser,
+  setUser,
   workspaceData,
   setWorkspaceData,
   setAllCardData,
