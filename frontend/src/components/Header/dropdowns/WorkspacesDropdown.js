@@ -11,7 +11,6 @@ const WorkspacesDropdown = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-
   const { currWorkspace, setCurrWorkspace } = useContext(dataContext);
 
   const paramObj = useParams();
@@ -25,7 +24,6 @@ const WorkspacesDropdown = ({
         workspace.boards.some((board) => board.id === paramObj.boardId)
       )
     : "";
-
 
   const navigate = useNavigate();
 
@@ -86,7 +84,7 @@ const WorkspacesDropdown = ({
           Your Workspaces
         </p>
         <ul>
-          {workspaceData.workspaces.map((workspace) => {
+          {workspaceData?.workspaces?.map((workspace) => {
             return (
               <div>
                 <div

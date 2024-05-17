@@ -44,7 +44,7 @@ const App = () => {
   console.log(user);
 
   // if (!isUserAuthenticated) return <Shimmer />;
-  if (isLoading) return <Shimmer />;
+  // if (isLoading) return <Shimmer />;
   // if (!workspaceData || !allCardData || !templatesData) return <Shimmer />;
   if (!isUserAuthenticated)
     return (
