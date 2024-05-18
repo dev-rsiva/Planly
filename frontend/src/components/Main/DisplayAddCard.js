@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useContext } from "react";
-
+import { sortedLabels } from "../../utills/labelColors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
@@ -28,6 +28,7 @@ const DisplayAddCard = ({
       description: "",
       coverImg: "",
       Activities: [],
+      labels: sortedLabels,
     };
 
     setWorkspaceData((prev) => {

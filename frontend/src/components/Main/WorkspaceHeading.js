@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import dataContext from "../../utills/dataContext.js";
 
 const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
-
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
   const [displayWorkspaceEdit, setDisplayWorkspaceEdit] = useState(false);
   const [isSaveBtnEnabled, setIsSaveBtnEnabled] = useState(false);
@@ -20,7 +19,6 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   const [isShortNameTaken, setIsShortNameTaken] = useState(false);
 
   const navigate = useNavigate();
-
 
   const handleChange = (value, field) => {
     if (field === "name" || "website" || "description") {
@@ -42,20 +40,17 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
     }
   };
 
-  workspaceData.workspaces.map((workspace) => {
-  });
+  workspaceData?.workspaces.map((workspace) => {});
   const handleSaveClick = (e) => {
     let shortName = shortNameField.split(" ").join("");
 
-
-    let shortNameIsNotTaken = workspaceData.workspaces
-      .filter((workspace, index) => {
-        return workspaceInfo?.id[workspaceInfo?.id.length - 1] - 1 !== index;
+    let shortNameIsNotTaken = workspaceData?.workspaces
+      ?.filter((workspace, index) => {
+        return workspaceInfo?.id[workspaceInfo?.id?.length - 1] - 1 !== index;
       })
       .every((workspace) => {
-
         return (
-          workspace.shortname?.toLowerCase().slice(0, 3) !==
+          workspace?.shortname?.toLowerCase().slice(0, 3) !==
           shortName?.toLowerCase().slice(0, 3)
         );
       });
@@ -86,10 +81,8 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
       });
 
       setDisplayWorkspaceEdit(false);
- 
     }
   };
-
 
   useEffect(() => {
     const mandFieldsAreFilled = nameField !== "" && shortNameField !== "";
@@ -102,8 +95,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
     setShortNameField(workspaceInfo?.shortname);
   }, [workspaceInfo, workspaceData]);
 
-  useEffect(() => {
-  }, [editedData]);
+  useEffect(() => {}, [editedData]);
   return (
     <div className="px-[120px] py-8">
       {!displayWorkspaceEdit && (
@@ -228,7 +220,6 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

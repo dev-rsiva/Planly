@@ -27,6 +27,9 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
 
   const [templatesData, setTemplatesData] = useState(null);
 
+  console.log(workspaceData);
+  console.log(allCardData);
+  console.log(templatesData);
   const location = useLocation();
 
   const isTemplatesPage = location.pathname.endsWith("/templates");
@@ -48,13 +51,16 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
   useEffect(() => {
     const fetchData = async () => {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        console.log("oAuth changed");
         if (user) {
+          console.log("user is available");
           const userDocRef = doc(db, "users", user.uid);
           const workspacesCollectionRef = collection(userDocRef, "workspaces");
-          const workspaceDocRef = doc(workspacesCollectionRef, "workspacesDoc");
+          // const workspaceDocRef = doc(workspacesCollectionRef, "workspacesDoc");
           const querySnapshot = await getDocs(workspacesCollectionRef);
-
+          console.log(querySnapshot);
           if (!querySnapshot?.docs[0]?.data()) {
+            console.log("document not exist");
             //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the workspaceData, so, return from the function
             return;
           }
@@ -72,8 +78,15 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
 
         if (user) {
           const userDocRef = doc(db, "users", user.uid);
-          const workspacesCollectionRef = collection(userDocRef, "workspaces");
-          const querySnapshot = await getDocs(workspacesCollectionRef);
+          const allCardDataCollectionRef = collection(
+            userDocRef,
+            "allCardData"
+          );
+          // const workspaceDocRef = doc(
+          //   allCardDataCollectionRef,
+          //   "allCardDataDoc"
+          // );
+          const querySnapshot = await getDocs(allCardDataCollectionRef);
 
           if (!querySnapshot?.docs[0]?.data()) {
             //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the allCardData, so, return from the function
@@ -116,7 +129,7 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   rootUseEffectLogic(
     templatesData,
@@ -130,6 +143,7 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
     setIsLoading
   );
 
+  console.log(allCardData);
   return {
     workspaceData,
     setWorkspaceData,

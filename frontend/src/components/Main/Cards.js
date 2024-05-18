@@ -6,6 +6,7 @@ const Cards = ({ workspaceData, setWorkspaceData, list, cards }) => {
       {cards.map((card, i) => {
         return (
           <Card
+            key={card.id}
             workspaceData={workspaceData}
             setWorkspaceData={setWorkspaceData}
             list={list}

@@ -21,7 +21,6 @@ import { faTrello } from "@fortawesome/free-brands-svg-icons";
 import dataContext from "../../utills/dataContext.js";
 
 const Sidebar = ({ workspaceInfo }) => {
-
   const {
     createDropdownDetails,
     setCreateDropdownDetails,
@@ -80,7 +79,7 @@ const Sidebar = ({ workspaceInfo }) => {
           >
             <div className="bg-black opacity-30 absolute w-full h-full rounded" />
             <p className="z-50 rounded text-sm text-white font-bold font-sans">
-              {workspaceInfo?.name[0]}
+              {workspaceInfo?.name ? workspaceInfo?.name[0] : ""}
             </p>
           </div>
           <div className="flex flex-col">
@@ -104,6 +103,7 @@ const Sidebar = ({ workspaceInfo }) => {
           {workspaceSideBarBtns.slice(0, 3).map((eachBtn, index) => {
             return (
               <div
+                key={index}
                 className={`py-1 pl-5 mb-[4px] flex justify-start items-center hover:bg-gray-200 
                 ${
                   eachBtn.btnName ===
@@ -137,6 +137,7 @@ const Sidebar = ({ workspaceInfo }) => {
             {workspaceSideBarBtns.slice(3).map((eachBtn, index) => {
               return (
                 <div
+                  key={index}
                   className="py-1 pl-5 mb-[4px] flex justify-start items-center hover:bg-gray-200 cursor-not-allowed"
                   onClick={() => navigate(`/w/${workspace.shortname}/Home`)}
                 >
@@ -193,9 +194,10 @@ const Sidebar = ({ workspaceInfo }) => {
                 }
                 return 1;
               })
-              .map((eachBoard) => {
+              .map((eachBoard, index) => {
                 return (
                   <div
+                    key={index}
                     className="flex items-center py-2 pl-3 rounded hover:bg-gray-300 cursor-pointer"
                     onClick={() => {
                       navigate(
@@ -224,18 +226,13 @@ const Sidebar = ({ workspaceInfo }) => {
                           className=" pr-3"
                         />
                       )}
-                      
                     </div>
                   </div>
                 );
               })}
           </div>
-          
         </div>
-       
       </div>
-
-     
     </div>
   );
 };

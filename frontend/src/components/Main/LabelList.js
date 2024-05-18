@@ -22,16 +22,16 @@ const LabelList = ({
 }) => {
   const { allCardData, setAllCardData } = useContext(dataContext);
   const { newCardData, setNewCardData } = useContext(cardDataContext);
-
-
+  console.log(newCardData);
   const [selectedLabel, setSelectedLabel] = useState([]);
 
- 
   const suggestedColor =
-    newCardData.labels[Math.floor(Math.random() * 10)]?.color;
+    newCardData?.labels[Math.floor(Math.random() * 10)]?.color;
 
   const labelListRef = useRef();
 
+  console.log(selectedLabel);
+  console.log(suggestedColor);
   return (
     <div
       className={`absolute ${
@@ -79,7 +79,7 @@ const LabelList = ({
       <div className="mb-4">
         <h1 className="mb-3">Labels</h1>
         <div>
-          {newCardData.labels.map((label) => {
+          {newCardData?.labels.map((label) => {
             return (
               <div key={label.id} className="flex items-center mb-2">
                 <input
@@ -95,7 +95,6 @@ const LabelList = ({
                             ? { ...eachLabel, isChecked: false }
                             : eachLabel
                         );
-
                       } else {
                         let updatedLabel = { ...label, isChecked: true };
                         updatedLabels = prev.labels.map((eachLabel) =>
@@ -128,7 +127,6 @@ const LabelList = ({
                 </div>
                 <div
                   onClick={(e) => {
-                    
                     setEditLabelInfo((prev) => {
                       return {
                         ...prev,

@@ -7,8 +7,8 @@ const YourWorkspaces = ({ workspaceData }) => {
         YOUR WORKSPACES
       </h1>
 
-      {workspaceData?.workspaces?.map((workspace) => {
-        return <YourWorkspace workspace={workspace} />;
+      {workspaceData?.workspaces?.map((workspace, index) => {
+        return <YourWorkspace key={index} workspace={workspace} />;
       })}
     </div>
   );

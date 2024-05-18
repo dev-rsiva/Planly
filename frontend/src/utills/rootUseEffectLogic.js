@@ -35,8 +35,11 @@ const rootUseEffectLogic = (
         );
         if (!querySnapshot.empty) {
           // Document exists, update it with new data
-          await setDoc(workspaceDocRef, workspaceData);
-          console.log("Workspaces data updated in Firestore");
+          if (workspaceData.workspaces) {
+            console.log(workspaceData);
+            await setDoc(workspaceDocRef, workspaceData);
+            console.log("Workspaces data updated in Firestore");
+          }
         }
       } catch (error) {
         console.error("Error updating Workspaces data in Firestore:", error);

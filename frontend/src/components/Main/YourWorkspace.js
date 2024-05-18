@@ -22,9 +22,10 @@ const YourWorkspace = ({ workspace }) => {
           </h1>
         </div>
         <div className="flex">
-          {workspaceBtns.map((eachBtn) => {
+          {workspaceBtns.map((eachBtn, index) => {
             return (
               <a
+                key={index}
                 className={`px-3 ml-[8px] mb-[8px] flex justify-center items-center bg-[#091e420f] rounded-[3px]  ${
                   eachBtn.buttonName === "Highlights"
                     ? "cursor-not-allowed"

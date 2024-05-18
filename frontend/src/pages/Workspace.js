@@ -7,19 +7,18 @@ import { data } from "../utills/utills.js";
 // import { useOutletContext } from "react-router-dom";
 import dataContext from "../utills/dataContext.js";
 const Workspace = () => {
-
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
   const paramObj = useParams();
   const [workspaceInfo, setWorkspaceInfo] = useState(() =>
-    workspaceData.workspaces.find(
-      (workspace) => workspace.shortname === paramObj.workspaceShortName
+    workspaceData?.workspaces?.find(
+      (workspace) => workspace?.shortname === paramObj?.workspaceShortName
     )
   );
 
   useEffect(() => {
-    const currWorkspace = workspaceData.workspaces.find(
-      (workspace) => workspace.shortname === paramObj.workspaceShortName
+    const currWorkspace = workspaceData?.workspaces?.find(
+      (workspace) => workspace?.shortname === paramObj?.workspaceShortName
     );
 
     setWorkspaceInfo((prev) => {

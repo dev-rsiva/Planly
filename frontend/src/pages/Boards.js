@@ -7,19 +7,20 @@ import Lists from "../components/Main/Lists.js";
 import dataContext from "../utills/dataContext.js";
 
 const Boards = () => {
-
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  console.log(workspaceData);
   const paramObj = useParams();
 
   const [workspaceInfo, setWorkspaceInfo] = useState(() => {
-    let workspaceDataFromCardsUrl = workspaceData.workspaces.find((workspace) =>
-      workspace?.boards?.some((board) =>
-        board?.lists?.some((list) =>
-          list?.cards?.some((card) => card.id === paramObj.cardId)
+    let workspaceDataFromCardsUrl = workspaceData?.workspaces.find(
+      (workspace) =>
+        workspace?.boards?.some((board) =>
+          board?.lists?.some((list) =>
+            list?.cards?.some((card) => card.id === paramObj.cardId)
+          )
         )
-      )
     );
-   let workspaceDataFromBoardsUrl = workspaceData.workspaces.find(
+    let workspaceDataFromBoardsUrl = workspaceData?.workspaces.find(
       (workspace) =>
         workspace?.boards?.some((board) => board.id === paramObj.boardId)
     );
@@ -30,14 +31,13 @@ const Boards = () => {
   });
 
   const [boardInfo, setBoardInfo] = useState(() => {
-    let boardInfoFromBoardsUrl = workspaceData.workspaces
+    let boardInfoFromBoardsUrl = workspaceData?.workspaces
       .find((workspace) =>
         workspace.boards?.some((board) => board.id === paramObj.boardId)
       )
       ?.boards?.find((board) => board.id === paramObj.boardId);
 
-
-    let boardInfoFromCardssUrl = workspaceData.workspaces
+    let boardInfoFromCardssUrl = workspaceData?.workspaces
       .find((workspace) =>
         workspace?.boards?.some((board) =>
           board?.lists?.some((list) =>
@@ -54,25 +54,24 @@ const Boards = () => {
     return paramObj.boardId ? boardInfoFromBoardsUrl : boardInfoFromCardssUrl;
   });
 
-  const boardOpenedNow = Object.keys(boardInfo).reduce((acc, curr) => {
-    if (
-      curr === "id" ||
-      curr === "title" ||
-      curr === "starred" ||
-      curr === "backgroundImg"
-    ) {
-      acc[curr] = boardInfo[curr];
-    }
-    return acc;
-  }, {});
-
-
+  console.log(boardInfo);
+  // const boardOpenedNow = Object.keys(boardInfo).reduce((acc, curr) => {
+  //   if (
+  //     curr === "id" ||
+  //     curr === "title" ||
+  //     curr === "starred" ||
+  //     curr === "backgroundImg"
+  //   ) {
+  //     acc[curr] = boardInfo[curr];
+  //   }
+  //   return acc;
+  // }, {});
 
   useEffect(() => {
     setWorkspaceData((prev) => {
       return {
         ...prev,
-        workspaces: prev.workspaces.map((eachWorkspace) => {
+        workspaces: prev?.workspaces?.map((eachWorkspace) => {
           const boardIndex = eachWorkspace.boards.findIndex(
             (eachBoard) => eachBoard.id === boardInfo.id
           );
@@ -90,7 +89,6 @@ const Boards = () => {
               boards: updatedBoards,
             };
 
-
             return eachWorkspace;
           }
 
@@ -102,7 +100,7 @@ const Boards = () => {
   }, []);
 
   useEffect(() => {
-    const currWorkspace = workspaceData.workspaces.find((workspace) =>
+    const currWorkspace = workspaceData?.workspaces?.find((workspace) =>
       workspace?.boards?.some((board) => board.id === paramObj.boardId)
     );
 
@@ -110,19 +108,16 @@ const Boards = () => {
       return { ...prev, ...currWorkspace };
     });
 
-    const currBoard = workspaceData.workspaces
-      .find((workspace) =>
+    const currBoard = workspaceData?.workspaces
+      ?.find((workspace) =>
         workspace.boards?.some((board) => board.id === paramObj.boardId)
       )
       ?.boards.find((board) => board.id === paramObj.boardId);
-
 
     setBoardInfo((prev) => {
       return { ...prev, ...currBoard };
     });
   }, [workspaceData, paramObj]);
-
-
 
   return (
     <div

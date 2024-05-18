@@ -40,6 +40,7 @@ const App = () => {
     setSidebarSelection,
   } = useAppState(user, setUser, isLoading, setIsLoading);
 
+  console.log(allCardData);
   console.log(workspaceData);
   console.log(user);
 

@@ -89,7 +89,6 @@ const OverviewSidebar = (
     return workspaceDropdownBtns;
   });
 
-
   const heading = React.createElement(
     "h1",
     { id: "heading" },
@@ -99,10 +98,11 @@ const OverviewSidebar = (
   return (
     <div className="w-full">
       <div>
-        {sideBardBtns.map((eachButton) => {
+        {sideBardBtns.map((eachButton, index) => {
           return (
             <>
               <div
+                key={index}
                 className={`w-full py-2 pl-4 mb-[8px] flex justify-start items-center rounded-lg ${
                   hoveredOption === "Home"
                     ? "cursor-not-allowed"
@@ -140,9 +140,10 @@ const OverviewSidebar = (
               </div>
               {sidebarSelection === eachButton.buttonName && (
                 <div className="font-sans text-sm font-normal">
-                  {eachButton?.ListOfTemplates?.map((eachTemplate) => {
+                  {eachButton?.ListOfTemplates?.map((eachTemplate, index) => {
                     return (
                       <p
+                        key={index}
                         className={`py-2 pl-10 w-full rounded-lg hover:bg-gray-200 cursor-pointer mb-1 ${
                           templateCategorySelected === eachTemplate
                             ? "bg-[#e9f2ff] text-[#0c66e4]"
@@ -175,9 +176,9 @@ const OverviewSidebar = (
           Workspaces
         </h2>
 
-        {workspaceData?.workspaces?.map((workspace) => {
+        {workspaceData?.workspaces?.map((workspace, index) => {
           return (
-            <div>
+            <div key={index}>
               <div
                 className="flex justify-between items-center hover:bg-gray-200 rounded-lg my-[6px] py-[5px] cursor-pointer"
                 onClick={() =>
@@ -221,10 +222,11 @@ const OverviewSidebar = (
                 )}
               </div>
 
-              {workspaceBtns.map((eachBtn) => {
+              {workspaceBtns.map((eachBtn, index) => {
                 return (
                   workspaceSideBarDropdownIsShowing[workspace.name] && (
                     <a
+                      key={index}
                       className={`px-3 py-1 pl-[25%] mb-[8px] flex justify-start items-center rounded-lg ${
                         eachBtn.buttonName === "Highlights"
                           ? "cursor-not-allowed"

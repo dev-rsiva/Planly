@@ -50,47 +50,17 @@ const OpenCard = () => {
   const createLabelBtn = useRef();
 
   const { allCardData, setAllCardData } = useContext(dataContext);
+  console.log(allCardData);
+  console.log(workspaceData);
 
+  const [cardDetails, setCardDetails] = useState(null);
 
-  const workspaceInfo = workspaceData.workspaces.find((workspace) =>
-    workspace.boards.some((board) =>
-      board.lists.some((list) =>
-        list.cards.some((card) => {
-          return card.id === paramObj.cardId;
-        })
-      )
-    )
-  );
+  const [newCardData, setNewCardData] = useState(null);
+  console.log(newCardData);
+  const [listDetails, setListDetails] = useState(null);
 
-  const boardInfo = workspaceInfo.boards.find((board) =>
-    board.lists.some((list) =>
-      list.cards.some((card) => card.id === paramObj.cardId)
-    )
-  );
-
-
-
-  const listInfo = boardInfo.lists.find((list) =>
-    list.cards.some((card) => card.id === paramObj.cardId)
-  );
-
-
-  const cardInfo = listInfo.cards.find((card) => card.id == paramObj.cardId);
-
-
-  const [cardDetails, setCardDetails] = useState(cardInfo);
-
-
-  const [newCardData, setNewCardData] = useState(allCardData[cardInfo.id]);
-
-  const [listDetails, setListDetails] = useState(listInfo);
-
-  const [cardDesc, setCardDesc] = useState(
-    allCardData[cardInfo.id]?.description?.trim()
-  );
+  const [cardDesc, setCardDesc] = useState(null);
   const [comment, setComment] = useState("");
-
-
 
   const [cardDescDetails, setCardDescDetails] = useState({
     showInput: false,
@@ -113,22 +83,17 @@ const OpenCard = () => {
   const [labelsIsShowing, setLabelsIsShowing] = useState(false);
   const [newLabelListPosition, setNewLabelListPosition] = useState(false);
 
-
-
   const labelsForThisCard = newCardData?.labels?.filter(
     (eachLabel) =>
       eachLabel.isChecked !== undefined && eachLabel.isChecked === true
   );
 
-
   const descriptionDisplay = useMemo(() => {
-
     if (cardDescDetails?.showDesc && !cardDescDetails?.showInput) {
       return (
         <div
           className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[480px] font-semibold text-[14px] hover:bg-gray-400 cursor-pointer"
           onClick={() => {
-        
             setCardDescDetails((prev) => {
               return (prev = { ...prev, showInput: true });
             });
@@ -166,11 +131,10 @@ const OpenCard = () => {
                   {formatTimeDifference(eachUser?.commentTime)}
                 </p>
               </div>
-       
+
               {editCommentFor.id !== eachUser?.id && (
                 <div>
                   <div className="px-2 py-2 bg-white rounded-lg font-semibold text-[14px] w-full cursor-pointer">
-            
                     <p>{eachUser?.comment}</p>
                   </div>
 
@@ -178,7 +142,6 @@ const OpenCard = () => {
                     <button
                       className="text-sm mr-2 underline"
                       onClick={() => {
-                      
                         setEditCommentFor((prev) => {
                           return {
                             ...prev,
@@ -219,7 +182,6 @@ const OpenCard = () => {
                       }`}
                       disabled={editCommentFor.comment.trim() === ""}
                       onClick={(e) => {
-                    
                         let updatedActivitiesList = newCardData?.Activities.map(
                           (eachActivity) => {
                             if (eachActivity?.id === editCommentFor.id) {
@@ -233,7 +195,6 @@ const OpenCard = () => {
                             return eachActivity;
                           }
                         );
-            
 
                         setAllCardData((prev) => {
                           return {
@@ -263,8 +224,6 @@ const OpenCard = () => {
                     <button
                       className="bg-gray-400 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-700 mr-4"
                       onClick={() => {
-                   
-
                         setEditCommentFor((prev) => {
                           return { ...prev, id: "" };
                         });
@@ -283,14 +242,11 @@ const OpenCard = () => {
   );
 
   function updateCardDescription() {
-
-
     setAllCardData((prev) => {
       setNewCardData((prev) => {
         return { ...prev, description: cardDesc };
       });
 
-   
       return {
         ...prev,
         [cardDetails.id]: {
@@ -301,8 +257,6 @@ const OpenCard = () => {
     });
 
     setCardDescDetails((prev) => {
-
-
       return {
         ...prev,
         showInput: false,
@@ -345,13 +299,45 @@ const OpenCard = () => {
     }
   }, [editCommentFor.comment]);
 
-
-
   useEffect(() => {
     if (cardDescDetails?.showInput) {
       descriptionRef.current.focus();
     }
   }, [cardDescDetails?.showInput]);
+
+  useEffect(() => {
+    const workspaceInfo = workspaceData?.workspaces?.find((workspace) =>
+      workspace?.boards?.some((board) =>
+        board?.lists?.some((list) =>
+          list?.cards?.some((card) => {
+            return card.id === paramObj.cardId;
+          })
+        )
+      )
+    );
+
+    const boardInfo = workspaceInfo?.boards?.find((board) =>
+      board?.lists?.some((list) =>
+        list?.cards?.some((card) => card.id === paramObj.cardId)
+      )
+    );
+
+    const listInfo = boardInfo?.lists?.find((list) =>
+      list?.cards?.some((card) => card.id === paramObj.cardId)
+    );
+
+    const cardInfo = listInfo?.cards?.find(
+      (card) => card.id == paramObj.cardId
+    );
+
+    setCardDetails(cardInfo);
+    setListDetails(listInfo);
+
+    if (allCardData) {
+      setNewCardData(allCardData[cardInfo?.id]);
+      setCardDesc(allCardData[cardInfo.id]?.description?.trim());
+    }
+  }, [workspaceData, allCardData]);
 
   return (
     <>
@@ -541,7 +527,6 @@ const OpenCard = () => {
                     <div
                       className="px-2 py-1 mb-4 bg-white rounded-lg font-sans text-sm font-semibold text-[#172b4d] w-full cursor-pointer"
                       onClick={() => {
-
                         setCommentDetails((prev) => {
                           return { ...prev, showInput: true };
                         });
@@ -657,10 +642,7 @@ const OpenCard = () => {
                     Labels
                   </p>
                 </div>
-
-       
               </div>
-
 
               <div className="relative pb-1">
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
@@ -723,13 +705,12 @@ const OpenCard = () => {
           <Labels
             setLabelsIsShowing={setLabelsIsShowing}
             labelsBtnRef={labelsBtnRef}
-            cardInfo={cardInfo}
+            cardInfo={cardDetails}
             newLabelListPosition={newLabelListPosition}
             chooseLabelRef={chooseLabelRef}
             createLabelBtn={createLabelBtn}
           />
         )}
-
       </cardDataContext.Provider>
     </>
   );
