@@ -35,14 +35,14 @@ const CreateBoardCopy = ({
   });
 
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
-    ? workspaceData.workspaces.find(
-        (workspace) => workspace.shortname === paramObj.workspaceShortName
+    ? workspaceData?.workspaces.find(
+        (workspace) => workspace?.shortname === paramObj.workspaceShortName
       ).name
     : paramObj.boardId
-    ? workspaceData.workspaces.find((workspace) =>
-        workspace.boards.some((board) => board.id === paramObj.boardId)
+    ? workspaceData?.workspaces.find((workspace) =>
+        workspace?.boards.some((board) => board.id === paramObj.boardId)
       ).name
-    : workspaceData.workspaces[0].name;
+    : workspaceData?.workspaces[0].name;
 
 
 
@@ -87,7 +87,7 @@ const CreateBoardCopy = ({
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
       const currWorkspaceData = updatedWorkspaceData.workspaces.find(
-        (workspace) => workspace.name === currWorkspaceName
+        (workspace) => workspace?.name === currWorkspaceName
       );
       const workspaceIndex =
         currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
@@ -258,10 +258,10 @@ const CreateBoardCopy = ({
           {workspaceData?.workspaces.map((workspace) => {
             return (
               <option
-                value={workspace.name}
-                selected={workspace.name === currWorkspaceName}
+                value={workspace?.name}
+                selected={workspace?.name === currWorkspaceName}
               >
-                {workspace.name}
+                {workspace?.name}
               </option>
             );
           })}

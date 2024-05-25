@@ -26,7 +26,7 @@ const Create = ({
   // currWorkspace,
   // setCurrWorkspace,
 }) => {
-
+  console.log(workspaceData);
 
   const {
     createBoardWithTemplateCard,
@@ -36,8 +36,6 @@ const Create = ({
   } = useContext(dataContext);
 
   const { templateSelected, setTemplateSelected } = useContext(dataContext);
-
-
 
   return (
     <div

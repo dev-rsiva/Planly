@@ -18,13 +18,13 @@ const ListOfBoard = () => {
 
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
   const [workspaceInfo] = useOutletContext();
+  console.log(workspaceInfo);
+  const permittedBoards = [];
 
   const sortByRef = useRef();
   const searchRef = useRef();
 
-
   const navigate = useNavigate();
-
 
   function sortBoards(sortOption) {
     if (sortOption === "Most recently active") {
@@ -199,8 +199,8 @@ const ListOfBoard = () => {
               key={index}
               board={eachBoard}
               typeOfBoard="yourBoard"
+              workspaceInfo={workspaceInfo}
             />
-            
           );
         })}
       </div>

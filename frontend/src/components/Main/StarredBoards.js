@@ -22,7 +22,7 @@ const StarredBoards = ({ renderFrom }) => {
           })
           .flat()
       : renderFrom === "workspaceStarredBoards"
-      ? workspaceData.workspaces
+      ? workspaceData?.workspaces
           .find(
             (workspace) => workspace.shortname === paramObj.workspaceShortName
           )

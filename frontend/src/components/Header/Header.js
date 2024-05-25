@@ -15,6 +15,10 @@ import NotificationContainer from "./NotificationContainer.js";
 import { useHandleResize } from "./useHandleResize.js";
 import { auth } from "../../utills/firebase.js";
 import { signOut } from "firebase/auth";
+import { doc, collection, setDoc, getDocs, query } from "firebase/firestore";
+import { db } from "../../utills/firebase";
+import { randomGradientColor } from "../../utills/randomGradientColor";
+import allTemplatesData from "../../utills/allTemplatesData";
 
 const Header = ({
   isUserAuthenticated,
@@ -31,6 +35,7 @@ const Header = ({
     createDropdownDetails,
     setCreateDropdownDetails,
   } = useContext(dataContext);
+  console.log(workspaceData);
 
   const { sidebarSelection, setSidebarSelection } = useContext(
     sideBarSelectionContext
@@ -67,6 +72,7 @@ const Header = ({
       .then(() => {
         // Sign-out successful.
         setIsUserAuthenticated(false);
+        setWorkspaceData(null);
         setIsLoading(false);
         navigate("/");
       })
@@ -136,6 +142,7 @@ const Header = ({
     <div className="flex justify-between items-center bg-white max-h-[60px] border border-b-gray-200 px-4 py-[6px] w-full fixed top-0 z-[2000]">
       <div className="flex items-center">
         <LogoContainer setSidebarSelection={setSidebarSelection} />
+        {/* <button onClick={() => handleDummyClick()}>Click me</button> */}
         <NavItemsContainer
           navItemStatus={navItemStatus}
           setNavItemStatus={setNavItemStatus}

@@ -17,8 +17,16 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
-export const useAppState = (user, setUser, isLoading, setIsLoading) => {
+export const useAppState = (
+  user,
+  setUser,
+  isSignInForm,
+  setIsSignInForm,
+  isLoading,
+  setIsLoading
+) => {
   console.log(user);
+  const [globalWorkspaceData, setGlobalWorkspaceData] = useState(null);
   const [workspaceData, setWorkspaceData] = useState(null);
 
   // const [currWorkspace, setCurrWorkspace] = useState("");
@@ -27,8 +35,7 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
 
   const [templatesData, setTemplatesData] = useState(null);
 
-  console.log(workspaceData);
-  console.log(allCardData);
+  console.log(globalWorkspaceData);
   console.log(templatesData);
   const location = useLocation();
 
@@ -54,10 +61,8 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
         console.log("oAuth changed");
         if (user) {
           console.log("user is available");
-          const userDocRef = doc(db, "users", user.uid);
-          const workspacesCollectionRef = collection(userDocRef, "workspaces");
-          // const workspaceDocRef = doc(workspacesCollectionRef, "workspacesDoc");
-          const querySnapshot = await getDocs(workspacesCollectionRef);
+          const workspaceCollectionRef = collection(db, "workspaces");
+          const querySnapshot = await getDocs(workspaceCollectionRef);
           console.log(querySnapshot);
           if (!querySnapshot?.docs[0]?.data()) {
             console.log("document not exist");
@@ -66,48 +71,22 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
           }
 
           //if the document exist, also the user exist means, the page is refreshing now, so update the workspaceData.
-          const workspaceData = querySnapshot.docs[0].data();
-          console.log(workspaceData);
-          setWorkspaceData(workspaceData);
-          // setUser(user);
-          setIsLoading(false);
-        } else {
-          setWorkspaceData(null);
-          setIsLoading(false);
-        }
+          const globalWorkspaceData = querySnapshot.docs[0].data();
+          console.log(globalWorkspaceData);
 
-        if (user) {
-          const userDocRef = doc(db, "users", user.uid);
-          const allCardDataCollectionRef = collection(
-            userDocRef,
-            "allCardData"
-          );
-          // const workspaceDocRef = doc(
-          //   allCardDataCollectionRef,
-          //   "allCardDataDoc"
-          // );
-          const querySnapshot = await getDocs(allCardDataCollectionRef);
-
-          if (!querySnapshot?.docs[0]?.data()) {
-            //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the allCardData, so, return from the function
-            return;
+          if (!isSignInForm) {
+            setGlobalWorkspaceData(globalWorkspaceData);
           }
-
-          //if the document exist, also the user exist means, the page is refreshing now, so update the allCardData.
-          const allCardData = querySnapshot.docs[0].data();
-          console.log(allCardData);
-          setAllCardData(allCardData);
           // setUser(user);
           setIsLoading(false);
         } else {
-          setAllCardData(null);
+          setGlobalWorkspaceData(null);
           setIsLoading(false);
         }
 
         if (user) {
-          const userDocRef = doc(db, "users", user.uid);
-          const workspacesCollectionRef = collection(userDocRef, "templates");
-          const querySnapshot = await getDocs(workspacesCollectionRef);
+          const templatesCollectionRef = collection(db, "templates");
+          const querySnapshot = await getDocs(templatesCollectionRef);
 
           if (!querySnapshot?.docs[0]?.data()) {
             //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the templatesData, so, return from the function
@@ -136,6 +115,8 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
     setTemplatesData,
     workspaceData,
     setWorkspaceData,
+    globalWorkspaceData,
+    setGlobalWorkspaceData,
     allCardData,
     setAllCardData,
     user?.uid,
@@ -147,6 +128,8 @@ export const useAppState = (user, setUser, isLoading, setIsLoading) => {
   return {
     workspaceData,
     setWorkspaceData,
+    globalWorkspaceData,
+    setGlobalWorkspaceData,
     allCardData,
     setAllCardData,
     templatesData,

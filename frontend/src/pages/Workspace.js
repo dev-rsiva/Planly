@@ -10,7 +10,14 @@ const Workspace = () => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
   const paramObj = useParams();
+  console.log(paramObj);
   const [workspaceInfo, setWorkspaceInfo] = useState(() =>
+    workspaceData?.workspaces?.find(
+      (workspace) => workspace?.shortname === paramObj?.workspaceShortName
+    )
+  );
+
+  console.log(
     workspaceData?.workspaces?.find(
       (workspace) => workspace?.shortname === paramObj?.workspaceShortName
     )

@@ -2,21 +2,21 @@ import { useState, useContext } from "react";
 import dataContext from "../../utills/dataContext";
 import { useNavigate } from "react-router-dom";
 
-const CommonBoard = ({ board, typeOfBoard }) => {
+const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
   const [hoverStar, setHoverStar] = useState(false);
   const [hoverBoard, setHoverBoard] = useState(false);
-  const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
 
   const navigate = useNavigate();
 
   const commonClassName =
     typeOfBoard === "recentlyViewed"
       ? `absolute right-0 bottom-0 m-2 p-1 transform ${
-          board.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"
+          board?.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"
         } transition-transform duration-300 ease-in-out`
       : typeOfBoard === "yourBoard"
       ? `absolute right-0 bottom-0 m-2 p-1 transform ${
-          board.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"
+          board?.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"
         } transition-transform duration-300 ease-in-out`
       : typeOfBoard === "starredBoard"
       ? `absolute right-0 bottom-0 m-2 p-1`
@@ -24,11 +24,11 @@ const CommonBoard = ({ board, typeOfBoard }) => {
 
   const fillClassName =
     typeOfBoard === "recentlyViewed"
-      ? (board.starred && !hoverStar) || (!board.starred && hoverStar)
+      ? (board?.starred && !hoverStar) || (!board?.starred && hoverStar)
         ? "#E2B203"
         : "none"
       : typeOfBoard === "yourBoard"
-      ? (!hoverStar && !board.starred) || (hoverStar && board.starred)
+      ? (!hoverStar && !board?.starred) || (hoverStar && board?.starred)
         ? "none"
         : "#E2B203"
       : typeOfBoard === "starredBoard"
@@ -39,11 +39,11 @@ const CommonBoard = ({ board, typeOfBoard }) => {
 
   const strokeClassName =
     typeOfBoard === "recentlyViewed"
-      ? board.starred || hoverStar
+      ? board?.starred || hoverStar
         ? "#E2B203"
         : "white"
       : typeOfBoard === "yourBoard"
-      ? (board.starred && hoverStar) || (!board.starred && !hoverStar)
+      ? (board?.starred && hoverStar) || (!board?.starred && !hoverStar)
         ? "white"
         : "#E2B203"
       : typeOfBoard === "starredBoard"
@@ -52,20 +52,38 @@ const CommonBoard = ({ board, typeOfBoard }) => {
         : "#E2B203"
       : "";
 
- 
-
   const workspaceName = workspaceData?.workspaces?.find((workspace) =>
     workspace?.boards?.find((eachBoard) => eachBoard?.title === board?.title)
   )?.name;
 
+  console.log(board);
+  console.log(workspaceInfo);
 
+  if (board.visibility === "Workspace") {
+    const isWorkspaceMember = workspaceInfo?.members.some(
+      (each) => each.userId === user.uid
+    );
+
+    if (!isWorkspaceMember) {
+      return;
+    }
+    // console.log(
+    //   `user is a workspace member - ${isWorkspaceMember} and board's visibility is workspace, Show all boards`
+    // );
+  }
+  if (board.visibility === "Private") {
+    console.log(true);
+  }
+  if (board.visibility === "Public") {
+    console.log(true);
+  }
   return (
     <div
       className="relative w-[195px] h-[95px] overflow-hidden rounded-[3px] mr-4 mb-8 cursor-pointer"
       onMouseEnter={() => setHoverBoard(true)}
       onMouseLeave={() => setHoverBoard(false)}
       onClick={() =>
-        navigate(`/b/${board.id}/${board.title.replace(/ /g, "-")}`)
+        navigate(`/b/${board?.id}/${board?.title.replace(/ /g, "-")}`)
       }
     >
       <div className="w-full h-full absolute bg-black opacity-50 rounded" />
@@ -82,8 +100,6 @@ const CommonBoard = ({ board, typeOfBoard }) => {
           e.stopPropagation();
           setWorkspaceData((prev) => {
             let updatedWorkspaces = [...prev.workspaces];
-
-         
 
             updatedWorkspaces = updatedWorkspaces?.map((eachWorkspace) => {
               const boardIndex = eachWorkspace?.boards?.findIndex(
@@ -102,7 +118,6 @@ const CommonBoard = ({ board, typeOfBoard }) => {
                   ...eachWorkspace,
                   boards: updatedBoards,
                 };
-
 
                 return eachWorkspace;
               }

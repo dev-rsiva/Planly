@@ -16,7 +16,7 @@ const DisplayAddCard = ({
 }) => {
   const [cardTitle, setCardTitle] = useState("");
 
-  const { allCardData, setAllCardData } = useContext(dataContext);
+  const { user, allCardData, setAllCardData } = useContext(dataContext);
 
   const paramObj = useParams();
   const addCardInput = useRef();
@@ -29,7 +29,32 @@ const DisplayAddCard = ({
       coverImg: "",
       Activities: [],
       labels: sortedLabels,
+      members: [user],
+      covers: [],
+      dates: { start: null, due: null },
+      attachments: [],
+      cover: [],
+      customFields: [],
+      archived: false,
+      watching: false,
+      assignedTo: [],
+      subscribers: [],
+      dueDate: "",
     };
+
+    // {
+    //   members: [],
+    //   covers: [],
+    //   dates: { start: null, due: null },
+    //   attachments: [],
+    //   cover: [],
+    //   customFields: [],
+    //   archived: false,
+    //   watching: false,
+    //   assignedTo: ["userId1", "userId2"],
+    //   subscribers: ["userId1", "userId2"],
+    //   dueDate: "timestamp",
+    // },
 
     setWorkspaceData((prev) => {
       let updatedworkspaceData = { ...prev };

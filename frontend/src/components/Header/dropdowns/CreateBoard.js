@@ -18,7 +18,6 @@ const CreateBoard = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-
   const [currImage, setCurrImage] = useState(
     "https://images.unsplash.com/photo-1703002917693-e51692232c81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA0MTY0ODgyfA&ixlib=rb-4.0.3&q=80&w=400&quot"
   );
@@ -33,12 +32,13 @@ const CreateBoard = ({
     id: "",
     title: "",
     backgroundImg: currImage,
-    visibility: visibility.find((each) => each.isShowing === true).name,
+    // visibility: visibility.find((each) => each.isShowing === true).name,
+    visibility: "Workspace",
   });
-
+  console.log(editedData.visibility);
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
     ? workspaceData?.workspaces?.find(
-        (workspace) => workspace.shortname === paramObj.workspaceShortName
+        (workspace) => workspace?.shortname === paramObj.workspaceShortName
       )?.name
     : paramObj.boardId
     ? workspaceData?.workspaces?.find((workspace) =>
@@ -46,14 +46,13 @@ const CreateBoard = ({
       )?.name
     : workspaceData?.workspaces[0]?.name;
 
-
   const [currWorkspaceName, setCurrWorkspaceName] = useState(
     currWorkspaceNameIntialData
   );
 
-  const { createBoardSourceClick, setCreateBoardSourceClick } =
+  const { user, createBoardSourceClick, setCreateBoardSourceClick } =
     useContext(dataContext);
-
+  console.log(user);
   const bgImages = [
     "https://images.unsplash.com/photo-1705154580249-55990fe3a8fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDF8MzE3MDk5fHx8fHwyfHwxNzA1OTkyMDY5fA&ixlib=rb-4.0.3&q=80&w=400&quot",
     "https://images.unsplash.com/photo-1703432799866-1f788053fb3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDF8MzE3MDk5fHx8fHwyfHwxNzA0MTY0ODgyfA&ixlib=rb-4.0.3&q=80&w=400&quot",
@@ -85,23 +84,33 @@ const CreateBoard = ({
       id: generateUniqueNumber(firstTwoChar, 5),
       title: editedData.title,
       backgroundImg: editedData.backgroundImg,
-      // visibility: visibility.find((each) => each.isShowing === true).name,
+      visibility: editedData.visibility,
+      // members: [user],
+      // admins: [user], // For Premium Workspaces
+      admins: [{ userId: user.uid, role: "admin", email: user.email }],
+      members: [{ userId: user.uid, role: "admin", email: user.email }], // also role - normal exists.
+      starred: false,
+      viewedAt: "",
       lists: [],
     };
+    console.log(updatedBoard);
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
       const currWorkspaceData = updatedWorkspaceData.workspaces.find(
-        (workspace) => workspace.name === currWorkspaceName
+        (workspace) => workspace?.name === currWorkspaceName
       );
-
-      const workspaceIndex =
-        currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
+      console.log(currWorkspaceData);
+      const workspaceIndex = updatedWorkspaceData.workspaces.findIndex(
+        (workspace) => workspace?.name === currWorkspaceName
+      );
+      console.log(workspaceIndex);
       if (!currWorkspaceData?.boards) {
         currWorkspaceData.boards = [];
       }
-      currWorkspaceData?.boards?.push(updatedBoard);
-      updatedWorkspaceData.workspaces[workspaceIndex - 1] = currWorkspaceData;
 
+      currWorkspaceData?.boards?.push(updatedBoard);
+      updatedWorkspaceData.workspaces[workspaceIndex] = currWorkspaceData;
+      console.log(updatedWorkspaceData);
       return updatedWorkspaceData;
     });
 
@@ -119,7 +128,6 @@ const CreateBoard = ({
   useEffect(() => {
     BoardNameRef.current.focus();
   }, []);
-
 
   useEffect(() => {
     function handleOutside(e) {
@@ -249,7 +257,6 @@ const CreateBoard = ({
             );
           })}
         </ul>
-     
       </div>
 
       <div>
@@ -296,10 +303,10 @@ const CreateBoard = ({
           {workspaceData?.workspaces.map((workspace) => {
             return (
               <option
-                value={workspace.name}
-                selected={workspace.name === currWorkspaceName}
+                value={workspace?.name}
+                selected={workspace?.name === currWorkspaceName}
               >
-                {workspace.name}
+                {workspace?.name}
               </option>
             );
           })}
@@ -340,17 +347,23 @@ const CreateBoard = ({
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setVisibility((prev) => {
-                        let updatedVisibility = prev.map((eachObj, i) => {
-                          let updatedObj = {
-                            ...eachObj,
-                            isShowing: i === index,
-                          };
-                          return updatedObj;
-                        });
-                        return updatedVisibility;
+                      // setVisibility((prev) => {
+                      //   let updatedVisibility = prev.map((eachObj, i) => {
+                      //     let updatedObj = {
+                      //       ...eachObj,
+                      //       isShowing: i === index,
+                      //     };
+                      //     return updatedObj;
+                      //   });
+                      //   return updatedVisibility;
+                      // });
+                      setEditedData((prev) => {
+                        let updatedEditedData = {
+                          ...prev,
+                          visibility: eachCategory.name,
+                        };
+                        return updatedEditedData;
                       });
-
                       setVisibilityDropdown(false);
                     }}
                   >

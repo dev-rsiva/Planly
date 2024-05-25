@@ -6,17 +6,15 @@ const StarredBoard = ({ starredBoard }) => {
 
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
-
-  const workspaceName = workspaceData.workspaces.find((workspace) =>
-    workspace.boards.find((board) => board.title === starredBoard.title)
+  const workspaceName = workspaceData?.workspaces?.find((workspace) =>
+    workspace?.boards.find((board) => board.title === starredBoard.title)
   ).name;
-
 
   return (
     <div className="relative w-[195px] h-[95px] mb-8 mr-4 rounded-[3px] cursor-pointer overflow-hidden">
       <div className="w-full h-full absolute bg-black opacity-50 rounded" />
       <img
-        src={`${starredBoard.backgroundImg}`}
+        src={`${starredBoard?.backgroundImg}`}
         className="w-full h-full rounded object-cover"
       />
       <h1 className="absolute font-sans font-bold text-base text-white top-0 left-0 p-2 ">
@@ -45,7 +43,6 @@ const StarredBoard = ({ starredBoard }) => {
                     ...eachWorkspace,
                     boards: updatedBoards,
                   };
-
 
                   return eachWorkspace;
                 }

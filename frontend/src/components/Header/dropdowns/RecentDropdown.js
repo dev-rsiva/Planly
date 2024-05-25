@@ -8,7 +8,7 @@ const Recent = ({ setNavItemStatus }) => {
 
   const navigate = useNavigate();
 
-  const recentlyViewedBoards = workspaceData.workspaces
+  const recentlyViewedBoards = workspaceData?.workspaces
     .map((workspace) => {
       return workspace?.boards?.filter((eachBoard, index) => {
         return eachBoard?.viewedAt !== "" && !eachBoard.starred;

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
+import dataContext from "../../../utills/dataContext.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +19,6 @@ const CreateWorkspace = ({
   // currWorkspace,
   // setCurrWorkspace,
 }) => {
-  console.log(data);
   const workspaceUserInfo = {
     id: "",
     name: "",
@@ -45,6 +44,7 @@ const CreateWorkspace = ({
 
   const [showContinueButton, setShowContinueButton] = useState(false);
 
+  const { user } = useContext(dataContext);
   const navigate = useNavigate();
 
   function handleInputChange(e) {
@@ -69,11 +69,32 @@ const CreateWorkspace = ({
         color1: randomGradientColor(),
         color2: randomGradientColor(),
       },
+      isPremium: false,
+      admins: [{ userId: user.uid, role: "admin", email: user.email }],
+      members: [{ userId: user.uid, role: "admin", email: user.email }], // also role - normal exists.
+      settings: {
+        visibility: "private",
+        membershipRestrictions: "anybody",
+        allowedDomains: [], // No domains by default since "anybody" is the default
+        boardCreationRestrictions: {
+          public: "onlyAdmins",
+          workspace: "anyMember",
+          private: "anyMember",
+        },
+        boardDeletionRestrictions: {
+          public: "onlyAdmins",
+          workspace: "onlyAdmins",
+          private: "onlyAdmins",
+        },
+        guestInvitations: "workspaceMembers",
+      },
       boards: [],
     };
+
     console.log(data);
     setWorkspaceData((prev) => {
       let updatedData = { ...prev };
+      console.log(updatedData);
       updatedData.workspaces = [
         ...updatedData.workspaces,
         { ...workspaceIntitalData },

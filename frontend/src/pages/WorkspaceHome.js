@@ -7,13 +7,13 @@ import dataContext from "../utills/dataContext";
 
 const WorkspaceHome = () => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
-
+  console.log(workspaceData);
   const paramObj = useParams();
-
-  const workspaceInfo = workspaceData.workspaces.find(
-    (workspace) => workspace.shortname === paramObj.workspaceShortName
+  console.log(paramObj);
+  const workspaceInfo = workspaceData?.workspaces.find(
+    (workspace) => workspace?.shortname === paramObj?.workspaceShortName
   );
-
+  console.log(workspaceInfo);
   return (
     <div className="flex px-32 mt-8 relative top-[45px]">
       <div className="w-1/4 mr-2">
@@ -28,7 +28,7 @@ const WorkspaceHome = () => {
           />
         </div>
         <div>
-          <WorkspaceInfo workspaceInfo={workspaceInfo}/>
+          <WorkspaceInfo workspaceInfo={workspaceInfo} />
         </div>
       </div>
     </div>

@@ -81,7 +81,7 @@ const OverviewSidebar = (
     setWorkspaceSideBarDropdownIsShowing,
   ] = useState(() => {
     const workspaceDropdownBtns = {};
-
+    console.log(workspaceData);
     workspaceData?.workspaces.forEach(
       (workspace) => (workspaceDropdownBtns[workspace.name] = false)
     );
@@ -100,9 +100,8 @@ const OverviewSidebar = (
       <div>
         {sideBardBtns.map((eachButton, index) => {
           return (
-            <>
+            <div key={index}>
               <div
-                key={index}
                 className={`w-full py-2 pl-4 mb-[8px] flex justify-start items-center rounded-lg ${
                   hoveredOption === "Home"
                     ? "cursor-not-allowed"
@@ -162,7 +161,7 @@ const OverviewSidebar = (
                   })}
                 </div>
               )}
-            </>
+            </div>
           );
         })}
         <hr className="mt-2" />

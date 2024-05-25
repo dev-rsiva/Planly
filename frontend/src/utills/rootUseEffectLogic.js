@@ -5,8 +5,8 @@ import { db } from "../utills/firebase";
 const rootUseEffectLogic = (
   templatesData,
   setTemplatesData,
-  workspaceData,
-  setWorkspaceData,
+  globalWorkspaceData,
+  setGlobalWorkspaceData,
   allCardData,
   setAllCardData,
   userId,
@@ -15,115 +15,71 @@ const rootUseEffectLogic = (
 ) => {
   useEffect(() => {
     const updateUserWorkspacesData = async () => {
-      if (!workspaceData || !userId) return;
+      if (!globalWorkspaceData || !userId) return;
 
-      const userDocRef = doc(db, "users", userId);
-      const workspacesCollectionsRef = collection(userDocRef, "workspaces");
-      const workspaceDocRef = doc(workspacesCollectionsRef, "workspacesDoc");
-      console.log(workspaceData);
-      console.log(userDocRef);
-      console.log(workspacesCollectionsRef);
-      console.log(workspaceDocRef);
-      const querySnapshot = await getDocs(workspacesCollectionsRef);
-      console.log(querySnapshot);
       try {
-        // Check if the document exists
+        const workspacesCollectionsRef = collection(db, "workspaces");
+        console.log(globalWorkspaceData);
+        console.log(workspacesCollectionsRef);
         const querySnapshot = await getDocs(workspacesCollectionsRef);
+        console.log(querySnapshot);
         console.log(
-          "querySnapshot in rootUseEffectLogic",
+          "querySnapshot in rootUseEffectLogic for workspaceData",
           querySnapshot.docs[0].data()
         );
+        // Check if the document exists
         if (!querySnapshot.empty) {
-          // Document exists, update it with new data
-          if (workspaceData.workspaces) {
-            console.log(workspaceData);
-            await setDoc(workspaceDocRef, workspaceData);
+          // Document exists
+          if (globalWorkspaceData?.workspaces) {
+            // local state variable data exists, update firebase with local data
+            console.log(globalWorkspaceData);
+            const workspaceDocRef = doc(db, "workspaces", "workspaceData");
+            await setDoc(workspaceDocRef, globalWorkspaceData);
             console.log("Workspaces data updated in Firestore");
           }
         }
       } catch (error) {
         console.error("Error updating Workspaces data in Firestore:", error);
       }
-
-      // const getWorkspaceData = async () => {
-      //   const userDocRef = doc(db, "users", user?.uid);
-      //   const workspacesCollectionRef = collection(userDocRef, "workspaces");
-      //   const workspaceQuery = query(workspacesCollectionRef);
-      //   const querySnapshot = await getDocs(workspaceQuery);
-      //   const updatedWorkspaceData = querySnapshot?.docs[0]?.data();
-      //   console.log(updatedWorkspaceData);
-      //   setWorkspaceData(updatedWorkspaceData);
-      // };
-      // await getWorkspaceData();
-    };
-
-    const updateUserAllCardData = async () => {
-      if (!allCardData || !userId) return;
-
-      const userDocRef = doc(db, "users", userId);
-      const allCardCollectionsRef = collection(userDocRef, "allCardData");
-      const allCardDocRef = doc(allCardCollectionsRef, "allCardDataDoc");
-
-      try {
-        const querySnapshot = await getDocs(allCardCollectionsRef);
-
-        if (!querySnapshot.empty) {
-          console.log(querySnapshot);
-          await setDoc(allCardDocRef, allCardData);
-          console.log("allCardData updated in Firestore");
-        }
-      } catch (error) {
-        console.error("Error updating allCardData in Firestore:", error);
-      }
-
-      // const getAllCardData = async () => {
-      //   const userDocRef = doc(db, "users", user?.uid);
-      //   const allcardDataCollectionRef = collection(userDocRef, "allCardData");
-      //   const allcardDataQuery = query(allcardDataCollectionRef);
-      //   const querySnapshot = await getDocs(allcardDataQuery);
-      //   const updatedAllCardData = querySnapshot?.docs[0]?.data();
-      //   setAllCardData(updatedAllCardData);
-      // };
-      // await getAllCardData();
     };
 
     const updateUserTemplatesData = async () => {
       if (!templatesData || !userId) return;
 
-      const userDocRef = doc(db, "users", userId);
-      const templatesCollectionsRef = collection(userDocRef, "templates");
-      const templatesDocRef = doc(templatesCollectionsRef, "templatesDoc");
-
       try {
+        const templatesCollectionsRef = collection(db, "templates");
+        console.log(templatesData);
+        console.log(templatesCollectionsRef);
         const querySnapshot = await getDocs(templatesCollectionsRef);
-
+        console.log(querySnapshot);
+        console.log(
+          "querySnapshot in rootUseEffectLogic for templatesData",
+          querySnapshot.docs[0].data()
+        );
+        // Check if the document exists
         if (!querySnapshot.empty) {
-          await setDoc(templatesDocRef, templatesData);
-          console.log("Templates data updated in Firestore");
+          // Document exists
+          if (templatesData.templates) {
+            // local state variable data exists, update firebase with local data
+            const templatesDocRef = doc(db, "templates", "templatesData");
+            await setDoc(templatesDocRef, templatesData);
+            console.log("Templates data updated in Firestore");
+          }
         }
       } catch (error) {
         console.error("Error updating Templates data in Firestore:", error);
       }
 
-      // const getTemplatesData = async () => {
-      //   const userDocRef = doc(db, "users", user?.uid);
-      //   const templatesDataCollectionRef = collection(userDocRef, "templates");
-      //   const templatesDataQuery = query(templatesDataCollectionRef);
-      //   const querySnapshot = await getDocs(templatesDataQuery);
-      //   const updatedTemplatesData = querySnapshot?.docs[0]?.data();
-      //   setTemplatesData(updatedTemplatesData);
-      // };
-      // await getTemplatesData();
       setIsLoading(false);
     };
 
     // Call update functions for each data type
     if (userId) {
       updateUserWorkspacesData();
-      updateUserAllCardData();
+      // updateUserAllCardData();
       updateUserTemplatesData();
     }
-  }, [templatesData, workspaceData, allCardData]);
+  }, [templatesData, globalWorkspaceData, allCardData]);
 };
 
 export default rootUseEffectLogic;

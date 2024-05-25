@@ -6,6 +6,9 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { data } from "../../utills/utills.js";
 import { useNavigate } from "react-router-dom";
 import dataContext from "../../utills/dataContext.js";
+import DisplayInviteToWorkspace from "./DisplayInviteToWorkspace";
+import { db } from "../../utills/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
@@ -17,7 +20,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   const [nameField, setNameField] = useState("");
   const [shortNameField, setShortNameField] = useState("");
   const [isShortNameTaken, setIsShortNameTaken] = useState(false);
-
+  const [showInviteWorkspace, setShowInviteWorkspace] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (value, field) => {
@@ -62,7 +65,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
         editedData?.id[editedData.id.length - 1]
       );
 
-      // workspaceData.workspaces[currWorkspaceIndex - 1] = editedData;
+      // workspaceData?.workspaces[currWorkspaceIndex - 1] = editedData;
       setEditedData((prev) => {
         let updatedEditedData = { ...prev, shortname: shortName };
 
@@ -96,6 +99,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   }, [workspaceInfo, workspaceData]);
 
   useEffect(() => {}, [editedData]);
+
   return (
     <div className="px-[120px] py-8">
       {!displayWorkspaceEdit && (
@@ -146,12 +150,23 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
 
           {fromWorkspace && (
             <div className="">
-              <button className="cursor-not-allowed bg-blue-600 rounded px-3 py-2 text-white text-sm font-semibold font-sans">
+              <button
+                className="relative cursor-pointer bg-blue-600 rounded px-3 py-2 text-white text-sm font-semibold font-sans"
+                onClick={() => setShowInviteWorkspace(true)}
+              >
                 <span className="mr-2">
                   <FontAwesomeIcon icon={faUserPlus} />
                 </span>
                 Invite Workspace Members
               </button>
+              {showInviteWorkspace && (
+                <div className="absolute top-8 right-28">
+                  <DisplayInviteToWorkspace
+                    workspaceInfo={workspaceInfo}
+                    setShowInviteWorkspace={setShowInviteWorkspace}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

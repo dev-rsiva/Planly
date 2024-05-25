@@ -12,6 +12,7 @@ const NavItemsContainer = ({
   workspaceData,
   setWorkspaceData,
 }) => {
+  console.log("navItems Container running", navItemStatus);
   return (
     <div
       id="navItem-container"
@@ -57,12 +58,14 @@ const NavItemsContainer = ({
                   return updatedNavBarBtn;
                 });
                 setNavItemStatus((prev) => {
+                  console.log("navitem set");
                   const updatedNavItemStatus = [...prev];
                   updatedNavItemStatus[i] = {
                     ...updatedNavItemStatus[i],
                     dropdownIsShowing:
                       !updatedNavItemStatus[i].dropdownIsShowing,
                   };
+                  console.log(updatedNavItemStatus);
                   return updatedNavItemStatus;
                 });
               }}

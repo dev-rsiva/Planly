@@ -11,15 +11,17 @@ import Shimmer from "./utills/Shimmer.js";
 import { data } from "./utills/utills.js";
 
 const App = () => {
-  console.log(data);
   const paramObj = useParams();
   const useTemplateBtn = useRef();
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [isSignInForm, setIsSignInForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const {
     workspaceData,
     setWorkspaceData,
+    globalWorkspaceData,
+    setGlobalWorkspaceData,
     currWorkspace,
     setCurrWorkspace,
     allCardData,
@@ -38,12 +40,15 @@ const App = () => {
     setCreateBoardSourceClick,
     sidebarSelection,
     setSidebarSelection,
-  } = useAppState(user, setUser, isLoading, setIsLoading);
-
-  console.log(allCardData);
+  } = useAppState(
+    user,
+    setUser,
+    isSignInForm,
+    setIsSignInForm,
+    isLoading,
+    setIsLoading
+  );
   console.log(workspaceData);
-  console.log(user);
-
   // if (!isUserAuthenticated) return <Shimmer />;
   // if (isLoading) return <Shimmer />;
   // if (!workspaceData || !allCardData || !templatesData) return <Shimmer />;
@@ -51,11 +56,15 @@ const App = () => {
     return (
       <Login
         setIsUserAuthenticated={setIsUserAuthenticated}
-        user={user}
+        // user={user}
+        setIsSignInForm={setIsSignInForm}
+        isSignInForm={isSignInForm}
         setUser={setUser}
         workspaceData={workspaceData}
         setWorkspaceData={setWorkspaceData}
-        setAllCardData={setAllCardData}
+        globalWorkspaceData={globalWorkspaceData}
+        setGlobalWorkspaceData={setGlobalWorkspaceData}
+        // setAllCardData={setAllCardData}
         setTemplatesData={setTemplatesData}
       />
     );
@@ -64,6 +73,7 @@ const App = () => {
     <>
       <dataContext.Provider
         value={{
+          user,
           workspaceData,
           setWorkspaceData,
           currWorkspace,
