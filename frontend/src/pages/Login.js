@@ -64,7 +64,7 @@ const Login = ({
         });
         // }
 
-        acceptInvitation(email, uid);
+        acceptInvitation(user);
       } else {
         // User is signed out
         // ...
@@ -101,7 +101,7 @@ const Login = ({
         // id: "Default Workspace",
         id: generateUniqueNumber(firstTwoChar, 5),
         name: user.displayName + " Default Workspace",
-        shortname: "dfetgwteb",
+        shortname: generateUniqueNumber("Default", 5),
         website: "",
         description: "",
         businessType: "",
@@ -110,8 +110,22 @@ const Login = ({
           color2: randomGradientColor(),
         },
         isPremium: false,
-        admins: [{ userId: user.uid, role: "admin", email: email }],
-        members: [{ userId: user.uid, role: "admin", email: email }], // also role - normal exists.
+        admins: [
+          {
+            userId: user.uid,
+            role: "admin",
+            name: user.displayName,
+            email: email,
+          },
+        ],
+        members: [
+          {
+            userId: user.uid,
+            role: "admin",
+            name: user.displayName,
+            email: email,
+          },
+        ], // also role - normal exists.
         settings: {
           visibility: "private",
           membershipRestrictions: "anybody",
@@ -156,11 +170,12 @@ const Login = ({
       if (querySnapshot.empty) {
         //Create new doc for workspaces & add new workspaceData for this user
         await setDoc(workspacesDocRef, { workspaces: [newWorkspaceData] });
-        setGlobalWorkspaceData((prev) => {
-          let updatedWorkspaceData = { workspaces: [newWorkspaceData] };
-          console.log(updatedWorkspaceData);
-          return updatedWorkspaceData;
-        });
+        // setGlobalWorkspaceData((prev) => {
+        let updatedWorkspaceData = { workspaces: [newWorkspaceData] };
+        console.log(updatedWorkspaceData);
+        setWorkspaceData(updatedWorkspaceData);
+        // return updatedWorkspaceData;
+        // });
       } else {
         console.log("Existing workspaces found, updating document");
         const workspacesDocRef2 = doc(db, "workspaces", "workspaceData");
@@ -185,12 +200,12 @@ const Login = ({
         ];
         console.log("updatedWorkspaces:", updatedWorkspaces);
 
-        setTimeout(async () => {
-          await updateDoc(workspacesDocRef2, {
-            workspaces: updatedWorkspaces,
-          });
-          console.log("Document updated successfully");
-        }, 50);
+        // setTimeout(async () => {
+        await updateDoc(workspacesDocRef2, {
+          workspaces: updatedWorkspaces,
+        });
+        console.log("Document updated successfully");
+        // }, 50);
 
         setWorkspaceData((prev) => {
           const updatedWorkspaceData = updatedWorkspaces.filter(
@@ -218,7 +233,7 @@ const Login = ({
             workspaces: updatedWorkspaceData,
           };
           console.log(permittedWorkspaceData);
-
+          // setGlobalWorkspaceData(permittedWorkspaceData);
           return permittedWorkspaceData;
         });
       }
@@ -249,41 +264,42 @@ const Login = ({
       const querySnapshot = await getDocs(workspaceCollectionRef);
 
       if (!querySnapshot.empty) {
-        setTimeout(() => {
-          const updatedWorkspaceDataFromFirestore =
-            querySnapshot.docs[0].data().workspaces;
-          console.log(updatedWorkspaceDataFromFirestore);
-          // setGlobalWorkspaceData(updatedWorkspaceDataFromFirestore);
+        // setTimeout(() => {
+        const updatedWorkspaceDataFromFirestore =
+          querySnapshot.docs[0].data().workspaces;
+        console.log(updatedWorkspaceDataFromFirestore);
+        // setGlobalWorkspaceData(updatedWorkspaceDataFromFirestore);
 
-          setWorkspaceData((prev) => {
-            const updatedWorkspaceData =
-              updatedWorkspaceDataFromFirestore.filter((eachWorkspace) => {
-                console.log(eachWorkspace);
-                const condition1 =
-                  eachWorkspace.settings.visibility === "private" ||
-                  eachWorkspace.settings.visibility === "public";
+        setWorkspaceData((prev) => {
+          const updatedWorkspaceData = updatedWorkspaceDataFromFirestore.filter(
+            (eachWorkspace) => {
+              console.log(eachWorkspace);
+              const condition1 =
+                eachWorkspace.settings.visibility === "private" ||
+                eachWorkspace.settings.visibility === "public";
 
-                const condition2 = eachWorkspace.members.some((member) => {
-                  console.log(member.userId);
-                  console.log(user.uid);
-                  console.log(member.userId === user.uid);
-                  return member.userId === user.uid;
-                });
-                console.log(condition1);
-                console.log(condition2);
-                console.log(condition1 && condition2);
-
-                return condition1 & condition2;
+              const condition2 = eachWorkspace.members.some((member) => {
+                console.log(member.userId);
+                console.log(user.uid);
+                console.log(member.userId === user.uid);
+                return member.userId === user.uid;
               });
-            console.log(updatedWorkspaceData);
-            const permittedWorkspaceData = {
-              workspaces: updatedWorkspaceData,
-            };
-            console.log(permittedWorkspaceData);
+              console.log(condition1);
+              console.log(condition2);
+              console.log(condition1 && condition2);
 
-            return permittedWorkspaceData;
-          });
-        }, 500);
+              return condition1 & condition2;
+            }
+          );
+          console.log(updatedWorkspaceData);
+          const permittedWorkspaceData = {
+            workspaces: updatedWorkspaceData,
+          };
+          console.log(permittedWorkspaceData);
+
+          return permittedWorkspaceData;
+        });
+        // }, 1200);
       }
     } catch (error) {
       console.error(

@@ -11,6 +11,7 @@ import { visibilityDetails } from "../../../utills/visibilityData";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import dataContext from "../../../utills/dataContext";
 import generateUniqueNumber from "../../../utills/generateUniqueNum";
+import { updateFirebaseDoc } from "../../../utills/updateFirebase";
 
 const CreateBoardWithTemplate = ({
   createDropdownStatus,
@@ -34,7 +35,7 @@ const CreateBoardWithTemplate = ({
 
   const navigate = useNavigate();
 
-  const { templatesData, setTemplatesData, useTemplateBtn } =
+  const { user, templatesData, setTemplatesData, useTemplateBtn } =
     useContext(dataContext);
 
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
@@ -47,7 +48,6 @@ const CreateBoardWithTemplate = ({
       ).name
     : workspaceData?.workspaces[0].name;
 
-
   const [currWorkspaceName, setCurrWorkspaceName] = useState(
     currWorkspaceNameIntialData
   );
@@ -58,18 +58,18 @@ const CreateBoardWithTemplate = ({
     id: "",
     title: templateSelected.templateName,
     backgroundImg: templateSelected.templateImage,
-    visibility: visibility.find((each) => each.isShowing === true).name,
+    // visibility: visibility.find((each) => each.isShowing === true).name,
+    visibility: "Workspace",
   });
-
 
   const [keepCards, setKeepCards] = useState(true);
 
-  const templateCategoryFound = templatesData.templates.find((templateCategory) =>
-    templateCategory.templateList.some((template) => {
-      return template.templateId === templateSelected.templateId;
-    })
+  const templateCategoryFound = templatesData.templates.find(
+    (templateCategory) =>
+      templateCategory.templateList.some((template) => {
+        return template.templateId === templateSelected.templateId;
+      })
   );
-
 
   function addBoard() {
     let firstTwoChar = editedData.title.slice(0, 3);
@@ -78,23 +78,46 @@ const CreateBoardWithTemplate = ({
       title: editedData.title,
       backgroundImg: editedData.backgroundImg,
       // visibility: visibility.find((each) => each.isShowing === true).name,
+      visibility: editedData.visibility,
+      // members: [user],
+      // admins: [user], // For Premium Workspaces
+      admins: [
+        {
+          userId: user.uid,
+          role: "admin",
+          name: user.displayName,
+          email: user.email,
+        },
+      ],
+      members: [
+        {
+          userId: user.uid,
+          role: "admin",
+          name: user.displayName,
+          email: user.email,
+        },
+      ], // also role - normal exists.
+      starred: false,
+      viewedAt: "",
       lists: templateSelected.lists,
     };
-    setWorkspaceData((prev) => {
-      let updatedWorkspaceData = { ...prev };
-      const currWorkspaceData = updatedWorkspaceData.workspaces.find(
-        (workspace) => workspace.name === currWorkspaceName
-      );
-      const workspaceIndex =
-        currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
-      if (!currWorkspaceData.boards) {
-        currWorkspaceData.boards = [];
-      }
-      currWorkspaceData?.boards?.push(updatedBoard);
-      updatedWorkspaceData.workspaces[workspaceIndex - 1] = currWorkspaceData;
+    // setWorkspaceData((prev) => {
+    let updatedWorkspaceData = { ...workspaceData };
+    const currWorkspaceData = updatedWorkspaceData.workspaces.find(
+      (workspace) => workspace.name === currWorkspaceName
+    );
+    const workspaceIndex =
+      currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
+    if (!currWorkspaceData.boards) {
+      currWorkspaceData.boards = [];
+    }
+    currWorkspaceData?.boards?.push(updatedBoard);
+    updatedWorkspaceData.workspaces[workspaceIndex - 1] = currWorkspaceData;
+    console.log("firebase")
 
-      return updatedWorkspaceData;
-    });
+    updateFirebaseDoc(updatedWorkspaceData);
+    // return updatedWorkspaceData;
+    // });
 
     setCreateBoardWithTemplateCard(false);
 
@@ -127,7 +150,6 @@ const CreateBoardWithTemplate = ({
 
     return () => document.addEventListener("click", handleOutsideClick);
   }, [createBoardWithTemplateCard]);
-
 
   return (
     <div

@@ -48,6 +48,16 @@ const StarredBoards = ({ renderFrom }) => {
           </div>
           <div className="flex flex-wrap">
             {starredBoards.flat().map((eachBoard, index) => {
+              console.log(eachBoard);
+              const workspaceInfo = workspaceData.workspaces.find(
+                (eachWorkspace) => {
+                  return eachWorkspace.boards.some((currBoard) => {
+                    return currBoard.id === eachBoard.id;
+                  });
+                }
+              );
+
+              console.log(workspaceInfo);
               return (
                 <CommonBoard
                   key={index}
@@ -55,6 +65,7 @@ const StarredBoards = ({ renderFrom }) => {
                   typeOfBoard={
                     renderFrom === "overview" ? "starredBoard" : "yourBoard"
                   }
+                  workspaceInfo={workspaceInfo}
                 />
               );
             })}

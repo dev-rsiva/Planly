@@ -5,6 +5,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import generateUniqueNumber from "../../utills/generateUniqueNum";
 import dataContext from "../../utills/dataContext";
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
 
 const DisplayAddCard = ({
   showAddCardInput,
@@ -21,7 +22,8 @@ const DisplayAddCard = ({
   const paramObj = useParams();
   const addCardInput = useRef();
 
-  function addCard() {
+  function addCard(e) {
+    e.stopPropagation();
     let newCard = {
       id: generateUniqueNumber(cardTitle, 5),
       title: cardTitle,
@@ -56,34 +58,36 @@ const DisplayAddCard = ({
     //   dueDate: "timestamp",
     // },
 
-    setWorkspaceData((prev) => {
-      let updatedworkspaceData = { ...prev };
-      const workspace = updatedworkspaceData.workspaces.find((workspace) =>
-        workspace.boards.some((board) =>
-          board.lists.some((eachlist) => eachlist.id === list.id)
-        )
-      );
-      const board = workspace.boards.find((board) => board.id === boardInfo.id);
+    // setWorkspaceData((prev) => {
+    let updatedworkspaceData = { ...workspaceData };
+    const workspace = updatedworkspaceData.workspaces.find((workspace) =>
+      workspace.boards.some((board) =>
+        board.lists.some((eachlist) => eachlist.id === list.id)
+      )
+    );
+    const board = workspace.boards.find((board) => board.id === boardInfo.id);
 
-      const listToBeAdded = board.lists.find(
-        (eachList) => eachList.id === list.id
-      );
-      showAddCardInput.top && listToBeAdded.cards.unshift(newCard);
+    const listToBeAdded = board.lists.find(
+      (eachList) => eachList.id === list.id
+    );
+    showAddCardInput.top && listToBeAdded.cards.unshift(newCard);
 
-      showAddCardInput.bottom && listToBeAdded.cards.push(newCard);
+    showAddCardInput.bottom && listToBeAdded.cards.push(newCard);
 
-      setCardTitle("");
-      addCardInput.current.focus();
+    setCardTitle("");
+    addCardInput.current.focus();
 
-      setAllCardData((prev) => {
-        let updatedAllCardData = { ...prev };
+    setAllCardData((prev) => {
+      let updatedAllCardData = { ...prev };
 
-        updatedAllCardData[newCard.id] = { ...newCard };
-        return updatedAllCardData;
-      });
-
-      return updatedworkspaceData;
+      updatedAllCardData[newCard.id] = { ...newCard };
+      return updatedAllCardData;
     });
+    console.log("firebase");
+
+    updateFirebaseDoc(updatedworkspaceData);
+    // return updatedworkspaceData;
+    // });
   }
 
   useEffect(() => {
@@ -106,8 +110,8 @@ const DisplayAddCard = ({
       <div className="flex items-center">
         <button
           className="px-2 py-[6px] rounded-[3px] font-sans text-sm font-semibold text-white bg-blue-600 mr-4"
-          onClick={() => {
-            addCard();
+          onClick={(e) => {
+            addCard(e);
           }}
         >
           Add Card

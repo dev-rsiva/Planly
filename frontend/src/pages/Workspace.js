@@ -16,7 +16,8 @@ const Workspace = () => {
       (workspace) => workspace?.shortname === paramObj?.workspaceShortName
     )
   );
-
+  console.log(workspaceData);
+  console.log(workspaceInfo);
   console.log(
     workspaceData?.workspaces?.find(
       (workspace) => workspace?.shortname === paramObj?.workspaceShortName
@@ -24,11 +25,17 @@ const Workspace = () => {
   );
 
   useEffect(() => {
-    const currWorkspace = workspaceData?.workspaces?.find(
-      (workspace) => workspace?.shortname === paramObj?.workspaceShortName
-    );
-
+    const currWorkspace = workspaceData?.workspaces?.find((workspace) => {
+      console.log(workspace?.shortname);
+      console.log(paramObj?.workspaceShortName);
+      return workspace?.shortname === paramObj?.workspaceShortName;
+    });
+    console.log(currWorkspace);
     setWorkspaceInfo((prev) => {
+      console.log({
+        ...prev,
+        ...currWorkspace,
+      });
       return {
         ...prev,
         ...currWorkspace,

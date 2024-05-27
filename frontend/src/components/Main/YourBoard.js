@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import dataContext from "../../utills/dataContext";
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
 
 const YourBoard = ({ board }) => {
   const [hoverStar, setHoverStar] = useState(false);
@@ -23,36 +24,39 @@ const YourBoard = ({ board }) => {
       </h1>
 
       <div
-        onClick={() => {
-          setWorkspaceData((prev) => {
-            return {
-              ...prev,
-              workspaces: prev.workspaces.map((eachWorkspace) => {
-                const boardIndex = eachWorkspace.boards.findIndex(
-                  (eachBoard) => eachBoard.id === board.id
-                );
+        onClick={(e) => {
+          e.stopPropagation();
+          // setWorkspaceData((prev) => {
+          const updatedWorkspaceData = {
+            ...prev,
+            workspaces: prev.workspaces.map((eachWorkspace) => {
+              const boardIndex = eachWorkspace.boards.findIndex(
+                (eachBoard) => eachBoard.id === board.id
+              );
 
-                if (boardIndex !== -1) {
-                  let updatedBoards = [...eachWorkspace.boards];
+              if (boardIndex !== -1) {
+                let updatedBoards = [...eachWorkspace.boards];
 
-                  updatedBoards[boardIndex] = {
-                    ...updatedBoards[boardIndex],
-                    starred: !updatedBoards[boardIndex].starred,
-                  };
+                updatedBoards[boardIndex] = {
+                  ...updatedBoards[boardIndex],
+                  starred: !updatedBoards[boardIndex].starred,
+                };
 
-                  eachWorkspace = {
-                    ...eachWorkspace,
-                    boards: updatedBoards,
-                  };
-
-
-                  return eachWorkspace;
-                }
+                eachWorkspace = {
+                  ...eachWorkspace,
+                  boards: updatedBoards,
+                };
 
                 return eachWorkspace;
-              }),
-            };
-          });
+              }
+
+              return eachWorkspace;
+            }),
+          };
+          console.log("firebase");
+
+          updateFirebaseDoc(updatedWorkspaceData);
+          // });
         }}
         className={`absolute right-0 bottom-0 m-2 p-1 transform ${
           board.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"

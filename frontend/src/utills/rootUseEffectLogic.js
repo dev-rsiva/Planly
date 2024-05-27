@@ -5,6 +5,8 @@ import { db } from "../utills/firebase";
 const rootUseEffectLogic = (
   templatesData,
   setTemplatesData,
+  workspaceData,
+  setWorkspaceData,
   globalWorkspaceData,
   setGlobalWorkspaceData,
   allCardData,
@@ -15,31 +17,32 @@ const rootUseEffectLogic = (
 ) => {
   useEffect(() => {
     const updateUserWorkspacesData = async () => {
-      if (!globalWorkspaceData || !userId) return;
-
-      try {
-        const workspacesCollectionsRef = collection(db, "workspaces");
-        console.log(globalWorkspaceData);
-        console.log(workspacesCollectionsRef);
-        const querySnapshot = await getDocs(workspacesCollectionsRef);
-        console.log(querySnapshot);
-        console.log(
-          "querySnapshot in rootUseEffectLogic for workspaceData",
-          querySnapshot.docs[0].data()
-        );
-        // Check if the document exists
-        if (!querySnapshot.empty) {
-          // Document exists
-          if (globalWorkspaceData?.workspaces) {
-            // local state variable data exists, update firebase with local data
-            console.log(globalWorkspaceData);
-            const workspaceDocRef = doc(db, "workspaces", "workspaceData");
-            await setDoc(workspaceDocRef, globalWorkspaceData);
-            console.log("Workspaces data updated in Firestore");
+      if (!workspaceData || !userId) return;
+      if (!isSignInForm) {
+        try {
+          const workspacesCollectionsRef = collection(db, "workspaces");
+          console.log(workspaceData);
+          console.log(workspacesCollectionsRef);
+          const querySnapshot = await getDocs(workspacesCollectionsRef);
+          console.log(querySnapshot);
+          console.log(
+            "querySnapshot in rootUseEffectLogic for workspaceData",
+            querySnapshot.docs[0].data()
+          );
+          // Check if the document exists
+          if (!querySnapshot.empty) {
+            // Document exists
+            if (workspaceData?.workspaces) {
+              // local state variable data exists, update firebase with local data
+              console.log(workspaceData);
+              const workspaceDocRef = doc(db, "workspaces", "workspaceData");
+              await setDoc(workspaceDocRef, workspaceData);
+              console.log("Workspaces data updated in Firestore");
+            }
           }
+        } catch (error) {
+          console.error("Error updating Workspaces data in Firestore:", error);
         }
-      } catch (error) {
-        console.error("Error updating Workspaces data in Firestore:", error);
       }
     };
 
@@ -75,11 +78,11 @@ const rootUseEffectLogic = (
 
     // Call update functions for each data type
     if (userId) {
-      updateUserWorkspacesData();
+      // updateUserWorkspacesData();
       // updateUserAllCardData();
       updateUserTemplatesData();
     }
-  }, [templatesData, globalWorkspaceData, allCardData]);
+  }, [templatesData, workspaceData, allCardData]);
 };
 
 export default rootUseEffectLogic;

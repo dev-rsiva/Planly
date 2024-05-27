@@ -9,12 +9,14 @@ import dataContext from "../../utills/dataContext.js";
 import DisplayInviteToWorkspace from "./DisplayInviteToWorkspace";
 import { db } from "../../utills/firebase";
 import { collection, addDoc } from "firebase/firestore";
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
 
 const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
-  const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
   const [displayWorkspaceEdit, setDisplayWorkspaceEdit] = useState(false);
   const [isSaveBtnEnabled, setIsSaveBtnEnabled] = useState(false);
 
+  console.log(workspaceInfo);
   const [editedData, setEditedData] = useState(null);
 
   const [nameField, setNameField] = useState("");
@@ -48,51 +50,78 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
     let shortName = shortNameField.split(" ").join("");
 
     let shortNameIsNotTaken = workspaceData?.workspaces
-      ?.filter((workspace, index) => {
-        return workspaceInfo?.id[workspaceInfo?.id?.length - 1] - 1 !== index;
+      ?.filter((eachWorkspace, index) => {
+        return workspaceInfo?.id !== eachWorkspace.id;
       })
       .every((workspace) => {
+        console.log(workspace?.shortname?.toLowerCase().slice(0, 3));
+        console.log(shortName?.toLowerCase().slice(0, 3));
         return (
           workspace?.shortname?.toLowerCase().slice(0, 3) !==
           shortName?.toLowerCase().slice(0, 3)
         );
       });
-
+    console.log("shortNameIsNotTaken: ", shortNameIsNotTaken);
     setIsShortNameTaken(shortNameIsNotTaken ? false : true);
 
     if (shortNameIsNotTaken) {
-      const currWorkspaceIndex = Number(
-        editedData?.id[editedData.id.length - 1]
+      const currWorkspaceIndex = workspaceData.workspaces.findIndex(
+        (eachWorkspace) => {
+          console.log(
+            eachWorkspace.id.split(" ").join("").toLowerCase().toString()
+          );
+          console.log(
+            workspaceInfo.id.split(" ").join("").toLowerCase().toString()
+          );
+          return (
+            eachWorkspace.id.split(" ").join("").toLowerCase().toString() ==
+            workspaceInfo.id.split(" ").join("").toLowerCase().toString()
+          );
+        }
       );
 
       // workspaceData?.workspaces[currWorkspaceIndex - 1] = editedData;
-      setEditedData((prev) => {
-        let updatedEditedData = { ...prev, shortname: shortName };
+      // setEditedData((prev) => {
+      let updatedEditedData = { ...editedData, shortname: shortName };
 
-        setWorkspaceData((prev) => {
-          let updatedWorkspaceData = { ...prev };
-          updatedWorkspaceData.workspaces = [
-            ...updatedWorkspaceData.workspaces,
-          ];
-          updatedWorkspaceData.workspaces[currWorkspaceIndex - 1] =
-            updatedEditedData;
+      // setWorkspaceData((prev) => {
 
-          return updatedWorkspaceData;
-        });
+      let updatedWorkspaceData = { ...workspaceData };
+      console.log(updatedEditedData);
+      updatedWorkspaceData.workspaces = [...updatedWorkspaceData.workspaces];
+      console.log(currWorkspaceIndex);
+      updatedWorkspaceData.workspaces[currWorkspaceIndex] = updatedEditedData;
+      console.log(updatedEditedData);
+      console.log("firebase");
 
-        return updatedEditedData;
-      });
+      updateFirebaseDoc(updatedWorkspaceData);
+      // return updatedWorkspaceData;
+      // });
+
+      // return updatedEditedData;
+      // });
 
       setDisplayWorkspaceEdit(false);
+      //navigate with respect to the changes in shortName
+      fromWorkspace
+        ? navigate(
+            `/w/${editedData.shortname}/${editedData.name.replace(/ /g, "-")}`
+          )
+        : navigate(`/w/${editedData.shortname}/Home`);
     }
   };
-
+  console.log(workspaceData);
+  console.log(editedData);
   useEffect(() => {
     const mandFieldsAreFilled = nameField !== "" && shortNameField !== "";
     setIsSaveBtnEnabled(mandFieldsAreFilled);
   }, [nameField, shortNameField]);
 
   useEffect(() => {
+    console.log(
+      "useEffect started fro updating editedData & workspaceData in workspaceHeading comp"
+    );
+    console.log(workspaceInfo);
     setEditedData(workspaceInfo);
     setNameField(workspaceInfo?.name);
     setShortNameField(workspaceInfo?.shortname);
@@ -148,27 +177,30 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
             </div>
           </div>
 
-          {fromWorkspace && (
-            <div className="">
-              <button
-                className="relative cursor-pointer bg-blue-600 rounded px-3 py-2 text-white text-sm font-semibold font-sans"
-                onClick={() => setShowInviteWorkspace(true)}
-              >
-                <span className="mr-2">
-                  <FontAwesomeIcon icon={faUserPlus} />
-                </span>
-                Invite Workspace Members
-              </button>
-              {showInviteWorkspace && (
-                <div className="absolute top-8 right-28">
-                  <DisplayInviteToWorkspace
-                    workspaceInfo={workspaceInfo}
-                    setShowInviteWorkspace={setShowInviteWorkspace}
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          {fromWorkspace &&
+            workspaceInfo?.admins?.some(
+              (eachAdmin) => eachAdmin?.userId === user?.uid
+            ) && (
+              <div className="">
+                <button
+                  className="relative cursor-pointer bg-blue-600 rounded px-3 py-2 text-white text-sm font-semibold font-sans"
+                  onClick={() => setShowInviteWorkspace(true)}
+                >
+                  <span className="mr-2">
+                    <FontAwesomeIcon icon={faUserPlus} />
+                  </span>
+                  Invite Workspace Members
+                </button>
+                {showInviteWorkspace && (
+                  <div className="absolute top-8 right-28">
+                    <DisplayInviteToWorkspace
+                      workspaceInfo={workspaceInfo}
+                      setShowInviteWorkspace={setShowInviteWorkspace}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
         </div>
       )}
       {displayWorkspaceEdit && (

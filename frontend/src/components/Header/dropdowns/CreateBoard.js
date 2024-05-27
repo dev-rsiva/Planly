@@ -10,6 +10,7 @@ import { visibilityDetails } from "../../../utills/visibilityData.js";
 import generateUniqueNumber from "../../../utills/generateUniqueNum.js";
 import dataContext from "../../../utills/dataContext.js";
 
+import { updateFirebaseDoc } from "../../../utills/updateFirebase";
 const CreateBoard = ({
   createDropdownStatus,
   setCreateDropdownStatus,
@@ -36,6 +37,8 @@ const CreateBoard = ({
     visibility: "Workspace",
   });
   console.log(editedData.visibility);
+  console.log(workspaceData);
+  console.log(paramObj);
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
     ? workspaceData?.workspaces?.find(
         (workspace) => workspace?.shortname === paramObj.workspaceShortName
@@ -50,6 +53,7 @@ const CreateBoard = ({
     currWorkspaceNameIntialData
   );
 
+  console.log(currWorkspaceNameIntialData);
   const { user, createBoardSourceClick, setCreateBoardSourceClick } =
     useContext(dataContext);
   console.log(user);
@@ -87,32 +91,48 @@ const CreateBoard = ({
       visibility: editedData.visibility,
       // members: [user],
       // admins: [user], // For Premium Workspaces
-      admins: [{ userId: user.uid, role: "admin", email: user.email }],
-      members: [{ userId: user.uid, role: "admin", email: user.email }], // also role - normal exists.
+      admins: [
+        {
+          userId: user.uid,
+          role: "admin",
+          name: user.displayName,
+          email: user.email,
+        },
+      ],
+      members: [
+        {
+          userId: user.uid,
+          role: "admin",
+          name: user.displayName,
+          email: user.email,
+        },
+      ], // also role - normal exists.
       starred: false,
       viewedAt: "",
       lists: [],
     };
     console.log(updatedBoard);
-    setWorkspaceData((prev) => {
-      let updatedWorkspaceData = { ...prev };
-      const currWorkspaceData = updatedWorkspaceData.workspaces.find(
-        (workspace) => workspace?.name === currWorkspaceName
-      );
-      console.log(currWorkspaceData);
-      const workspaceIndex = updatedWorkspaceData.workspaces.findIndex(
-        (workspace) => workspace?.name === currWorkspaceName
-      );
-      console.log(workspaceIndex);
-      if (!currWorkspaceData?.boards) {
-        currWorkspaceData.boards = [];
-      }
+    console.log(currWorkspaceName);
 
-      currWorkspaceData?.boards?.push(updatedBoard);
-      updatedWorkspaceData.workspaces[workspaceIndex] = currWorkspaceData;
-      console.log(updatedWorkspaceData);
-      return updatedWorkspaceData;
-    });
+    let updatedWorkspaceData = { ...workspaceData };
+    console.log(updatedWorkspaceData);
+    const currWorkspaceData = updatedWorkspaceData.workspaces.find(
+      (workspace) => workspace?.name === currWorkspaceName
+    );
+    console.log(currWorkspaceData);
+    const workspaceIndex = updatedWorkspaceData.workspaces.findIndex(
+      (workspace) => workspace?.name === currWorkspaceName
+    );
+    console.log(workspaceIndex);
+    if (!currWorkspaceData?.boards) {
+      currWorkspaceData.boards = [];
+    }
+
+    currWorkspaceData?.boards?.push(updatedBoard);
+    updatedWorkspaceData.workspaces[workspaceIndex] = currWorkspaceData;
+    console.log(updatedWorkspaceData);
+    console.log("firebase")
+    updateFirebaseDoc(updatedWorkspaceData);
 
     setCreateDropdownDetails((prev) => {
       prev = [...prev];
@@ -329,9 +349,10 @@ const CreateBoard = ({
           }}
         >
           <p className="font-sans text-custom text-sm">
-            {visibility.map((eachCategory) => {
+            {/* {visibility.map((eachCategory) => {
               return eachCategory.isShowing && eachCategory.name;
-            })}
+            })} */}
+            {editedData.visibility}
           </p>
 
           <FontAwesomeIcon icon={faAngleDown} size="sm" />

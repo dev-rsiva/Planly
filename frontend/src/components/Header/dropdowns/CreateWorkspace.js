@@ -9,6 +9,7 @@ import { data } from "../../../utills/utills.js";
 import { Link } from "react-router-dom";
 import generateUniqueNumber from "../../../utills/generateUniqueNum.js";
 import { randomGradientColor } from "../../../utills/randomGradientColor.js";
+import { updateFirebaseDoc } from "../../../utills/updateFirebase";
 
 const CreateWorkspace = ({
   createDropdownStatus,
@@ -59,7 +60,7 @@ const CreateWorkspace = ({
     let firstTwoChar = workspaceDetails.name.slice(0, 3);
 
     let workspaceIntitalData = {
-      id: `workspace-${data.workspaces.length + 1}`,
+      id: generateUniqueNumber(firstTwoChar, 5),
       name: workspaceDetails.name,
       shortname: generateUniqueNumber(firstTwoChar, 5),
       website: workspaceDetails.shortname,
@@ -70,8 +71,22 @@ const CreateWorkspace = ({
         color2: randomGradientColor(),
       },
       isPremium: false,
-      admins: [{ userId: user.uid, role: "admin", email: user.email }],
-      members: [{ userId: user.uid, role: "admin", email: user.email }], // also role - normal exists.
+      admins: [
+        {
+          userId: user.uid,
+          role: "admin",
+          name: user.displayName,
+          email: user.email,
+        },
+      ],
+      members: [
+        {
+          userId: user.uid,
+          role: "admin",
+          name: user.displayName,
+          email: user.email,
+        },
+      ], // also role - normal exists.
       settings: {
         visibility: "private",
         membershipRestrictions: "anybody",
@@ -92,15 +107,18 @@ const CreateWorkspace = ({
     };
 
     console.log(data);
-    setWorkspaceData((prev) => {
-      let updatedData = { ...prev };
-      console.log(updatedData);
-      updatedData.workspaces = [
-        ...updatedData.workspaces,
-        { ...workspaceIntitalData },
-      ];
-      return updatedData;
-    });
+    // setWorkspaceData((prev) => {
+    let updatedData = { ...workspaceData };
+    console.log(updatedData);
+    updatedData.workspaces = [
+      ...updatedData.workspaces,
+      { ...workspaceIntitalData },
+    ];
+    console.log("firebase")
+
+    updateFirebaseDoc(updatedData);
+    //   return updatedData;
+    // });
     console.log(data);
     setCreateDropdownDetails((prev) => {
       let updatedCreateDropdownDetails = [...prev];

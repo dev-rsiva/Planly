@@ -13,14 +13,15 @@ const RecentlyViewedBoards = ({
 }) => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
-
   const recentlyViewedBoards = workspaceData?.workspaces
-    .map((workspace) => {
+    ?.map((workspace) => {
       return workspace?.boards?.filter((eachBoard, index) => {
         return eachBoard?.viewedAt !== "" && !eachBoard?.starred;
       });
     })
     .flat();
+
+  console.log(recentlyViewedBoards);
 
   return (
     <>
@@ -40,11 +41,22 @@ const RecentlyViewedBoards = ({
               .sort((a, b) => b.viewedAt - a.viewedAt)
               .slice(0, 4)
               .map((eachBoard, index) => {
+                console.log(eachBoard);
+                const workspaceInfo = workspaceData.workspaces.find(
+                  (eachWorkspace) => {
+                    return eachWorkspace.boards.some((currBoard) => {
+                      return currBoard.id === eachBoard.id;
+                    });
+                  }
+                );
+
+                console.log(workspaceInfo);
                 return (
                   <CommonBoard
                     key={index}
                     board={eachBoard}
                     typeOfBoard="recentlyViewed"
+                    workspaceInfo={workspaceInfo}
                   />
                 );
               })}

@@ -14,6 +14,7 @@ import {
   where,
   getDoc,
   getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -59,30 +60,30 @@ export const useAppState = (
     const fetchData = async () => {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         console.log("oAuth changed");
-        if (user) {
-          console.log("user is available");
-          const workspaceCollectionRef = collection(db, "workspaces");
-          const querySnapshot = await getDocs(workspaceCollectionRef);
-          console.log(querySnapshot);
-          if (!querySnapshot?.docs[0]?.data()) {
-            console.log("document not exist");
-            //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the workspaceData, so, return from the function
-            return;
-          }
+        // if (user) {
+        //   console.log("user is available");
+        //   const workspaceCollectionRef = collection(db, "workspaces");
+        //   const querySnapshot = await getDocs(workspaceCollectionRef);
+        //   console.log(querySnapshot);
+        //   if (!querySnapshot?.docs[0]?.data()) {
+        //     console.log("document not exist");
+        //     //if the document doesn't exist, but the user exists means it is first time user, so signup logic will take care of updating the workspaceData, so, return from the function
+        //     return;
+        //   }
 
-          //if the document exist, also the user exist means, the page is refreshing now, so update the workspaceData.
-          const globalWorkspaceData = querySnapshot.docs[0].data();
-          console.log(globalWorkspaceData);
+        //   //if the document exist, also the user exist means, the page is refreshing now, so update the workspaceData.
+        //   const globalWorkspaceData = querySnapshot.docs[0].data();
+        //   console.log(globalWorkspaceData);
 
-          if (!isSignInForm) {
-            setGlobalWorkspaceData(globalWorkspaceData);
-          }
-          // setUser(user);
-          setIsLoading(false);
-        } else {
-          setGlobalWorkspaceData(null);
-          setIsLoading(false);
-        }
+        //   if (!isSignInForm) {
+        //     setGlobalWorkspaceData(globalWorkspaceData);
+        //   }
+        //   // setUser(user);
+        //   setIsLoading(false);
+        // } else {
+        //   setGlobalWorkspaceData(null);
+        //   setIsLoading(false);
+        // }
 
         if (user) {
           const templatesCollectionRef = collection(db, "templates");
@@ -108,6 +109,54 @@ export const useAppState = (
     };
 
     fetchData();
+  }, [user]);
+
+  useEffect(() => {
+    const updateLocalWorkspaceDataFromFirestore = async () => {
+      if (!user) return;
+      const workspacesCollectionRef = collection(db, "workspaces");
+      const querySnapshot = await getDocs(workspacesCollectionRef);
+      console.log(querySnapshot);
+
+      // if (querySnapshot.empty) return;
+      const unsubscribe = onSnapshot(workspacesCollectionRef, (snapshot) => {
+        console.log("data update triggered from onSnapshot");
+        const updatedWorkspaceDataFromFirestore =
+          snapshot?.docs[0]?.data().workspaces;
+
+        setWorkspaceData((prev) => {
+          const updatedWorkspaceData =
+            updatedWorkspaceDataFromFirestore?.filter((eachWorkspace) => {
+              console.log(eachWorkspace);
+              const condition1 =
+                eachWorkspace?.settings?.visibility === "private" ||
+                eachWorkspace?.settings?.visibility === "public";
+
+              const condition2 = eachWorkspace?.members?.some((member) => {
+                console.log(member?.userId);
+                console.log(user);
+                console.log(user?.uid);
+                console.log(member?.userId === user?.uid);
+                return member?.userId === user?.uid;
+              });
+              console.log(condition1);
+              console.log(condition2);
+              console.log(condition1 && condition2);
+
+              return condition1 & condition2;
+            });
+          console.log(updatedWorkspaceData);
+          const permittedWorkspaceData = {
+            workspaces: updatedWorkspaceData,
+          };
+          console.log(permittedWorkspaceData);
+
+          return permittedWorkspaceData;
+        });
+      });
+      return () => unsubscribe();
+    };
+    updateLocalWorkspaceDataFromFirestore();
   }, [user]);
 
   rootUseEffectLogic(

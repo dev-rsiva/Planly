@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar/Sidebar.js";
 import BoardHeading from "../components/Main/BoardHeading.js";
 import Lists from "../components/Main/Lists.js";
 import dataContext from "../utills/dataContext.js";
+import { updateFirebaseDoc } from "../utills/updateFirebase";
 
 const Boards = () => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
@@ -68,34 +69,38 @@ const Boards = () => {
   // }, {});
 
   useEffect(() => {
-    setWorkspaceData((prev) => {
-      return {
-        ...prev,
-        workspaces: prev?.workspaces?.map((eachWorkspace) => {
-          const boardIndex = eachWorkspace.boards.findIndex(
-            (eachBoard) => eachBoard.id === boardInfo.id
-          );
+    // setWorkspaceData((prev) => {
+    const updatedWorkspaceData = {
+      ...workspaceData,
+      workspaces: workspaceData?.workspaces?.map((eachWorkspace) => {
+        const boardIndex = eachWorkspace.boards.findIndex(
+          (eachBoard) => eachBoard.id === boardInfo.id
+        );
 
-          if (boardIndex !== -1) {
-            let updatedBoards = [...eachWorkspace.boards];
+        if (boardIndex !== -1) {
+          let updatedBoards = [...eachWorkspace.boards];
 
-            updatedBoards[boardIndex] = {
-              ...updatedBoards[boardIndex],
-              viewedAt: Date.now(),
-            };
+          updatedBoards[boardIndex] = {
+            ...updatedBoards[boardIndex],
+            viewedAt: Date.now(),
+          };
 
-            eachWorkspace = {
-              ...eachWorkspace,
-              boards: updatedBoards,
-            };
-
-            return eachWorkspace;
-          }
+          eachWorkspace = {
+            ...eachWorkspace,
+            boards: updatedBoards,
+          };
 
           return eachWorkspace;
-        }),
-      };
-    });
+        }
+
+        return eachWorkspace;
+      }),
+    };
+    console.log(updatedWorkspaceData);
+    console.log("firebase");
+
+    updateFirebaseDoc(updatedWorkspaceData);
+    // });
     // }
   }, []);
 
@@ -139,6 +144,7 @@ const Boards = () => {
         <BoardHeading
           workspaceData={workspaceData}
           setWorkspaceData={setWorkspaceData}
+          workspaceInfo={workspaceInfo}
           boardInfo={boardInfo}
         />
         <div className="fixed">

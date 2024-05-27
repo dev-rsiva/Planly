@@ -46,7 +46,8 @@ const List = ({
     }
   }, [showListActionCard]);
 
-
+  console.log(boardInfo);
+  console.log(list);
   return (
     <div
       className={`relative w-[275px] h-auto bg-[#f1f2f4] rounded-lg px-4 py-4 flex flex-col `}

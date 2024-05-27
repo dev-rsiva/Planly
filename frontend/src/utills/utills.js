@@ -16,8 +16,18 @@ export const data = {
       isPremium: false,
       admin: "",
       members: [
-        { userId: "userId1", role: "admin" },
-        { userId: "userId2", role: "normal" },
+        {
+          userId: "userId1",
+          role: "admin",
+          name: "user.displayName",
+          email: "user.email",
+        },
+        {
+          userId: "userId2",
+          role: "normal",
+          name: "user.displayName",
+          email: "user.email",
+        },
       ],
       settings: {
         visibility: "private" / "public",

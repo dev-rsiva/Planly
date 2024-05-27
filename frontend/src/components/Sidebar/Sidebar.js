@@ -98,7 +98,7 @@ const Sidebar = ({ workspaceInfo }) => {
       </div>
       <hr className="mb-4" />
 
-      <div className="h-[78vh] overflow-y-auto">
+      <div className="h-[75vh] overflow-y-auto">
         <div>
           {workspaceSideBarBtns.slice(0, 3).map((eachBtn, index) => {
             return (

@@ -349,7 +349,7 @@ const OpenCard = () => {
             navigate(-1);
           }}
         ></div>
-        <div className="absolute flex flex-col w-[770px] h-[590px] overflow-auto top-1/2 left-1/2 translate-x-[-50%] translate-y-[-46%] bg-[#F0F1F4] z-[1005] rounded-lg p-6">
+        <div className="absolute flex flex-col w-[770px] h-[550px] overflow-auto top-1/2 left-1/2 translate-x-[-50%] translate-y-[-46%] bg-[#F0F1F4] z-[1005] rounded-lg p-6">
           <div className="flex justify-between mb-8 p-2">
             <div className="flex items-start ">
               <FontAwesomeIcon

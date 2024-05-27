@@ -11,6 +11,7 @@ import Shimmer from "./utills/Shimmer.js";
 import { data } from "./utills/utills.js";
 
 const App = () => {
+  console.log("App Rendering started");
   const paramObj = useParams();
   const useTemplateBtn = useRef();
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
@@ -70,7 +71,7 @@ const App = () => {
     );
 
   return (
-    <>
+    <div className="">
       <dataContext.Provider
         value={{
           user,
@@ -106,7 +107,7 @@ const App = () => {
           <Outlet />
         </sideBarSelectionContext.Provider>
       </dataContext.Provider>
-    </>
+    </div>
   );
 };
 

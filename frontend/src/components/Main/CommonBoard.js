@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import dataContext from "../../utills/dataContext";
 import { useNavigate } from "react-router-dom";
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
 
 const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
   const [hoverStar, setHoverStar] = useState(false);
@@ -60,23 +61,34 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
   console.log(workspaceInfo);
 
   if (board.visibility === "Workspace") {
-    const isWorkspaceMember = workspaceInfo?.members.some(
-      (each) => each.userId === user.uid
-    );
-
+    const isWorkspaceMember = workspaceInfo?.members.some((each) => {
+      console.log(each.userId);
+      console.log(user.uid);
+      return each.userId === user.uid;
+    });
+    console.log("typeOfBoard: ", typeOfBoard, isWorkspaceMember);
     if (!isWorkspaceMember) {
+      //For workspace boards, do not allow user to view this board if user is not this workspace member
       return;
     }
-    // console.log(
-    //   `user is a workspace member - ${isWorkspaceMember} and board's visibility is workspace, Show all boards`
-    // );
   }
+
   if (board.visibility === "Private") {
-    console.log(true);
+    const isBoardMember = board.members.some((eachMember) => {
+      return eachMember.userId === user.uid;
+    });
+
+    if (!isBoardMember) {
+      console.log(isBoardMember);
+      //For private boards, do not allow user to view this board if user is not this board member
+      return;
+    }
   }
+
   if (board.visibility === "Public") {
-    console.log(true);
+    //do nothing, only not allow to edit this board and its content.
   }
+
   return (
     <div
       className="relative w-[195px] h-[95px] overflow-hidden rounded-[3px] mr-4 mb-8 cursor-pointer"
@@ -98,35 +110,43 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
       <div
         onClick={(e) => {
           e.stopPropagation();
-          setWorkspaceData((prev) => {
-            let updatedWorkspaces = [...prev.workspaces];
+          // setWorkspaceData((prev) => {
+          console.log("Common data click triggered");
+          let updatedWorkspaces = [...workspaceData.workspaces];
 
-            updatedWorkspaces = updatedWorkspaces?.map((eachWorkspace) => {
-              const boardIndex = eachWorkspace?.boards?.findIndex(
-                (eachBoard) => eachBoard?.id === board?.id
-              );
+          updatedWorkspaces = updatedWorkspaces?.map((eachWorkspace) => {
+            const boardIndex = eachWorkspace?.boards?.findIndex(
+              (eachBoard) => eachBoard?.id === board?.id
+            );
 
-              if (boardIndex !== -1) {
-                let updatedBoards = [...eachWorkspace?.boards];
+            if (boardIndex !== -1) {
+              let updatedBoards = [...eachWorkspace?.boards];
 
-                updatedBoards[boardIndex] = {
-                  ...updatedBoards[boardIndex],
-                  starred: !updatedBoards[boardIndex].starred,
-                };
+              updatedBoards[boardIndex] = {
+                ...updatedBoards[boardIndex],
+                starred: !updatedBoards[boardIndex].starred,
+              };
 
-                eachWorkspace = {
-                  ...eachWorkspace,
-                  boards: updatedBoards,
-                };
-
-                return eachWorkspace;
-              }
+              eachWorkspace = {
+                ...eachWorkspace,
+                boards: updatedBoards,
+              };
 
               return eachWorkspace;
-            });
+            }
 
-            return { ...prev, workspaces: updatedWorkspaces };
+            return eachWorkspace;
           });
+
+          let updatedWorkspaceData = {
+            ...workspaceData,
+            workspaces: updatedWorkspaces,
+          };
+          console.log("firebase");
+
+          updateFirebaseDoc(updatedWorkspaceData);
+          // return { ...prev, workspaces: updatedWorkspaces };
+          // });
         }}
         className={commonClassName}
       >

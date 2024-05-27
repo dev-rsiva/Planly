@@ -10,20 +10,20 @@ import {
 } from "firebase/firestore";
 
 // Function to accept invitation
-const acceptInvitation = async (email, userId) => {
+const acceptInvitation = async (user) => {
   console.log(
-    `Starting to accept invitation for email: ${email} and userId: ${userId}`
+    `Starting to accept invitation for email: ${user.email} and userId: ${user.uid}`
   );
 
   const q = query(
     collection(db, "invitations"),
-    where("email", "==", email),
+    where("email", "==", user.email),
     where("status", "==", "pending")
   );
 
   const querySnapshot = await getDocs(q);
   console.log(
-    `Found ${querySnapshot.size} pending invitations for email: ${email}`
+    `Found ${querySnapshot.size} pending invitations for email: ${user.email}`
   );
 
   querySnapshot.forEach(async (invitationDoc) => {
@@ -53,9 +53,10 @@ const acceptInvitation = async (email, userId) => {
         const updatedMembers = [
           ...workspaces[workspaceIndex].members,
           {
-            userId: userId,
+            userId: user.uid,
             role: "member",
-            email: email,
+            name: user.displayName,
+            email: user.email,
           },
         ];
 
@@ -74,7 +75,7 @@ const acceptInvitation = async (email, userId) => {
         });
 
         console.log(
-          `User ${userId} added to workspace ${invitationData.workspaceId}`
+          `User ${user.uid} added to workspace ${invitationData.workspaceId}`
         );
       } else {
         console.error(
@@ -92,7 +93,7 @@ const acceptInvitation = async (email, userId) => {
       status: "accepted",
     });
 
-    console.log(`Invitation for email ${email} accepted`);
+    console.log(`Invitation for email ${user.email} accepted`);
   });
 };
 

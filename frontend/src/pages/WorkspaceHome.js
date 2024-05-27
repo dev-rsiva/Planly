@@ -13,6 +13,7 @@ const WorkspaceHome = () => {
   const workspaceInfo = workspaceData?.workspaces.find(
     (workspace) => workspace?.shortname === paramObj?.workspaceShortName
   );
+  console.log(workspaceData);
   console.log(workspaceInfo);
   return (
     <div className="flex px-32 mt-8 relative top-[45px]">
