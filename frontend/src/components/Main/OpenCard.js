@@ -41,7 +41,7 @@ import CreateLabel from "./CreateLabel";
 import Boards from "../../pages/Boards.js";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import DatesCard from "./DatesCard";
-import AddCheckList from "./AddCheckList";
+import AddChecklist from "./AddChecklist";
 import ChecklistContainer from "./ChecklistContainer";
 
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
@@ -1405,7 +1405,7 @@ const OpenCard = () => {
           />
         )}
         {showAddChecklist && (
-          <AddCheckList
+          <AddChecklist
             setShowAddChecklist={setShowAddChecklist}
             showAddChecklist={showAddChecklist}
           />
