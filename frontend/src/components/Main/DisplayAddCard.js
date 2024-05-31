@@ -17,7 +17,10 @@ const DisplayAddCard = ({
 }) => {
   const [cardTitle, setCardTitle] = useState("");
 
-  const { user, allCardData, setAllCardData } = useContext(dataContext);
+  const {
+    user,
+    // allCardData, setAllCardData
+  } = useContext(dataContext);
 
   const paramObj = useParams();
   const addCardInput = useRef();
@@ -31,6 +34,7 @@ const DisplayAddCard = ({
       coverImg: "",
       Activities: [],
       labels: sortedLabels,
+      checklists: [],
       members: [user],
       covers: [],
       dates: { start: null, due: null },
@@ -38,7 +42,7 @@ const DisplayAddCard = ({
       cover: [],
       customFields: [],
       archived: false,
-      watching: false,
+      watchers: [],
       assignedTo: [],
       subscribers: [],
       dueDate: "",
@@ -60,7 +64,7 @@ const DisplayAddCard = ({
 
     // setWorkspaceData((prev) => {
     let updatedworkspaceData = { ...workspaceData };
-    const workspace = updatedworkspaceData.workspaces.find((workspace) =>
+    const workspace = updatedworkspaceData.workspaces?.find((workspace) =>
       workspace.boards.some((board) =>
         board.lists.some((eachlist) => eachlist.id === list.id)
       )
@@ -77,12 +81,12 @@ const DisplayAddCard = ({
     setCardTitle("");
     addCardInput.current.focus();
 
-    setAllCardData((prev) => {
-      let updatedAllCardData = { ...prev };
+    // setAllCardData((prev) => {
+    //   let updatedAllCardData = { ...prev };
 
-      updatedAllCardData[newCard.id] = { ...newCard };
-      return updatedAllCardData;
-    });
+    //   updatedAllCardData[newCard.id] = { ...newCard };
+    //   return updatedAllCardData;
+    // });
     console.log("firebase");
 
     updateFirebaseDoc(updatedworkspaceData);

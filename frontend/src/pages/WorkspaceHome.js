@@ -10,7 +10,7 @@ const WorkspaceHome = () => {
   console.log(workspaceData);
   const paramObj = useParams();
   console.log(paramObj);
-  const workspaceInfo = workspaceData?.workspaces.find(
+  const workspaceInfo = workspaceData?.workspaces?.find(
     (workspace) => workspace?.shortname === paramObj?.workspaceShortName
   );
   console.log(workspaceData);

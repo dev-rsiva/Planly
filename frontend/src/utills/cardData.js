@@ -3,7 +3,7 @@ import { sortedLabels } from "./labelColors";
 
 export const cardData = {};
 
-data.workspaces.forEach((workspace) =>
+data.workspaces?.forEach((workspace) =>
   workspace.boards.forEach((board) =>
     board.lists.forEach((list) =>
       list.cards.forEach((card) => {
@@ -18,10 +18,9 @@ data.workspaces.forEach((workspace) =>
           cover: [],
           customFields: [],
           archived: false,
-          watching: false,
+          watchers: [],
         };
       })
     )
   )
 );
-

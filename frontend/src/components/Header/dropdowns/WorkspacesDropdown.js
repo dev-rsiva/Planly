@@ -18,11 +18,11 @@ const WorkspacesDropdown = ({
   const paramObj = useParams();
 
   const currWorkspaceInfo = paramObj.workspaceShortName
-    ? workspaceData?.workspaces.find(
+    ? workspaceData?.workspaces?.find(
         (workspace) => workspace?.shortname === paramObj.workspaceShortName
       )
     : paramObj.boardName
-    ? workspaceData?.workspaces.find((workspace) =>
+    ? workspaceData?.workspaces?.find((workspace) =>
         workspace?.boards.some((board) => board.id === paramObj.boardId)
       )
     : "";

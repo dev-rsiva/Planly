@@ -82,7 +82,7 @@ const OverviewSidebar = (
   ] = useState(() => {
     const workspaceDropdownBtns = {};
     console.log(workspaceData);
-    workspaceData?.workspaces.forEach(
+    workspaceData?.workspaces?.forEach(
       (workspace) => (workspaceDropdownBtns[workspace.name] = false)
     );
 

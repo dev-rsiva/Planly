@@ -30,7 +30,7 @@ const RecentlyViewedBoard = ({ recentlyViewedBoard }) => {
           // setWorkspaceData((prev) => {
           const updatedWorkspaceData = {
             ...workspaceData,
-            workspaces: workspaceData.workspaces.map((eachWorkspace) => {
+            workspaces: workspaceData.workspaces?.map((eachWorkspace) => {
               const boardIndex = eachWorkspace.boards.findIndex(
                 (eachBoard) => eachBoard.id === recentlyViewedBoard.id
               );

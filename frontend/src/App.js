@@ -57,7 +57,7 @@ const App = () => {
     return (
       <Login
         setIsUserAuthenticated={setIsUserAuthenticated}
-        // user={user}
+        user={user}
         setIsSignInForm={setIsSignInForm}
         isSignInForm={isSignInForm}
         setUser={setUser}
@@ -79,8 +79,8 @@ const App = () => {
           setWorkspaceData,
           currWorkspace,
           setCurrWorkspace,
-          allCardData,
-          setAllCardData,
+          // allCardData,
+          // setAllCardData,
           templatesData,
           setTemplatesData,
           createBoardWithTemplateCard,

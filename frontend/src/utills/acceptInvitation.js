@@ -43,7 +43,7 @@ const acceptInvitation = async (user) => {
       console.log(`Fetched workspaces data: ${JSON.stringify(workspaces)}`);
 
       // Find the specific workspace using the invitation's workspaceId
-      const workspaceIndex = workspaces.findIndex(
+      const workspaceIndex = workspaces?.findIndex(
         (workspace) => workspace.id === invitationData.workspaceId
       );
       if (workspaceIndex !== -1) {
@@ -57,6 +57,7 @@ const acceptInvitation = async (user) => {
             role: "member",
             name: user.displayName,
             email: user.email,
+            photoURL: user?.photoURL,
           },
         ];
 

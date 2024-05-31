@@ -8,6 +8,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { visibilityDetails } from "../../../utills/visibilityData.js";
 import generateUniqueNumber from "../../../utills/generateUniqueNum.js";
+
 import dataContext from "../../../utills/dataContext.js";
 
 import { updateFirebaseDoc } from "../../../utills/updateFirebase";
@@ -84,6 +85,7 @@ const CreateBoard = ({
 
   function addBoard() {
     let firstTwoChar = editedData.title.slice(0, 3);
+
     const updatedBoard = {
       id: generateUniqueNumber(firstTwoChar, 5),
       title: editedData.title,
@@ -97,6 +99,7 @@ const CreateBoard = ({
           role: "admin",
           name: user.displayName,
           email: user.email,
+          photoURL: user?.photoURL,
         },
       ],
       members: [
@@ -105,6 +108,7 @@ const CreateBoard = ({
           role: "admin",
           name: user.displayName,
           email: user.email,
+          photoURL: user?.photoURL,
         },
       ], // also role - normal exists.
       starred: false,
@@ -116,11 +120,11 @@ const CreateBoard = ({
 
     let updatedWorkspaceData = { ...workspaceData };
     console.log(updatedWorkspaceData);
-    const currWorkspaceData = updatedWorkspaceData.workspaces.find(
+    const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
       (workspace) => workspace?.name === currWorkspaceName
     );
     console.log(currWorkspaceData);
-    const workspaceIndex = updatedWorkspaceData.workspaces.findIndex(
+    const workspaceIndex = updatedWorkspaceData.workspaces?.findIndex(
       (workspace) => workspace?.name === currWorkspaceName
     );
     console.log(workspaceIndex);
@@ -131,7 +135,7 @@ const CreateBoard = ({
     currWorkspaceData?.boards?.push(updatedBoard);
     updatedWorkspaceData.workspaces[workspaceIndex] = currWorkspaceData;
     console.log(updatedWorkspaceData);
-    console.log("firebase")
+    console.log("firebase");
     updateFirebaseDoc(updatedWorkspaceData);
 
     setCreateDropdownDetails((prev) => {
@@ -320,7 +324,7 @@ const CreateBoard = ({
           onChange={(e) => setCurrWorkspaceName(e.target.value)}
           onClick={() => setInputSelection("Workspace")}
         >
-          {workspaceData?.workspaces.map((workspace) => {
+          {workspaceData?.workspaces?.map((workspace) => {
             return (
               <option
                 value={workspace?.name}

@@ -8,9 +8,9 @@ const NotificationContainer = () => {
       <div className="mr-4 cursor-not-allowed">
         <FontAwesomeIcon icon={faBell} />
       </div>
-      <div className="mr-4 cursor-not-allowed">
+      {/* <div className="mr-4 cursor-not-allowed">
         <FontAwesomeIcon icon={faCircleQuestion} />
-      </div>
+      </div> */}
     </>
   );
 };

@@ -42,7 +42,7 @@ const RecentlyViewedBoards = ({
               .slice(0, 4)
               .map((eachBoard, index) => {
                 console.log(eachBoard);
-                const workspaceInfo = workspaceData.workspaces.find(
+                const workspaceInfo = workspaceData.workspaces?.find(
                   (eachWorkspace) => {
                     return eachWorkspace.boards.some((currBoard) => {
                       return currBoard.id === eachBoard.id;

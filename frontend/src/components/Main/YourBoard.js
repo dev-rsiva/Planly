@@ -29,7 +29,7 @@ const YourBoard = ({ board }) => {
           // setWorkspaceData((prev) => {
           const updatedWorkspaceData = {
             ...prev,
-            workspaces: prev.workspaces.map((eachWorkspace) => {
+            workspaces: prev.workspaces?.map((eachWorkspace) => {
               const boardIndex = eachWorkspace.boards.findIndex(
                 (eachBoard) => eachBoard.id === board.id
               );

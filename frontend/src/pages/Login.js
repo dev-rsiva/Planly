@@ -14,6 +14,7 @@ import {
 import { randomAvatar } from "../utills/avatarGenerator";
 import generateUniqueNumber from "../utills/generateUniqueNum";
 import { randomGradientColor } from "../utills/randomGradientColor";
+import { randomColor } from "../utills/randomGradientColor";
 import { data } from "../utills/utills";
 import { cardData } from "../utills/cardData";
 import allTemplatesData from "../utills/allTemplatesData";
@@ -40,7 +41,7 @@ const Login = ({
   setWorkspaceData,
   globalWorkspaceData,
   setGlobalWorkspaceData,
-  setAllCardData,
+  // setAllCardData,
   setTemplatesData,
 }) => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -60,7 +61,7 @@ const Login = ({
           uid: uid,
           email: email,
           displayName: displayName,
-          photoURL: photoURL,
+          photoURL: user?.photoURL,
         });
         // }
 
@@ -89,9 +90,10 @@ const Login = ({
     setErrorMessage(null);
   };
 
-  const initializeData = async (user, email) => {
+  const initializeData = async (user) => {
     //Initialize Workspace data
     console.log("data initialization started");
+    console.log(user?.photoURL);
     try {
       const workspacesDocRef = doc(db, "workspaces", "workspaceData");
       console.log(workspacesDocRef);
@@ -100,7 +102,7 @@ const Login = ({
       const newWorkspaceData = {
         // id: "Default Workspace",
         id: generateUniqueNumber(firstTwoChar, 5),
-        name: user.displayName + " Default Workspace",
+        name: user?.displayName + " Default Workspace",
         shortname: generateUniqueNumber("Default", 5),
         website: "",
         description: "",
@@ -112,18 +114,20 @@ const Login = ({
         isPremium: false,
         admins: [
           {
-            userId: user.uid,
+            userId: user?.uid,
             role: "admin",
-            name: user.displayName,
-            email: email,
+            name: user?.displayName,
+            email: user?.email,
+            photoURL: user?.photoURL,
           },
         ],
         members: [
           {
-            userId: user.uid,
+            userId: user?.uid,
             role: "admin",
-            name: user.displayName,
-            email: email,
+            name: user?.displayName,
+            email: user?.email,
+            photoURL: user?.photoURL,
           },
         ], // also role - normal exists.
         settings: {
@@ -217,9 +221,9 @@ const Login = ({
 
               const condition2 = eachWorkspace.members.some((member) => {
                 console.log(member.userId);
-                console.log(user.uid);
-                console.log(member.userId === user.uid);
-                return member.userId === user.uid;
+                console.log(user?.uid);
+                console.log(member.userId === user?.uid);
+                return member.userId === user?.uid;
               });
               console.log(condition1);
               console.log(condition2);
@@ -257,7 +261,7 @@ const Login = ({
     }
   };
 
-  const fetchDataFromFirestore = async (user, email) => {
+  const fetchDataFromFirestore = async (user) => {
     //fetch workspace data
     try {
       const workspaceCollectionRef = collection(db, "workspaces");
@@ -280,9 +284,9 @@ const Login = ({
 
               const condition2 = eachWorkspace.members.some((member) => {
                 console.log(member.userId);
-                console.log(user.uid);
-                console.log(member.userId === user.uid);
-                return member.userId === user.uid;
+                console.log(user?.uid);
+                console.log(member.userId === user?.uid);
+                return member.userId === user?.uid;
               });
               console.log(condition1);
               console.log(condition2);
@@ -352,17 +356,20 @@ const Login = ({
           const user = userCredential.user;
           console.log(user);
 
-          // Update user profile
-          return updateProfile(user, {
+          const obj = {
             displayName: name.current.value,
             photoURL: randomAvatar,
-          });
+          };
+          console.log(obj);
+          // Update user profile
+          return updateProfile(user, obj);
         })
         .then(() => {
           // Profile updated successfully
           console.log("Profile updated!");
-          const user = auth.currentUser;
-          const { uid, email, displayName, photoURL } = user;
+          const userInfo = auth.currentUser;
+          console.log(userInfo);
+          const { uid, email, displayName, photoURL } = userInfo;
           console.log(uid, email, displayName, photoURL);
           setUser({
             uid: uid,
@@ -372,8 +379,12 @@ const Login = ({
           });
 
           // Call update functions for each data type
-          if (user) {
-            initializeData(user, email);
+          console.log(user);
+          console.log(userInfo);
+
+          if (userInfo) {
+            console.log("user is available", userInfo);
+            initializeData(userInfo);
           }
 
           navigate("/");

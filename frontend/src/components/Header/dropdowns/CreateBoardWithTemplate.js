@@ -39,11 +39,11 @@ const CreateBoardWithTemplate = ({
     useContext(dataContext);
 
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
-    ? workspaceData?.workspaces.find(
+    ? workspaceData?.workspaces?.find(
         (workspace) => workspace?.shortname === paramObj.workspaceShortName
       ).name
     : paramObj.boardId
-    ? workspaceData?.workspaces.find((workspace) =>
+    ? workspaceData?.workspaces?.find((workspace) =>
         workspace?.boards.some((board) => board.id === paramObj.boardId)
       ).name
     : workspaceData?.workspaces[0].name;
@@ -87,6 +87,7 @@ const CreateBoardWithTemplate = ({
           role: "admin",
           name: user.displayName,
           email: user.email,
+          photoURL: user?.photoURL,
         },
       ],
       members: [
@@ -95,6 +96,7 @@ const CreateBoardWithTemplate = ({
           role: "admin",
           name: user.displayName,
           email: user.email,
+          photoURL: user?.photoURL,
         },
       ], // also role - normal exists.
       starred: false,
@@ -103,7 +105,7 @@ const CreateBoardWithTemplate = ({
     };
     // setWorkspaceData((prev) => {
     let updatedWorkspaceData = { ...workspaceData };
-    const currWorkspaceData = updatedWorkspaceData.workspaces.find(
+    const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
       (workspace) => workspace.name === currWorkspaceName
     );
     const workspaceIndex =
@@ -113,7 +115,7 @@ const CreateBoardWithTemplate = ({
     }
     currWorkspaceData?.boards?.push(updatedBoard);
     updatedWorkspaceData.workspaces[workspaceIndex - 1] = currWorkspaceData;
-    console.log("firebase")
+    console.log("firebase");
 
     updateFirebaseDoc(updatedWorkspaceData);
     // return updatedWorkspaceData;
@@ -321,7 +323,7 @@ const CreateBoardWithTemplate = ({
           onChange={(e) => setCurrWorkspaceName(e.target.value)}
           onClick={() => setInputSelection("Workspace")}
         >
-          {workspaceData?.workspaces.map((workspace) => {
+          {workspaceData?.workspaces?.map((workspace) => {
             return (
               <option
                 value={workspace?.name}

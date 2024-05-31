@@ -17,9 +17,11 @@ import {
   faFileInvoice,
   faPlus,
   faShareNodes,
+  faClock,
+  faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 import { faListCheck } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -32,13 +34,21 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import dataContext from "../../utills/dataContext.js";
 import { cardDataContext } from "../../utills/cardDataContext";
 import generateUniqueNumber from "../../utills/generateUniqueNum";
+import { randomGradientColor } from "../../utills/randomGradientColor";
 import Labels from "./Labels.js";
 import LabelList from "./LabelList";
 import CreateLabel from "./CreateLabel";
 import Boards from "../../pages/Boards.js";
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
+import DatesCard from "./DatesCard";
+import AddCheckList from "./AddCheckList";
+import ChecklistContainer from "./ChecklistContainer";
+
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
+import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
 
 const OpenCard = () => {
-  const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
   const navigate = useNavigate();
   const paramObj = useParams();
   const descriptionRef = useRef(null);
@@ -48,9 +58,10 @@ const OpenCard = () => {
   const labelsBtnRef = useRef();
   const chooseLabelRef = useRef();
   const createLabelBtn = useRef();
+  const datesBtnRef = useRef();
 
-  const { allCardData, setAllCardData } = useContext(dataContext);
-  console.log(allCardData);
+  // const { allCardData, setAllCardData } = useContext(dataContext);
+  // console.log(allCardData);
   console.log(workspaceData);
 
   const [cardDetails, setCardDetails] = useState(null);
@@ -82,6 +93,21 @@ const OpenCard = () => {
 
   const [labelsIsShowing, setLabelsIsShowing] = useState(false);
   const [newLabelListPosition, setNewLabelListPosition] = useState(false);
+  console.log(newLabelListPosition);
+  console.log(labelsIsShowing);
+  const [showDatesCard, setShowDatesCard] = useState(false);
+  const [showAddChecklist, setShowAddChecklist] = useState(false);
+
+  const [watchBtnIsHovered, setWatchBtnIsHovered] = useState(false);
+  const [showActivity, setShowActivity] = useState(true);
+
+  const isWatching = newCardData?.watchers?.some(
+    (eachWatcher) => eachWatcher?.userId === user?.uid
+  );
+
+  let color = randomGradientColor();
+  console.log(color);
+  // const [isTaskCompleted, setIsTaskCompleted] = useState(false);
 
   const labelsForThisCard = newCardData?.labels?.filter(
     (eachLabel) =>
@@ -92,7 +118,7 @@ const OpenCard = () => {
     if (cardDescDetails?.showDesc && !cardDescDetails?.showInput) {
       return (
         <div
-          className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[480px] font-semibold text-[14px] hover:bg-gray-400 cursor-pointer"
+          className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] font-semibold text-[14px] hover:bg-gray-400 cursor-pointer"
           onClick={() => {
             setCardDescDetails((prev) => {
               return (prev = { ...prev, showInput: true });
@@ -116,56 +142,66 @@ const OpenCard = () => {
 
   const commentList = useMemo(
     () =>
-      newCardData?.Activities?.map((eachUser) => {
+      newCardData?.Activities?.map((eachActivity) => {
         return (
           <div className="flex mb-4">
-            <div className="flex justify-center text-white font-bold items-center bg-violet-900 rounded-full w-[30px] h-[30px] mr-4">
-              S
+            <div
+              className={`flex justify-center text-white text-sm font-semibold items-center rounded-full min-w-[30px] w-[30px] h-[30px] mr-4`}
+              // style={{
+              //   backgroundColor: user?.color ? user.color : color,
+              // }}
+            >
+              {/* {eachActivity.user.name[0] +
+                eachActivity.user.name[eachActivity.user.name.length - 1]} */}
+
+              <img src={eachActivity?.user?.photoURL} className="w-full" />
             </div>
             <div className="flex flex-col w-full">
               <div className="flex items-center mb-1">
                 <p className="text-sm font-semibold mr-3 text-gray-800">
-                  {eachUser?.user}
+                  {eachActivity?.user.name}
                 </p>
                 <p className="text-xs mr-3 text-gray-600">
-                  {formatTimeDifference(eachUser?.commentTime)}
+                  {formatTimeDifference(eachActivity.commentTime)}
                 </p>
               </div>
 
-              {editCommentFor.id !== eachUser?.id && (
+              {editCommentFor.id !== eachActivity?.id && (
                 <div>
-                  <div className="px-2 py-2 bg-white rounded-lg font-semibold text-[14px] w-full cursor-pointer">
-                    <p>{eachUser?.comment}</p>
+                  <div className="px-2 py-2 bg-white rounded-lg font-base text-[14px] w-full cursor-pointer">
+                    <p>{eachActivity?.comment}</p>
                   </div>
 
                   <div>
                     <button
-                      className="text-sm mr-2 underline"
+                      className="text-xs text-[#172b4d] mr-2 underline"
                       onClick={() => {
                         setEditCommentFor((prev) => {
                           return {
                             ...prev,
                             showInput: true,
-                            id: eachUser.id,
-                            comment: eachUser.comment,
+                            id: eachActivity.id,
+                            comment: eachActivity.comment,
                           };
                         });
                       }}
                     >
                       Edit
                     </button>
-                    <button className="text-sm mr-2 underline">Delete</button>
+                    <button className="text-xs text-[#172b4d] mr-2 underline">
+                      Delete
+                    </button>
                   </div>
                 </div>
               )}
 
-              {editCommentFor.id === eachUser?.id && (
+              {editCommentFor.id === eachActivity?.id && (
                 <div>
                   <input
                     ref={editCommentRef}
                     type="text"
                     value={editCommentFor.comment}
-                    className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[480px] font-semibold text-[14px] mb-4 border-2 border-solid border-blue-600"
+                    className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] font-semibold text-[14px] mb-4 border-2 border-solid border-blue-600"
                     onChange={(e) =>
                       setEditCommentFor((prev) => {
                         return { ...prev, comment: e.target.value };
@@ -177,52 +213,19 @@ const OpenCard = () => {
                     <button
                       className={` rounded py-1 px-2 text-white border-blue-400 mr-4 ${
                         editCommentFor.comment.trim() === ""
-                          ? "bg-gray-400 hover:bg-gray-400"
-                          : "bg-blue-600 hover:bg-blue-700"
+                          ? "bg-gray-400 hover:bg-gray-400 text-gray-600"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
                       }`}
                       disabled={editCommentFor.comment.trim() === ""}
                       onClick={(e) => {
-                        let updatedActivitiesList = newCardData?.Activities.map(
-                          (eachActivity) => {
-                            if (eachActivity?.id === editCommentFor.id) {
-                              return {
-                                ...eachActivity,
-                                comment: editCommentFor.comment.trim(),
-                                commentTime: new Date(),
-                              };
-                            }
-
-                            return eachActivity;
-                          }
-                        );
-
-                        setAllCardData((prev) => {
-                          return {
-                            ...prev,
-                            [cardDetails.id]: {
-                              ...prev[cardDetails.id],
-                              Activities: updatedActivitiesList,
-                            },
-                          };
-                        });
-
-                        setNewCardData((prev) => {
-                          return {
-                            ...prev,
-                            Activities: updatedActivitiesList,
-                          };
-                        });
-
-                        setEditCommentFor((prev) => {
-                          return { ...prev, id: "" };
-                        });
+                        updateComment(e);
                       }}
                     >
                       Save
                     </button>
 
                     <button
-                      className="bg-gray-400 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-700 mr-4"
+                      className="bg-gray-400 rounded py-1 px-2 text-gray-600 border-blue-400 hover:bg-gray-600 hover:text-white mr-4"
                       onClick={() => {
                         setEditCommentFor((prev) => {
                           return { ...prev, id: "" };
@@ -241,20 +244,196 @@ const OpenCard = () => {
     [newCardData?.Activities, editCommentFor]
   );
 
-  function updateCardDescription() {
-    setAllCardData((prev) => {
-      setNewCardData((prev) => {
-        return { ...prev, description: cardDesc };
-      });
+  function toggleWatching(e) {
+    e.stopPropagation();
+
+    // let newItem = {
+    //   id: generateUniqueNumber(
+    //     itemTitle.trim().split(" ").join("").slice(0, 4),
+    //     5
+    //   ),
+    //   title: itemTitle,
+    //   status: "not completed",
+    // };
+
+    const generatedObj = (card) => {
+      if (
+        card?.watchers?.some((eachWatcher) => eachWatcher?.userId === user?.uid)
+      ) {
+        console.log("generating");
+        return {
+          ...card,
+          watchers: card?.watchers?.filter(
+            (eachWatcher) => eachWatcher?.userId !== user?.uid
+          ),
+        };
+      }
+      console.log("generating1");
+      console.log(user);
+      console.log(card);
 
       return {
-        ...prev,
-        [cardDetails.id]: {
-          ...newCardData,
-          description: cardDesc,
-        },
+        ...card,
+        watchers: card.watchers
+          ? [
+              ...card?.watchers,
+              {
+                userId: user?.uid,
+                name: user?.displayName,
+                email: user?.email,
+                photoURL: user?.photoURL,
+              },
+            ]
+          : [
+              {
+                userId: user?.uid,
+                name: user?.displayName,
+                email: user?.email,
+                photoURL: user?.photoURL,
+              },
+            ],
       };
+    };
+
+    console.log(generatedObj);
+    const updatedWorkspaceData = createUpdatedWorkspaceDataType1(
+      generatedObj,
+      workspaceData,
+      paramObj
+    );
+    console.log(updatedWorkspaceData);
+
+    updateFirebaseDoc(updatedWorkspaceData);
+  }
+
+  function updateCardDescription() {
+    // setAllCardData((prev) => {
+    // setNewCardData((prev) => {
+
+    // });
+    let updatedWorkspaceData = { ...workspaceData };
+
+    // let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
+    //   return eachWorkspace.boards.some((eachBoard) => {
+    //     return eachBoard.lists.some((eachList) => {
+    //       return eachList.cards.some((eachCard) => {
+    //         return eachCard.id === paramObj.cardId;
+    //       });
+    //     });
+    //   });
+    // });
+
+    // // });
+
+    // console.log(currWorkspace);
+
+    // let updatedBoards = currWorkspace.boards.map((eachBoard) => {
+    //   return {
+    //     ...eachBoard,
+    //     lists: eachBoard.lists.map((eachList) => {
+    //       return {
+    //         ...eachList,
+    //         cards: eachList.cards.map((eachCard) => {
+    //           if (eachCard.id !== paramObj.cardId) {
+    //             return eachCard;
+    //           }
+    //           let updatedCard = {
+    //             ...newCardData,
+    //             description: cardDesc,
+    //           };
+
+    //           return updatedCard;
+    //         }),
+    //       };
+    //     }),
+    //   };
+    // });
+
+    // console.log(updatedBoards);
+
+    // currWorkspace = { ...currWorkspace, boards: updatedBoards };
+    // console.log(currWorkspace);
+
+    // let currWorkspaceIndex = workspaceData.workspaces?.findIndex(
+    //   (eachWorkspace) => {
+    //     return eachWorkspace.id === currWorkspace.id;
+    //   }
+    // );
+
+    // console.log(currWorkspaceIndex);
+
+    // updatedWorkspaceData.workspaces[currWorkspaceIndex] = currWorkspace;
+
+    // console.log(updatedWorkspaceData);
+
+    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace.boards.some((eachBoard) => {
+        return eachBoard.lists.some((eachList) => {
+          return eachList.cards.some((eachCard) => {
+            return eachCard.id === paramObj.cardId;
+          });
+        });
+      });
     });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace.boards.find((eachBoard) => {
+      return eachBoard.lists.some((eachList) => {
+        return eachList.cards.some((eachCard) => {
+          return eachCard.id === paramObj.cardId;
+        });
+      });
+    });
+    console.log(currBoard);
+
+    let currList = currBoard.lists.find((eachList) => {
+      return eachList.cards.some((eachCard) => {
+        return eachCard.id === paramObj.cardId;
+      });
+    });
+    console.log(currList);
+
+    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+      (eachWorkspace) => {
+        if (eachWorkspace.id !== currWorkspace.id) {
+          console.log(eachWorkspace);
+          return eachWorkspace;
+        }
+        return {
+          ...eachWorkspace,
+          boards: eachWorkspace.boards.map((eachBoard) => {
+            if (eachBoard.id !== currBoard.id) {
+              return eachBoard;
+            }
+            return {
+              ...eachBoard,
+              lists: eachBoard.lists.map((eachList) => {
+                if (eachList.id !== currList.id) {
+                  return eachList;
+                }
+                return {
+                  ...eachList,
+                  cards: eachList.cards.map((eachCard) => {
+                    if (eachCard.id !== paramObj.cardId) {
+                      console.log(eachCard.id !== paramObj.cardId);
+                      return eachCard;
+                    }
+                    return {
+                      ...newCardData,
+                      description: cardDesc,
+                    };
+                  }),
+                };
+              }),
+            };
+          }),
+        };
+      }
+    );
+
+    console.log(updatedWorkspaceData);
+
+    updateFirebaseDoc(updatedWorkspaceData);
 
     setCardDescDetails((prev) => {
       return {
@@ -266,13 +445,299 @@ const OpenCard = () => {
     });
   }
 
-  function formatTimeDifference(commentTime) {
+  function addComment() {
+    // setAllCardData((prev) => {
+
+    let updatedWorkspaceData = { ...workspaceData };
+
+    let newActivity = {
+      id: generateUniqueNumber(comment.slice(0, 3), 5),
+      user: {
+        userId: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photoURL: user?.photoURL,
+      },
+      comment: comment.trim(),
+      commentTime: new Date(),
+    };
+    console.log(newActivity);
+
+    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace.boards.some((eachBoard) => {
+        return eachBoard.lists.some((eachList) => {
+          return eachList.cards.some((eachCard) => {
+            return eachCard.id === paramObj.cardId;
+          });
+        });
+      });
+    });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace.boards.find((eachBoard) => {
+      return eachBoard.lists.some((eachList) => {
+        return eachList.cards.some((eachCard) => {
+          return eachCard.id === paramObj.cardId;
+        });
+      });
+    });
+    console.log(currBoard);
+
+    let currList = currBoard.lists.find((eachList) => {
+      return eachList.cards.some((eachCard) => {
+        return eachCard.id === paramObj.cardId;
+      });
+    });
+    console.log(currList);
+
+    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+      (eachWorkspace) => {
+        if (eachWorkspace.id !== currWorkspace.id) {
+          console.log(eachWorkspace);
+          return eachWorkspace;
+        }
+        return {
+          ...eachWorkspace,
+          boards: eachWorkspace.boards.map((eachBoard) => {
+            if (eachBoard.id !== currBoard.id) {
+              return eachBoard;
+            }
+            return {
+              ...eachBoard,
+              lists: eachBoard.lists.map((eachList) => {
+                if (eachList.id !== currList.id) {
+                  return eachList;
+                }
+                return {
+                  ...eachList,
+                  cards: eachList.cards.map((eachCard) => {
+                    if (eachCard.id !== paramObj.cardId) {
+                      console.log(eachCard.id !== paramObj.cardId);
+                      return eachCard;
+                    }
+                    console.log({ ...eachCard, Activities: newActivity });
+                    return {
+                      ...eachCard,
+                      Activities: [newActivity, ...eachCard.Activities],
+                    };
+                  }),
+                };
+              }),
+            };
+          }),
+        };
+      }
+    );
+
+    console.log(updatedWorkspaceData);
+
+    updateFirebaseDoc(updatedWorkspaceData);
+
+    // setNewCardData((prev) => {
+    //   let updatedNewCardData = { ...prev };
+    //   updatedNewCardData.Activities = [...updatedNewCardData?.Activities];
+    //   updatedNewCardData?.Activities.unshift(newActivity);
+
+    //   return updatedNewCardData;
+    // });
+
+    // const updatedCard = {
+    //   ...prev,
+    //   [cardDetails.id]: {
+    //     ...prev[cardDetails.id],
+    //     Activities: [newActivity, ...prev[cardDetails.id]?.Activities],
+    //   },
+    // };
+    // });
+
+    setCommentDetails((prev) => {
+      return { ...prev, showInput: false };
+    });
+
+    setComment("");
+  }
+
+  function updateComment(e) {
+    // let updatedActivitiesList = newCardData?.Activities.map((eachActivity) => {
+    //   if (eachActivity?.id === editCommentFor.id) {
+    //     return {
+    //       ...eachActivity,
+    //       comment: editCommentFor.comment.trim(),
+    //       commentTime: new Date(),
+    //     };
+    //   }
+
+    //   return eachActivity;
+    // });
+
+    // setAllCardData((prev) => {
+    //   return {
+    //     ...prev,
+    //     [cardDetails.id]: {
+    //       ...prev[cardDetails.id],
+    //       Activities: updatedActivitiesList,
+    //     },
+    //   };
+    // });
+
+    //----------------------------------------------xxxx----------------------------------------//
+
+    let updatedWorkspaceData = { ...workspaceData };
+
+    // let newActivity = {
+    //   id: generateUniqueNumber(comment.slice(0, 3), 5),
+    //   user: {
+    //     userId: user.uid,
+    //     name: user.displayName,
+    //     email: user.email,
+    //   },
+    //   comment: comment.trim(),
+    //   commentTime: new Date(),
+    // };
+    // console.log(newActivity);
+
+    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace.boards.some((eachBoard) => {
+        return eachBoard.lists.some((eachList) => {
+          return eachList.cards.some((eachCard) => {
+            return eachCard.id === paramObj.cardId;
+          });
+        });
+      });
+    });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace.boards.find((eachBoard) => {
+      return eachBoard.lists.some((eachList) => {
+        return eachList.cards.some((eachCard) => {
+          return eachCard.id === paramObj.cardId;
+        });
+      });
+    });
+    console.log(currBoard);
+
+    let currList = currBoard.lists.find((eachList) => {
+      return eachList.cards.some((eachCard) => {
+        return eachCard.id === paramObj.cardId;
+      });
+    });
+    console.log(currList);
+
+    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+      (eachWorkspace) => {
+        if (eachWorkspace.id !== currWorkspace.id) {
+          console.log(eachWorkspace);
+          return eachWorkspace;
+        }
+        return {
+          ...eachWorkspace,
+          boards: eachWorkspace.boards.map((eachBoard) => {
+            if (eachBoard.id !== currBoard.id) {
+              return eachBoard;
+            }
+            return {
+              ...eachBoard,
+              lists: eachBoard.lists.map((eachList) => {
+                if (eachList.id !== currList.id) {
+                  return eachList;
+                }
+                return {
+                  ...eachList,
+                  cards: eachList.cards.map((eachCard) => {
+                    if (eachCard.id !== paramObj.cardId) {
+                      console.log(eachCard.id !== paramObj.cardId);
+                      return eachCard;
+                    }
+                    // console.log({ ...eachCard, Activities: newActivity });
+                    return {
+                      ...eachCard,
+                      Activities: eachCard.Activities.map((eachActivity) => {
+                        if (eachActivity?.id !== editCommentFor.id) {
+                          return eachActivity;
+                        }
+                        return {
+                          ...eachActivity,
+                          comment: editCommentFor.comment.trim(),
+                          commentTime: new Date(),
+                        };
+                      }),
+                    };
+                  }),
+                };
+              }),
+            };
+          }),
+        };
+      }
+    );
+
+    console.log(updatedWorkspaceData);
+
+    updateFirebaseDoc(updatedWorkspaceData);
+
+    // setNewCardData((prev) => {
+    //   return {
+    //     ...prev,
+    //     Activities: updatedActivitiesList,
+    //   };
+    // });
+
+    setEditCommentFor((prev) => {
+      return { ...prev, id: "" };
+    });
+  }
+
+  // function formatTimeDifference(time) {
+  //   console.log("formatTimeDifference");
+  //   console.log(time);
+  //   const now = new Date();
+  //   console.log(now);
+  //   const commentDate = new Date(time);
+  //   console.log(commentDate);
+  //   const timeDifference = now - commentDate;
+  //   console.log(timeDifference);
+  //   const seconds = Math.floor(timeDifference / 1000);
+  //   const minutes = Math.floor(seconds / 60);
+  //   const hours = Math.floor(minutes / 60);
+  //   const days = Math.floor(hours / 24);
+
+  //   if (days > 0) {
+  //     return `${days} ${days === 1 ? "day" : "days"} ago`;
+  //   } else if (hours > 0) {
+  //     return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  //   } else if (minutes > 0) {
+  //     return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+  //   } else {
+  //     return "Just now";
+  //   }
+  // }
+
+  function formatTimeDifference(commentTimestamp) {
+    console.log("formatTimeDifference called with:", commentTimestamp);
+
+    // Extract seconds and nanoseconds
+    const { seconds, nanoseconds } = commentTimestamp;
+
+    // Convert to milliseconds
+    const milliseconds = seconds * 1000 + Math.floor(nanoseconds / 1000000);
+    const commentDate = new Date(milliseconds);
+
+    console.log("Comment time:", commentDate);
+
     const now = new Date();
-    const commentDate = new Date(commentTime);
+    console.log("Current time:", now);
 
     const timeDifference = now - commentDate;
-    const seconds = Math.floor(timeDifference / 1000);
-    const minutes = Math.floor(seconds / 60);
+    console.log("Time difference in milliseconds:", timeDifference);
+
+    // Check if the time difference is negative
+    if (timeDifference < 0) {
+      console.error("Future comment time detected:", commentDate);
+      return "Invalid time";
+    }
+
+    const secondsDiff = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(secondsDiff / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
@@ -333,11 +798,14 @@ const OpenCard = () => {
     setCardDetails(cardInfo);
     setListDetails(listInfo);
 
-    if (allCardData) {
-      setNewCardData(allCardData[cardInfo?.id]);
-      setCardDesc(allCardData[cardInfo.id]?.description?.trim());
-    }
-  }, [workspaceData, allCardData]);
+    // if (allCardData) {
+    // setNewCardData(allCardData[cardInfo?.id]);
+    // setCardDesc(allCardData[cardInfo.id]?.description?.trim());
+    setNewCardData(cardInfo);
+    setCardDesc(cardInfo?.description?.trim());
+
+    // }
+  }, [workspaceData]);
 
   return (
     <>
@@ -350,7 +818,7 @@ const OpenCard = () => {
           }}
         ></div>
         <div className="absolute flex flex-col w-[770px] h-[550px] overflow-auto top-1/2 left-1/2 translate-x-[-50%] translate-y-[-46%] bg-[#F0F1F4] z-[1005] rounded-lg p-6">
-          <div className="flex justify-between mb-8 p-2">
+          <div className="flex justify-between mb-4 p-2">
             <div className="flex items-start ">
               <FontAwesomeIcon
                 icon={faDesktop}
@@ -382,10 +850,10 @@ const OpenCard = () => {
 
           <div className="flex justify-between ">
             <div className="flex flex-col mr-2 w-full">
-              <div className="flex mb-8 p-2 ml-[42px] ">
+              <div className="flex items-center mb-4 p-2 ml-[42px] ">
                 {labelsForThisCard && labelsForThisCard.length > 0 && (
                   <div className="mr-4 ">
-                    <div className="mb-2 font-semibold text-[14px]">Labels</div>
+                    <div className="mb-2 font-semibold text-xs">Labels</div>
 
                     <div className="flex">
                       <div className="flex">
@@ -395,14 +863,15 @@ const OpenCard = () => {
                               style={{ backgroundColor: label.color }}
                               className="w-[45px] h-[30px] rounded mr-2 flex"
                             >
-                              <p>fvf</p>
+                              {/* <p>{label.title}</p> */}
                             </div>
                           );
                         })}
                       </div>
                       <div
                         className="w-[30px] h-[30px] bg-gray-400 rounded flex justify-center items-center"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setNewLabelListPosition(true);
                           setLabelsIsShowing(true);
                         }}
@@ -418,14 +887,219 @@ const OpenCard = () => {
                   <div className="mb-2 font-sans text-xs font-semibold text-[#172b4d]">
                     Notifications
                   </div>
-                  <div className="flex items-center bg-gray-300 rounded px-2 py-1 w-[90px] h-[30px]">
-                    <FontAwesomeIcon icon={faEye} className="mr-2 text-sm" />
+                  <div
+                    className="relative flex items-center bg-gray-300 rounded py-1 px-2 cursor-pointer"
+                    onClick={(e) => toggleWatching(e)}
+                    onMouseEnter={() => {
+                      setWatchBtnIsHovered(true);
+                    }}
+                    onMouseLeave={() => setWatchBtnIsHovered(false)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="mr-2 text-xs text-[#172b4d]"
+                    />
                     <p className="font-sans text-sm font-semibold text-[#172b4d]">
-                      Watch
+                      {isWatching ? "Watching" : "Watch"}
                     </p>
+                    {isWatching && (
+                      <div>
+                        <FontAwesomeIcon
+                          icon={faSquareCheck}
+                          className="ml-2 text-2xl text-[#172b4d]"
+                          style={{ color: "#172b4d" }}
+                        />
+                      </div>
+                    )}
+                    {isWatching && watchBtnIsHovered && (
+                      <p className="absolute top-[120%] left-0 z-50 font-sans text-xs font-semibold text-white bg-[#294474] rounded py-1 px-2 min-w-[180px]">
+                        You are receiving notifications for updates on this
+                        card(Click to stop watching)
+                      </p>
+                    )}
+                    {!isWatching && watchBtnIsHovered && (
+                      <p className="absolute top-[120%] left-0 z-50 font-sans text-xs font-semibold text-white bg-[#294474] rounded py-1 px-2 min-w-[180px]">
+                        Watch to get notifications for updates on this card
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
+
+              {(newCardData?.dates?.start || newCardData?.dates?.due) && (
+                <div className="flex items-center mb-6 p-2 ml-[42px]">
+                  <div className="mr-4 ">
+                    <div className="mb-2 font-semibold text-xs">
+                      {newCardData?.dates?.start && newCardData?.dates?.due
+                        ? "Dates"
+                        : newCardData.dates.start
+                        ? "Start date"
+                        : "Due date"}
+                    </div>
+
+                    <div className="flex items-center">
+                      {newCardData?.dates?.start && newCardData?.dates?.due && (
+                        <input
+                          type="checkbox"
+                          className="w-[16px] h-[16px] mr-3"
+                          checked={newCardData.dates.status !== "Overdue"}
+                          onChange={() => {
+                            let updatedWorkspaceData = { ...workspaceData };
+
+                            let currWorkspace = workspaceData.workspaces?.find(
+                              (eachWorkspace) => {
+                                return eachWorkspace.boards.some(
+                                  (eachBoard) => {
+                                    return eachBoard.lists.some((eachList) => {
+                                      return eachList.cards.some((eachCard) => {
+                                        return eachCard.id === paramObj.cardId;
+                                      });
+                                    });
+                                  }
+                                );
+                              }
+                            );
+                            console.log(currWorkspace);
+
+                            let currBoard = currWorkspace.boards.find(
+                              (eachBoard) => {
+                                return eachBoard.lists.some((eachList) => {
+                                  return eachList.cards.some((eachCard) => {
+                                    return eachCard.id === paramObj.cardId;
+                                  });
+                                });
+                              }
+                            );
+                            console.log(currBoard);
+
+                            let currList = currBoard.lists.find((eachList) => {
+                              return eachList.cards.some((eachCard) => {
+                                return eachCard.id === paramObj.cardId;
+                              });
+                            });
+                            console.log(currList);
+
+                            updatedWorkspaceData.workspaces =
+                              updatedWorkspaceData.workspaces?.map(
+                                (eachWorkspace) => {
+                                  if (eachWorkspace.id !== currWorkspace.id) {
+                                    console.log(eachWorkspace);
+                                    return eachWorkspace;
+                                  }
+                                  return {
+                                    ...eachWorkspace,
+                                    boards: eachWorkspace.boards.map(
+                                      (eachBoard) => {
+                                        if (eachBoard.id !== currBoard.id) {
+                                          return eachBoard;
+                                        }
+                                        return {
+                                          ...eachBoard,
+                                          lists: eachBoard.lists.map(
+                                            (eachList) => {
+                                              if (eachList.id !== currList.id) {
+                                                return eachList;
+                                              }
+                                              return {
+                                                ...eachList,
+                                                cards: eachList.cards.map(
+                                                  (eachCard) => {
+                                                    if (
+                                                      eachCard.id !==
+                                                      paramObj.cardId
+                                                    ) {
+                                                      console.log(
+                                                        eachCard.id !==
+                                                          paramObj.cardId
+                                                      );
+                                                      return eachCard;
+                                                    }
+                                                    // console.log({ ...eachCard, Activities: newActivity });
+                                                    return {
+                                                      ...eachCard,
+                                                      dates: {
+                                                        ...eachCard.dates,
+                                                        status:
+                                                          eachCard.dates
+                                                            .status ===
+                                                          "Overdue"
+                                                            ? "Completed"
+                                                            : "Overdue",
+                                                      },
+                                                    };
+                                                  }
+                                                ),
+                                              };
+                                            }
+                                          ),
+                                        };
+                                      }
+                                    ),
+                                  };
+                                }
+                              );
+
+                            console.log(updatedWorkspaceData);
+
+                            updateFirebaseDoc(updatedWorkspaceData);
+                          }}
+                        />
+                      )}
+                      <div className="flex font-semibold font-sans text-[#172b4d] py-1 px-2 rounded bg-gray-200">
+                        {newCardData?.dates?.start &&
+                        newCardData?.dates?.due ? (
+                          <div>
+                            <span>
+                              {newCardData?.dates?.start +
+                                " - " +
+                                newCardData?.dates?.due +
+                                " at " +
+                                newCardData?.dueDateTime +
+                                " "}
+                            </span>
+                            <span
+                              className={`${
+                                newCardData?.dates?.status === "Overdue"
+                                  ? "bg-red-700 p-1 text-white"
+                                  : "bg-green-700 p-1 text-white"
+                              }  text-xs rounded ml-1 font-semibold`}
+                            >
+                              {newCardData?.dates?.status}
+                            </span>
+                          </div>
+                        ) : newCardData?.dates?.start ? (
+                          newCardData?.dates?.start
+                        ) : (
+                          newCardData?.dates?.due
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* <div>
+                {(newCardData?.dates?.start || newCardData?.dates?.due) && (
+                  <div className="flex flex-col justify-center items-start">
+                    <div className="font-sans text-sm font-semibold text-[#172b4d]">
+                      {newCardData?.dates?.start && newCardData?.dates?.due
+                        ? "Dates"
+                        : newCardData.dates.start
+                        ? "Start date"
+                        : "due date"}
+                    </div>
+                    <div className="font-sans text-[#172b4d] py-1 px-2 rounded bg-gray-200">
+                      {newCardData?.dates?.start && newCardData?.dates?.due
+                        ? newCardData?.dates?.start +
+                          "-" +
+                          newCardData?.dates?.due
+                        : newCardData?.dates?.start
+                        ? newCardData?.dates?.start
+                        : newCardData?.dates?.due}
+                    </div>
+                  </div>
+                )}
+              </div> */}
 
               <div className="mb-4 p-2 w-full">
                 <div className="flex justify-between items-center mb-4">
@@ -465,7 +1139,7 @@ const OpenCard = () => {
                         ref={descriptionRef}
                         type="text"
                         value={cardDesc}
-                        className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[480px] font-sans text-sm font-bold text-[#172b4d] mb-4 border-2 border-solid border-blue-600"
+                        className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] font-sans text-sm font-semibold text-[#172b4d] mb-4 border-2 border-solid border-blue-600"
                         placeholder="Add a more detailed description..."
                         onChange={(e) => setCardDesc(e.target.value)}
                       />
@@ -500,6 +1174,8 @@ const OpenCard = () => {
                 </div>
               </div>
 
+              {<ChecklistContainer newCardData={newCardData} />}
+
               <div className="mb-8 p-2">
                 <div className="flex justify-between mb-4">
                   <div className="flex items-center ">
@@ -513,107 +1189,87 @@ const OpenCard = () => {
                       Activity
                     </p>
                   </div>
-                  <div className=" flex justify-center items-center bg-gray-300 rounded px-2 py-1 font-sans text-base font-semibold text-[#172b4d]">
-                    Show details
-                  </div>
-                </div>
-
-                <div className="flex">
-                  <div className="flex justify-center text-white font-bold items-center bg-violet-900 rounded-full w-[30px] h-[30px] mr-4">
-                    S
-                  </div>
-
-                  {!commentDetails.showInput && (
-                    <div
-                      className="px-2 py-1 mb-4 bg-white rounded-lg font-sans text-sm font-semibold text-[#172b4d] w-full cursor-pointer"
-                      onClick={() => {
-                        setCommentDetails((prev) => {
-                          return { ...prev, showInput: true };
-                        });
+                  <div className="bg-gray-300 font-semibold hover:bg-gray-400 py-1 px-2 rounded">
+                    <button
+                      className="px-2 rounded font-sans text-sm font-semibold text-[#172b4d]"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowActivity(!showActivity);
                       }}
                     >
-                      Write a comment...
-                    </div>
-                  )}
-
-                  {commentDetails.showInput && (
-                    <div className="mb-4">
-                      <input
-                        ref={writeCommentRef}
-                        type="text"
-                        value={comment}
-                        className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[480px] font-semibold text-[14px] mb-4 border-2 border-solid border-blue-600"
-                        placeholder="Write a comment..."
-                        onChange={(e) => setComment(e.target.value)}
-                      />
-                      <div className="flex">
-                        <button
-                          className={`rounded py-1 px-2 text-white border-blue-400 mr-4 ${
-                            comment.trim() === ""
-                              ? "bg-gray-400 hover:bg-gray-400"
-                              : "bg-blue-600 hover:bg-blue-700"
-                          }`}
-                          disabled={comment.trim() === ""}
-                          onClick={() => {
-                            setAllCardData((prev) => {
-                              let newActivity = {
-                                id: generateUniqueNumber(
-                                  comment.slice(0, 3),
-                                  5
-                                ),
-                                user: "Siva",
-                                comment: comment.trim(),
-                                commentTime: new Date(),
-                              };
-                              setNewCardData((prev) => {
-                                let updatedNewCardData = { ...prev };
-                                updatedNewCardData.Activities = [
-                                  ...updatedNewCardData?.Activities,
-                                ];
-                                updatedNewCardData?.Activities.unshift(
-                                  newActivity
-                                );
-
-                                return updatedNewCardData;
-                              });
-
-                              setComment("");
-
-                              return {
-                                ...prev,
-                                [cardDetails.id]: {
-                                  ...prev[cardDetails.id],
-                                  Activities: [
-                                    newActivity,
-                                    ...prev[cardDetails.id]?.Activities,
-                                  ],
-                                },
-                              };
-                            });
-                            setCommentDetails((prev) => {
-                              return { ...prev, showInput: false };
-                            });
-                          }}
-                        >
-                          Save
-                        </button>
-
-                        <button
-                          className="bg-gray-400 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-700 mr-4"
-                          onClick={() => {
-                            setCommentDetails((prev) => {
-                              return { ...prev, showInput: false };
-                            });
-                          }}
-                        >
-                          Discard Changes
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                      {showActivity ? "Hide details" : "Show details"}
+                    </button>
+                  </div>
                 </div>
 
-                {commentList}
+                <div>
+                  <div className="flex">
+                    <div
+                      className={`flex justify-center text-white text-sm font-semibold items-center rounded-full min-w-[30px] w-[30px] h-[30px] mr-4`}
+                      // style={{
+                      //   backgroundColor: user?.color ? user.color : color,
+                      // }}
+                    >
+                      {/* {user.displayName[0] +
+                        user.displayName[user.displayName.length - 1]} */}
+                      <img src={user?.photoURL} className="w-full" />
+                    </div>
+
+                    {!commentDetails.showInput && (
+                      <div
+                        className="px-2 py-1 mb-4 bg-white rounded-lg font-sans text-sm font-base text-[#172b4d] w-full cursor-pointer"
+                        onClick={() => {
+                          setCommentDetails((prev) => {
+                            return { ...prev, showInput: true };
+                          });
+                        }}
+                      >
+                        Write a comment...
+                      </div>
+                    )}
+
+                    {commentDetails.showInput && (
+                      <div className="mb-4">
+                        <input
+                          ref={writeCommentRef}
+                          type="text"
+                          value={comment}
+                          className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] font-semibold text-[14px] mb-4 border-2 border-solid border-blue-600 outline-none"
+                          placeholder="Write a comment..."
+                          onChange={(e) => setComment(e.target.value)}
+                        />
+                        <div className="flex">
+                          <button
+                            className={`rounded cursor-pointer py-1 px-2 border-blue-400 mr-4 ${
+                              comment.trim() === ""
+                                ? "bg-blue-400 text-white"
+                                : "bg-blue-600 text-white"
+                            }`}
+                            disabled={comment.trim() === ""}
+                            onClick={() => {
+                              addComment();
+                            }}
+                          >
+                            Save
+                          </button>
+
+                          <button
+                            className="bg-gray-500 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-600 hover:text-white mr-4"
+                            onClick={() => {
+                              setCommentDetails((prev) => {
+                                return { ...prev, showInput: false };
+                              });
+                            }}
+                          >
+                            Discard Changes
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {showActivity && commentList}
+                </div>
               </div>
             </div>
 
@@ -631,7 +1287,8 @@ const OpenCard = () => {
 
                 <div
                   className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setLabelsIsShowing(true);
                     setNewLabelListPosition(false);
                   }}
@@ -640,6 +1297,33 @@ const OpenCard = () => {
                   <FontAwesomeIcon icon={faTag} size="sm" className="mr-2 " />
                   <p className="font-sans text-sm font-semibold text-[#172b4d]">
                     Labels
+                  </p>
+                </div>
+
+                <div
+                  className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                  onClick={() => setShowAddChecklist(true)}
+                >
+                  <FontAwesomeIcon
+                    icon={faSquareCheck}
+                    size="sm"
+                    className="mr-2 "
+                  />
+                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
+                    CheckList
+                  </p>
+                </div>
+
+                <div
+                  ref={datesBtnRef}
+                  className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                  onClick={() => {
+                    setShowDatesCard(!showDatesCard);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faClock} size="sm" className="mr-2 " />
+                  <p className="font-sans text-sm font-semibold text-[#172b4d]">
+                    Dates
                   </p>
                 </div>
               </div>
@@ -709,6 +1393,21 @@ const OpenCard = () => {
             newLabelListPosition={newLabelListPosition}
             chooseLabelRef={chooseLabelRef}
             createLabelBtn={createLabelBtn}
+          />
+        )}
+
+        {showDatesCard && (
+          <DatesCard
+            datesBtnRef={datesBtnRef}
+            showDatesCard={showDatesCard}
+            setShowDatesCard={setShowDatesCard}
+            newCardData={newCardData}
+          />
+        )}
+        {showAddChecklist && (
+          <AddCheckList
+            setShowAddChecklist={setShowAddChecklist}
+            showAddChecklist={showAddChecklist}
           />
         )}
       </cardDataContext.Provider>

@@ -18,7 +18,6 @@ const CreateBoardCopy = ({
   workspaceData,
   setWorkspaceData,
 }) => {
-
   const [currImage, setCurrImage] = useState(
     "https://images.unsplash.com/photo-1703002917693-e51692232c81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA0MTY0ODgyfA&ixlib=rb-4.0.3&q=80&w=400&quot"
   );
@@ -35,16 +34,14 @@ const CreateBoardCopy = ({
   });
 
   const currWorkspaceNameIntialData = paramObj.workspaceShortName
-    ? workspaceData?.workspaces.find(
+    ? workspaceData?.workspaces?.find(
         (workspace) => workspace?.shortname === paramObj.workspaceShortName
       ).name
     : paramObj.boardId
-    ? workspaceData?.workspaces.find((workspace) =>
+    ? workspaceData?.workspaces?.find((workspace) =>
         workspace?.boards.some((board) => board.id === paramObj.boardId)
       ).name
     : workspaceData?.workspaces[0].name;
-
-
 
   const [currWorkspaceName, setCurrWorkspaceName] = useState(
     currWorkspaceNameIntialData
@@ -86,7 +83,7 @@ const CreateBoardCopy = ({
     };
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
-      const currWorkspaceData = updatedWorkspaceData.workspaces.find(
+      const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
         (workspace) => workspace?.name === currWorkspaceName
       );
       const workspaceIndex =
@@ -226,7 +223,6 @@ const CreateBoardCopy = ({
             );
           })}
         </ul>
-      
       </div>
 
       <div>
@@ -255,7 +251,7 @@ const CreateBoardCopy = ({
           value={currWorkspaceName}
           onChange={(e) => setCurrWorkspaceName(e.target.value)}
         >
-          {workspaceData?.workspaces.map((workspace) => {
+          {workspaceData?.workspaces?.map((workspace) => {
             return (
               <option
                 value={workspace?.name}
@@ -342,7 +338,6 @@ const CreateBoardCopy = ({
         <button
           className="bg-blue-600 rounded py-1 px-3 mb-3"
           onClick={() => {
-     
             addBoard();
           }}
         >

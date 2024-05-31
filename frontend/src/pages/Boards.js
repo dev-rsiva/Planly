@@ -13,7 +13,7 @@ const Boards = () => {
   const paramObj = useParams();
 
   const [workspaceInfo, setWorkspaceInfo] = useState(() => {
-    let workspaceDataFromCardsUrl = workspaceData?.workspaces.find(
+    let workspaceDataFromCardsUrl = workspaceData?.workspaces?.find(
       (workspace) =>
         workspace?.boards?.some((board) =>
           board?.lists?.some((list) =>
@@ -21,7 +21,7 @@ const Boards = () => {
           )
         )
     );
-    let workspaceDataFromBoardsUrl = workspaceData?.workspaces.find(
+    let workspaceDataFromBoardsUrl = workspaceData?.workspaces?.find(
       (workspace) =>
         workspace?.boards?.some((board) => board.id === paramObj.boardId)
     );

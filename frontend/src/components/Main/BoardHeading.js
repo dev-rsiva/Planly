@@ -72,6 +72,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
         role: "member",
         name: user?.displayName,
         email: user?.email,
+        photoURL: user?.photoURL,
       },
     ];
     updatedBoardInfo.members = updatedboardMemberInfo;
@@ -205,7 +206,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
                           let updatedWorkspaceData = { ...workspaceData };
 
                           let indexOfCurrWorkspace =
-                            updatedWorkspaceData.workspaces.findIndex(
+                            updatedWorkspaceData.workspaces?.findIndex(
                               (eachWorkspace) =>
                                 eachWorkspace.id === workspaceInfo.id
                             );

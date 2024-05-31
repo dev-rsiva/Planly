@@ -32,7 +32,7 @@ export const useAppState = (
 
   // const [currWorkspace, setCurrWorkspace] = useState("");
 
-  const [allCardData, setAllCardData] = useState(null);
+  // const [allCardData, setAllCardData] = useState(null);
 
   const [templatesData, setTemplatesData] = useState(null);
 
@@ -166,21 +166,20 @@ export const useAppState = (
     setWorkspaceData,
     globalWorkspaceData,
     setGlobalWorkspaceData,
-    allCardData,
-    setAllCardData,
+    // allCardData,
+    // setAllCardData,
     user?.uid,
     isLoading,
     setIsLoading
   );
 
-  console.log(allCardData);
   return {
     workspaceData,
     setWorkspaceData,
     globalWorkspaceData,
     setGlobalWorkspaceData,
-    allCardData,
-    setAllCardData,
+    // allCardData,
+    // setAllCardData,
     templatesData,
     setTemplatesData,
     createBoardWithTemplateCard,

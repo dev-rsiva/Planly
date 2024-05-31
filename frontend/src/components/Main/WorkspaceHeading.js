@@ -45,7 +45,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
     }
   };
 
-  workspaceData?.workspaces.map((workspace) => {});
+  workspaceData?.workspaces?.map((workspace) => {});
   const handleSaveClick = (e) => {
     let shortName = shortNameField.split(" ").join("");
 
@@ -65,7 +65,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
     setIsShortNameTaken(shortNameIsNotTaken ? false : true);
 
     if (shortNameIsNotTaken) {
-      const currWorkspaceIndex = workspaceData.workspaces.findIndex(
+      const currWorkspaceIndex = workspaceData.workspaces?.findIndex(
         (eachWorkspace) => {
           console.log(
             eachWorkspace.id.split(" ").join("").toLowerCase().toString()

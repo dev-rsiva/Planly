@@ -9,8 +9,8 @@ const rootUseEffectLogic = (
   setWorkspaceData,
   globalWorkspaceData,
   setGlobalWorkspaceData,
-  allCardData,
-  setAllCardData,
+  // allCardData,
+  // setAllCardData,
   userId,
   isLoading,
   setIsLoading
@@ -82,7 +82,7 @@ const rootUseEffectLogic = (
       // updateUserAllCardData();
       updateUserTemplatesData();
     }
-  }, [templatesData, workspaceData, allCardData]);
+  }, [templatesData, workspaceData]);
 };
 
 export default rootUseEffectLogic;

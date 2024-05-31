@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../../utills/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import sendInvitationEmail from "../../utills/sendEmail";
 
 const DisplayInviteToWorkspace = ({
@@ -14,20 +14,29 @@ const DisplayInviteToWorkspace = ({
 
   // Function to send invitation
   const sendInvitation = async (email, workspaceId) => {
-    try {
-      // Add the invitation to Firestore
-      const docRef = await addDoc(collection(db, "invitations"), {
-        email: email,
-        workspaceId: workspaceId,
-        status: "pending",
-      });
+    const invitationsDocsRef = await getDocs(collection(db, "invitations"));
+    console.log(invitationsDocsRef);
+    const isMemberAlreadyInvited = invitationsDocsRef.docs
+      .map((doc) => doc.data())
+      .some((eachInvitation) => eachInvitation.email === email);
+    console.log(isMemberAlreadyInvited);
 
-      // Send the invitation email
-      //   await sendInvitationEmail(email, workspaceId);
+    if (!isMemberAlreadyInvited) {
+      try {
+        // Add the invitation to Firestore
+        const docRef = await addDoc(collection(db, "invitations"), {
+          email: email,
+          workspaceId: workspaceId,
+          status: "pending",
+        });
 
-      console.log("Invitation sent with ID: ", docRef.id);
-    } catch (error) {
-      console.error("Error sending invitation:", error);
+        // Send the invitation email
+        //   await sendInvitationEmail(email, workspaceId);
+
+        console.log("Invitation sent with ID: ", docRef.id);
+      } catch (error) {
+        console.error("Error sending invitation:", error);
+      }
     }
   };
   return (
@@ -51,9 +60,10 @@ const DisplayInviteToWorkspace = ({
       />
       <button
         className="w-full font-sans text-sm font-medium text-white bg-blue-600 rounded mr-4 h-[33px]"
-        onClick={() =>
-          sendInvitation(inviteWorkspaceRef.current.value, workspaceInfo.id)
-        }
+        onClick={() => {
+          sendInvitation(inviteWorkspaceRef.current.value, workspaceInfo.id);
+          setShowInviteWorkspace(false);
+        }}
       >
         Send Invite
       </button>

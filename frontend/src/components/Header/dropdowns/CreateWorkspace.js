@@ -77,6 +77,7 @@ const CreateWorkspace = ({
           role: "admin",
           name: user.displayName,
           email: user.email,
+          photoURL: user?.photoURL,
         },
       ],
       members: [
@@ -85,6 +86,7 @@ const CreateWorkspace = ({
           role: "admin",
           name: user.displayName,
           email: user.email,
+          photoURL: user?.photoURL,
         },
       ], // also role - normal exists.
       settings: {
@@ -114,7 +116,7 @@ const CreateWorkspace = ({
       ...updatedData.workspaces,
       { ...workspaceIntitalData },
     ];
-    console.log("firebase")
+    console.log("firebase");
 
     updateFirebaseDoc(updatedData);
     //   return updatedData;
