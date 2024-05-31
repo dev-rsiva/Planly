@@ -68,6 +68,7 @@ const Checklist = ({
     ).length;
 
     percentageOfCompletion = (completedNoOfItems / totalNoOfItems) * 100;
+    console.log(percentageOfCompletion);
 
     return percentageOfCompletion ? Math.floor(percentageOfCompletion) : 0;
   };
