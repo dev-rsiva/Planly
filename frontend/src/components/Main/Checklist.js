@@ -70,7 +70,7 @@ const Checklist = ({
     percentageOfCompletion = (completedNoOfItems / totalNoOfItems) * 100;
 
     console.log(Math.floor(percentageOfCompletion));
-    return Math.floor(percentageOfCompletion);
+    return percentageOfCompletion ? Math.floor(percentageOfCompletion) : 0;
   };
 
   const progressPercent = calculateProgressPercentage();
