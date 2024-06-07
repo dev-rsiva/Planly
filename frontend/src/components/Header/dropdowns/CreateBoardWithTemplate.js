@@ -44,7 +44,7 @@ const CreateBoardWithTemplate = ({
       ).name
     : paramObj.boardId
     ? workspaceData?.workspaces?.find((workspace) =>
-        workspace?.boards.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
       ).name
     : workspaceData?.workspaces[0].name;
 
@@ -106,7 +106,7 @@ const CreateBoardWithTemplate = ({
     // setWorkspaceData((prev) => {
     let updatedWorkspaceData = { ...workspaceData };
     const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
-      (workspace) => workspace.name === currWorkspaceName
+      (workspace) => workspace?.name === currWorkspaceName
     );
     const workspaceIndex =
       currWorkspaceData?.id[currWorkspaceData?.id.length - 1];
@@ -418,11 +418,11 @@ const CreateBoardWithTemplate = ({
         </div>
 
         <p className="mb-5 font-sans text-custom text-sm">
-          Activity and members will not be copied to the new board.
+          Activity and members will not be copied to the new board?.
         </p>
         <p className="mb-3 font-sans text-custom text-sm">
           This Workspace has 4 boards remaining. Free Workspaces can only have
-          10 open boards. For unlimited boards, upgrade your Workspace.
+          10 open boards?. For unlimited boards, upgrade your Workspace.
         </p>
         <button className="bg-gray-200 hover:bg-gray-300 rounded py-[6px] px-3 mb-3 font-sans text-custom text-sm cursor-not-allowed">
           Start free trial

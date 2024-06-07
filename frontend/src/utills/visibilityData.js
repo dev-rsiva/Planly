@@ -13,7 +13,7 @@ export const visibilityDetails = [
   {
     name: "Public",
     description:
-      "Anyone on the internet can see this board. Only board memebrs can edit this.",
+      "Anyone on the internet can see this board?. Only board memebrs can edit this.",
     isShowing: false,
   },
 ];

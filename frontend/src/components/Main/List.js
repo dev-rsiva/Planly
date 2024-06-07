@@ -5,9 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import Cards from "./Cards";
 import DisplayAddCard from "./DisplayAddCard.js";
 import ListActionCard from "./ListActionCard.js";
+import CopyListComp from "./CopyListComp";
+import MoveListComp from "./MoveListComp";
 
 const List = ({
   workspaceData,
@@ -19,6 +22,8 @@ const List = ({
   i,
   boardInfo,
 }) => {
+  const [showCopyListComp, setShowCopyListComp] = useState(false);
+  const [showMoveListComp, setShowMoveListComp] = useState(false);
   const [showListActionCard, setShowListActionCard] = useState(false);
 
   const [listActionCardRightPosition, setListActionCardRightPosition] =
@@ -30,6 +35,8 @@ const List = ({
   });
   const listCard = useRef();
   const listActionCardBtn = useRef();
+  const copyListBtnRef = useRef();
+  const moveListBtnRef = useRef();
 
   useEffect(() => {
     if (showListActionCard && listCard.current) {
@@ -56,19 +63,29 @@ const List = ({
       <div className="flex flex-col">
         <div className="flex justify-between items-center mb-3">
           <h1 className="mr-2 font-sans text-sm font-semibold text-[#172b4d]">
-            {list.title}
+            {list?.title}
           </h1>
-          <div
-            ref={listActionCardBtn}
-            onClick={() => {
-              setShowListActionCard(true);
-            }}
-            className="cursor-pointer"
-          >
-            <FontAwesomeIcon
-              icon={faEllipsis}
-              className="text-[#172b4d] text-sm"
-            />
+          <div className="flex items-center">
+            {list?.watching && (
+              <div className="flex justify-center items-center">
+                <FontAwesomeIcon
+                  icon={faEye}
+                  className="mr-3 text-xs text-[#172b4d]"
+                />
+              </div>
+            )}
+            <div
+              ref={listActionCardBtn}
+              onClick={() => {
+                setShowListActionCard(true);
+              }}
+              className="cursor-pointer hover:bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center"
+            >
+              <FontAwesomeIcon
+                icon={faEllipsis}
+                className="text-[#172b4d] text-sm"
+              />
+            </div>
           </div>
         </div>
         {showAddCardInput.top && (
@@ -89,12 +106,13 @@ const List = ({
         <Cards
           workspaceData={workspaceData}
           setWorkspaceData={setWorkspaceData}
-          cards={list.cards}
+          boardInfo={boardInfo}
+          cards={list?.cards}
           list={list}
         />
       </div>
 
-      {!showAddCardInput.bottom && (
+      {!showAddCardInput?.bottom && (
         <div
           className="flex justify-between items-center"
           onClick={() => {
@@ -116,7 +134,7 @@ const List = ({
         </div>
       )}
 
-      {showAddCardInput.bottom && (
+      {showAddCardInput?.bottom && (
         <div>
           <DisplayAddCard
             showAddCardInput={showAddCardInput}
@@ -136,6 +154,33 @@ const List = ({
           setShowListActionCard={setShowListActionCard}
           setShowCardInput={setShowCardInput}
           listActionCardBtn={listActionCardBtn}
+          setShowCopyListComp={setShowCopyListComp}
+          setShowMoveListComp={setShowMoveListComp}
+          copyListBtnRef={copyListBtnRef}
+          moveListBtnRef={moveListBtnRef}
+          workspaceData={workspaceData}
+          boardInfo={boardInfo}
+          listInfo={list}
+        />
+      )}
+
+      {showCopyListComp && (
+        <CopyListComp
+          setShowCopyListComp={setShowCopyListComp}
+          copyListBtnRef={copyListBtnRef}
+          workspaceData={workspaceData}
+          boardInfo={boardInfo}
+          listInfo={list}
+        />
+      )}
+
+      {showMoveListComp && (
+        <MoveListComp
+          setShowMoveListComp={setShowMoveListComp}
+          moveListBtnRef={moveListBtnRef}
+          workspaceData={workspaceData}
+          boardInfo={boardInfo}
+          listInfo={list}
         />
       )}
     </div>

@@ -71,7 +71,7 @@ export const useAppState = (
         //     return;
         //   }
 
-        //   //if the document exist, also the user exist means, the page is refreshing now, so update the workspaceData.
+        //   //if the document exist, also the user exist means, the page is refreshing now, so update the workspaceData?.
         //   const globalWorkspaceData = querySnapshot.docs[0].data();
         //   console.log(globalWorkspaceData);
 
@@ -123,7 +123,7 @@ export const useAppState = (
         console.log("data update triggered from onSnapshot");
         const updatedWorkspaceDataFromFirestore =
           snapshot?.docs[0]?.data().workspaces;
-
+        console.log(updatedWorkspaceDataFromFirestore);
         setWorkspaceData((prev) => {
           const updatedWorkspaceData =
             updatedWorkspaceDataFromFirestore?.filter((eachWorkspace) => {

@@ -12,7 +12,7 @@ import generateUniqueNumber from "../../utills/generateUniqueNum";
 const CreateLabel = ({
   setLabelsIsShowing,
   setCreateLabelIsShowing,
-  createLabelBtn,
+  // createLabelBtn,
   createLabelIsShowing,
   labelListIsShowing,
   setLabelListIsShowing,
@@ -152,12 +152,12 @@ const CreateLabel = ({
 
                 let updatedWorkspaceData = { ...workspaceData };
 
-                let currWorkspace = workspaceData.workspaces?.find(
+                let currWorkspace = workspaceData?.workspaces?.find(
                   (eachWorkspace) => {
-                    return eachWorkspace.boards.some((eachBoard) => {
-                      return eachBoard.lists.some((eachList) => {
-                        return eachList.cards.some((eachCard) => {
-                          return eachCard.id === paramObj.cardId;
+                    return eachWorkspace?.boards?.some((eachBoard) => {
+                      return eachBoard?.lists?.some((eachList) => {
+                        return eachList?.cards?.some((eachCard) => {
+                          return eachCard?.id === paramObj.cardId;
                         });
                       });
                     });
@@ -165,50 +165,50 @@ const CreateLabel = ({
                 );
                 console.log(currWorkspace);
 
-                let currBoard = currWorkspace.boards.find((eachBoard) => {
-                  return eachBoard.lists.some((eachList) => {
-                    return eachList.cards.some((eachCard) => {
-                      return eachCard.id === paramObj.cardId;
+                let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+                  return eachBoard?.lists?.some((eachList) => {
+                    return eachList?.cards?.some((eachCard) => {
+                      return eachCard?.id === paramObj.cardId;
                     });
                   });
                 });
                 console.log(currBoard);
 
-                let currList = currBoard.lists.find((eachList) => {
-                  return eachList.cards.some((eachCard) => {
-                    return eachCard.id === paramObj.cardId;
+                let currList = currBoard.lists?.find((eachList) => {
+                  return eachList?.cards?.some((eachCard) => {
+                    return eachCard?.id === paramObj.cardId;
                   });
                 });
                 console.log(currList);
 
                 updatedWorkspaceData.workspaces =
                   updatedWorkspaceData.workspaces?.map((eachWorkspace) => {
-                    if (eachWorkspace.id !== currWorkspace.id) {
+                    if (eachWorkspace?.id !== currWorkspace?.id) {
                       console.log(eachWorkspace);
                       return eachWorkspace;
                     }
                     return {
                       ...eachWorkspace,
-                      boards: eachWorkspace.boards.map((eachBoard) => {
-                        if (eachBoard.id !== currBoard.id) {
+                      boards: eachWorkspace?.boards?.map((eachBoard) => {
+                        if (eachBoard?.id !== currBoard.id) {
                           return eachBoard;
                         }
                         return {
                           ...eachBoard,
-                          lists: eachBoard.lists.map((eachList) => {
-                            if (eachList.id !== currList.id) {
+                          lists: eachBoard?.lists?.map((eachList) => {
+                            if (eachList?.id !== currList?.id) {
                               return eachList;
                             }
                             return {
                               ...eachList,
-                              cards: eachList.cards.map((eachCard) => {
-                                if (eachCard.id !== paramObj.cardId) {
-                                  console.log(eachCard.id !== paramObj.cardId);
+                              cards: eachList?.cards?.map((eachCard) => {
+                                if (eachCard?.id !== paramObj.cardId) {
+                                  console.log(eachCard?.id !== paramObj.cardId);
                                   return eachCard;
                                 }
                                 return {
                                   ...eachCard,
-                                  labels: eachCard.labels.map((eachLabel) => {
+                                  labels: eachCard?.labels.map((eachLabel) => {
                                     if (eachLabel.id !== editLabelInfo.id) {
                                       return eachLabel;
                                     }
@@ -253,12 +253,12 @@ const CreateLabel = ({
 
                 let updatedWorkspaceData = { ...workspaceData };
 
-                let currWorkspace = workspaceData.workspaces?.find(
+                let currWorkspace = workspaceData?.workspaces?.find(
                   (eachWorkspace) => {
-                    return eachWorkspace.boards.some((eachBoard) => {
-                      return eachBoard.lists.some((eachList) => {
-                        return eachList.cards.some((eachCard) => {
-                          return eachCard.id === paramObj.cardId;
+                    return eachWorkspace?.boards?.some((eachBoard) => {
+                      return eachBoard?.lists?.some((eachList) => {
+                        return eachList?.cards?.some((eachCard) => {
+                          return eachCard?.id === paramObj.cardId;
                         });
                       });
                     });
@@ -266,45 +266,45 @@ const CreateLabel = ({
                 );
                 console.log(currWorkspace);
 
-                let currBoard = currWorkspace.boards.find((eachBoard) => {
-                  return eachBoard.lists.some((eachList) => {
-                    return eachList.cards.some((eachCard) => {
-                      return eachCard.id === paramObj.cardId;
+                let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+                  return eachBoard?.lists?.some((eachList) => {
+                    return eachList?.cards?.some((eachCard) => {
+                      return eachCard?.id === paramObj.cardId;
                     });
                   });
                 });
                 console.log(currBoard);
 
-                let currList = currBoard.lists.find((eachList) => {
-                  return eachList.cards.some((eachCard) => {
-                    return eachCard.id === paramObj.cardId;
+                let currList = currBoard.lists?.find((eachList) => {
+                  return eachList?.cards?.some((eachCard) => {
+                    return eachCard?.id === paramObj.cardId;
                   });
                 });
                 console.log(currList);
 
                 updatedWorkspaceData.workspaces =
                   updatedWorkspaceData.workspaces?.map((eachWorkspace) => {
-                    if (eachWorkspace.id !== currWorkspace.id) {
+                    if (eachWorkspace?.id !== currWorkspace?.id) {
                       console.log(eachWorkspace);
                       return eachWorkspace;
                     }
                     return {
                       ...eachWorkspace,
-                      boards: eachWorkspace.boards.map((eachBoard) => {
-                        if (eachBoard.id !== currBoard.id) {
+                      boards: eachWorkspace?.boards?.map((eachBoard) => {
+                        if (eachBoard?.id !== currBoard.id) {
                           return eachBoard;
                         }
                         return {
                           ...eachBoard,
-                          lists: eachBoard.lists.map((eachList) => {
-                            if (eachList.id !== currList.id) {
+                          lists: eachBoard?.lists?.map((eachList) => {
+                            if (eachList?.id !== currList?.id) {
                               return eachList;
                             }
                             return {
                               ...eachList,
-                              cards: eachList.cards.map((eachCard) => {
-                                if (eachCard.id !== paramObj.cardId) {
-                                  console.log(eachCard.id !== paramObj.cardId);
+                              cards: eachList?.cards?.map((eachCard) => {
+                                if (eachCard?.id !== paramObj.cardId) {
+                                  console.log(eachCard?.id !== paramObj.cardId);
                                   return eachCard;
                                 }
                                 return {
@@ -319,7 +319,7 @@ const CreateLabel = ({
                                       title: title,
                                       color: colorSelected,
                                     },
-                                    ...eachCard.labels,
+                                    ...eachCard?.labels,
                                   ],
                                 };
                               }),

@@ -125,7 +125,7 @@ const ItemInputComp = ({
     const generatedObj = (card) => {
       return {
         ...card,
-        checklists: card.checklists.map((eachChecklist) => {
+        checklists: card?.checklists.map((eachChecklist) => {
           if (eachChecklist?.id !== checklist?.id) {
             return eachChecklist;
           }

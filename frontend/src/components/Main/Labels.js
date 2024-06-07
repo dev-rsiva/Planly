@@ -8,9 +8,10 @@ const Labels = ({
   cardInfo,
   newLabelListPosition,
   chooseLabelRef,
-  createLabelBtn,
+  // createLabelBtn,
   setLabelsIsShowing,
 }) => {
+  console.log(cardInfo);
   const [labelListIsShowing, setLabelListIsShowing] = useState(true);
   const [createLabelIsShowing, setCreateLabelIsShowing] = useState(false);
 
@@ -50,10 +51,10 @@ const Labels = ({
         labelListIsShowing={labelListIsShowing}
         setLabelListIsShowing={setLabelListIsShowing}
         labelsRef={labelsRef}
-        cardInfo={cardInfo}
+        newCardData={cardInfo}
         newLabelListPosition={newLabelListPosition}
         chooseLabelRef={chooseLabelRef}
-        createLabelBtn={createLabelBtn}
+        // createLabelBtn={createLabelBtn}
         createLabelIsShowing={createLabelIsShowing}
         editLabelInfo={editLabelInfo}
         setEditLabelInfo={setEditLabelInfo}
@@ -66,7 +67,7 @@ const Labels = ({
           setLabelsIsShowing={setLabelsIsShowing}
           createLabelIsShowing={createLabelIsShowing}
           setCreateLabelIsShowing={setCreateLabelIsShowing}
-          createLabelBtn={createLabelBtn}
+          // createLabelBtn={createLabelBtn}
           labelListIsShowing={labelListIsShowing}
           setLabelListIsShowing={setLabelListIsShowing}
           editLabelInfo={editLabelInfo}

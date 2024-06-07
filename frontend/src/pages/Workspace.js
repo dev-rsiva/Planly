@@ -7,7 +7,12 @@ import { data } from "../utills/utills.js";
 // import { useOutletContext } from "react-router-dom";
 import dataContext from "../utills/dataContext.js";
 const Workspace = () => {
-  const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  const {
+    workspaceData,
+    setWorkspaceData,
+    showWorkspaceHeading,
+    setShowWorkspaceHeading,
+  } = useContext(dataContext);
 
   const paramObj = useParams();
   console.log(paramObj);
@@ -16,6 +21,7 @@ const Workspace = () => {
       (workspace) => workspace?.shortname === paramObj?.workspaceShortName
     )
   );
+
   console.log(workspaceData);
   console.log(workspaceInfo);
   console.log(
@@ -46,7 +52,10 @@ const Workspace = () => {
   return (
     <div className="flex relative top-[45px]">
       <div className="mr-2 flex fixed h-[85vh]">
-        <Sidebar workspaceInfo={workspaceInfo} />
+        <Sidebar
+          workspaceInfo={workspaceInfo}
+          setShowWorkspaceHeading={setShowWorkspaceHeading}
+        />
         <hr
           style={{
             borderRightWidth: "1px",
@@ -57,9 +66,16 @@ const Workspace = () => {
         />
       </div>
       <div className="flex-1 ml-[260px]">
-        <WorkspaceHeading workspaceInfo={workspaceInfo} fromWorkspace={true} />
-        <hr className="" />
-        <Outlet context={[workspaceInfo]} />
+        {showWorkspaceHeading && (
+          <>
+            <WorkspaceHeading
+              workspaceInfo={workspaceInfo}
+              fromWorkspace={true}
+            />
+            <hr className="" />
+          </>
+        )}
+        <Outlet context={[workspaceInfo, setShowWorkspaceHeading]} />
       </div>
     </div>
   );

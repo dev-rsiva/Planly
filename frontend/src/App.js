@@ -18,6 +18,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [isSignInForm, setIsSignInForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showWorkspaceHeading, setShowWorkspaceHeading] = useState(true);
   const {
     workspaceData,
     setWorkspaceData,
@@ -94,6 +95,8 @@ const App = () => {
           setCreateDropdownDetails,
           createBoardSourceClick,
           setCreateBoardSourceClick,
+          showWorkspaceHeading,
+          setShowWorkspaceHeading,
         }}
       >
         <sideBarSelectionContext.Provider

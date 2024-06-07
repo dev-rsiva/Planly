@@ -23,7 +23,7 @@ const WorkspacesDropdown = ({
       )
     : paramObj.boardName
     ? workspaceData?.workspaces?.find((workspace) =>
-        workspace?.boards.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
       )
     : "";
 
@@ -103,7 +103,7 @@ const WorkspacesDropdown = ({
                     });
 
                     navigate(
-                      `w/${workspace.shortname}/${workspace.name.replace(
+                      `w/${workspace?.shortname}/${workspace?.name.replace(
                         / /g,
                         "-"
                       )}`
@@ -119,11 +119,11 @@ const WorkspacesDropdown = ({
                     >
                       <div className="bg-black opacity-30 absolute w-full h-full rounded" />
                       <p className="z-50 rounded text-sm text-white font-bold font-sans">
-                        {workspace.name[0]}
+                        {workspace?.name[0]}
                       </p>
                     </div>
                     <h1 className="font-semibold font-sans text-sm text-[#172b4d] flex-1">
-                      {workspace.name}
+                      {workspace?.name}
                     </h1>
                   </div>
                 </div>

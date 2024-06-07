@@ -1,6 +1,10 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserPlus,
+  faEllipsis,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { useParams } from "react-router-dom";
 import dataContext from "../../utills/dataContext";
@@ -26,7 +30,6 @@ const Item = ({
   const [itemHovered, setItemHovered] = useState(false);
   const [showItemAction, setShowItemAction] = useState(false);
 
-
   const paramObj = useParams();
   const { workspaceData } = useContext(dataContext);
   const itemInputRef = { useRef };
@@ -35,7 +38,7 @@ const Item = ({
     const generatedObj = (card) => {
       return {
         ...card,
-        checklists: card.checklists.map((eachChecklist) => {
+        checklists: card?.checklists.map((eachChecklist) => {
           if (eachChecklist?.id !== checklist?.id) {
             return eachChecklist;
           }
@@ -136,12 +139,13 @@ const Item = ({
                 itemHovered ? "block" : "hidden"
               }`}
             >
-              <FontAwesomeIcon
+              {/* <FontAwesomeIcon
                 icon={faUserPlus}
                 className="mr-2 text-[#3c5a8f]"
-              />
+              /> */}
+
               <FontAwesomeIcon
-                icon={faEllipsis}
+                icon={faTrash}
                 className="mr-2 p-[3px] text-[#3c5a8f] rounded-full hover:bg-gray-300"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -184,8 +188,6 @@ const Item = ({
             checklist={checklist}
           />
         )}
-
-
       </div>
     </div>
   );

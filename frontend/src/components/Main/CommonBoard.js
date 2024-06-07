@@ -60,7 +60,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
   console.log(board);
   console.log(workspaceInfo);
 
-  if (board.visibility === "Workspace") {
+  if (board?.visibility === "Workspace") {
     const isWorkspaceMember = workspaceInfo?.members.some((each) => {
       console.log(each.userId);
       console.log(user.uid);
@@ -73,8 +73,8 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
     }
   }
 
-  if (board.visibility === "Private") {
-    const isBoardMember = board.members.some((eachMember) => {
+  if (board?.visibility === "Private") {
+    const isBoardMember = board?.members.some((eachMember) => {
       return eachMember.userId === user.uid;
     });
 
@@ -85,7 +85,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
     }
   }
 
-  if (board.visibility === "Public") {
+  if (board?.visibility === "Public") {
     //do nothing, only not allow to edit this board and its content.
   }
 
@@ -112,7 +112,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
           e.stopPropagation();
           // setWorkspaceData((prev) => {
           console.log("Common data click triggered");
-          let updatedWorkspaces = [...workspaceData.workspaces];
+          let updatedWorkspaces = [...workspaceData?.workspaces];
 
           updatedWorkspaces = updatedWorkspaces?.map((eachWorkspace) => {
             const boardIndex = eachWorkspace?.boards?.findIndex(

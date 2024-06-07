@@ -30,13 +30,13 @@ const RecentlyViewedBoard = ({ recentlyViewedBoard }) => {
           // setWorkspaceData((prev) => {
           const updatedWorkspaceData = {
             ...workspaceData,
-            workspaces: workspaceData.workspaces?.map((eachWorkspace) => {
-              const boardIndex = eachWorkspace.boards.findIndex(
-                (eachBoard) => eachBoard.id === recentlyViewedBoard.id
+            workspaces: workspaceData?.workspaces?.map((eachWorkspace) => {
+              const boardIndex = eachWorkspace?.boards?.findIndex(
+                (eachBoard) => eachBoard?.id === recentlyViewedBoard.id
               );
 
               if (boardIndex !== -1) {
-                let updatedBoards = [...eachWorkspace.boards];
+                let updatedBoards = [...eachWorkspace?.boards];
 
                 updatedBoards[boardIndex] = {
                   ...updatedBoards[boardIndex],

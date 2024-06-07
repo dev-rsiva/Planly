@@ -46,7 +46,7 @@ const CreateBoard = ({
       )?.name
     : paramObj.boardId
     ? workspaceData?.workspaces?.find((workspace) =>
-        workspace?.boards?.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
       )?.name
     : workspaceData?.workspaces[0]?.name;
 
@@ -417,7 +417,7 @@ const CreateBoard = ({
       <div className="flex flex-col">
         <p className="mb-3 font-sans text-custom text-sm">
           This Workspace has 4 boards remaining. Free Workspaces can only have
-          10 open boards. For unlimited boards, upgrade your Workspace.
+          10 open boards?. For unlimited boards, upgrade your Workspace.
         </p>
         <button className="bg-gray-200 hover:bg-gray-300 rounded py-[6px] px-3 mb-3 font-sans text-custom text-sm cursor-not-allowed">
           Start free trial

@@ -16,11 +16,11 @@ const YourBoard = ({ board }) => {
     >
       <div className="w-full h-full absolute bg-black opacity-50 rounded" />
       <img
-        src={`${board.backgroundImg}`}
+        src={`${board?.backgroundImg}`}
         className="w-full h-full object-cover"
       />
       <h1 className="absolute left-0 top-0 p-2 font-sans font-bold text-base text-white">
-        {board.title}
+        {board?.title}
       </h1>
 
       <div
@@ -30,12 +30,12 @@ const YourBoard = ({ board }) => {
           const updatedWorkspaceData = {
             ...prev,
             workspaces: prev.workspaces?.map((eachWorkspace) => {
-              const boardIndex = eachWorkspace.boards.findIndex(
-                (eachBoard) => eachBoard.id === board.id
+              const boardIndex = eachWorkspace?.boards?.findIndex(
+                (eachBoard) => eachBoard?.id === board?.id
               );
 
               if (boardIndex !== -1) {
-                let updatedBoards = [...eachWorkspace.boards];
+                let updatedBoards = [...eachWorkspace?.boards];
 
                 updatedBoards[boardIndex] = {
                   ...updatedBoards[boardIndex],
@@ -59,7 +59,7 @@ const YourBoard = ({ board }) => {
           // });
         }}
         className={`absolute right-0 bottom-0 m-2 p-1 transform ${
-          board.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"
+          board?.starred || hoverBoard ? "translate-x-0" : "translate-x-[150%]"
         } transition-transform duration-300 ease-in-out`}
       >
         <svg
@@ -67,13 +67,13 @@ const YourBoard = ({ board }) => {
           onMouseLeave={() => setHoverStar(false)}
           xmlns="http://www.w3.org/2000/svg"
           fill={
-            (!hoverStar && !board.starred) || (hoverStar && board.starred)
+            (!hoverStar && !board?.starred) || (hoverStar && board?.starred)
               ? "none"
               : "#E2B203"
           } // "none" for transparent fill
           viewBox="0 0 24 24"
           stroke={
-            (board.starred && hoverStar) || (!board.starred && !hoverStar)
+            (board?.starred && hoverStar) || (!board?.starred && !hoverStar)
               ? "white"
               : "#E2B203"
           } // Set the stroke color to white

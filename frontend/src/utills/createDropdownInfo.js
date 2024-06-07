@@ -9,7 +9,7 @@ export const createDropdownInfo = [
       icon: <FontAwesomeIcon icon={faSquarePollVertical} />,
       title: "Create a Board",
       description:
-        "A board is made up of cards ordered on lists. Use it to manage projects, track information, or organize anything",
+        "A board is made up of cards ordered on  lists?. Use it to manage projects, track information, or organize anything",
       isShowing: false,
     },
   },

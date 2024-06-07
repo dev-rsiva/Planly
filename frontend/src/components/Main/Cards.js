@@ -1,17 +1,18 @@
 import Card from "./Card";
 
-const Cards = ({ workspaceData, setWorkspaceData, list, cards }) => {
+const Cards = ({ workspaceData, setWorkspaceData, boardInfo, list, cards }) => {
   return (
     <div>
-      {cards.map((card, i) => {
+      {cards?.map((card, i) => {
         return (
           <Card
-            key={card.id}
+            key={card?.id}
             workspaceData={workspaceData}
             setWorkspaceData={setWorkspaceData}
+            boardInfo={boardInfo}
             list={list}
             card={card}
-            cardId={card.id}
+            cardId={card?.id}
             i={i}
           />
         );

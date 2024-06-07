@@ -83,7 +83,7 @@ const OverviewSidebar = (
     const workspaceDropdownBtns = {};
     console.log(workspaceData);
     workspaceData?.workspaces?.forEach(
-      (workspace) => (workspaceDropdownBtns[workspace.name] = false)
+      (workspace) => (workspaceDropdownBtns[workspace?.name] = false)
     );
 
     return workspaceDropdownBtns;
@@ -96,7 +96,7 @@ const OverviewSidebar = (
   );
 
   return (
-    <div className="w-full">
+    <div className="w-[262px] fixed">
       <div>
         {sideBardBtns.map((eachButton, index) => {
           return (
@@ -184,7 +184,7 @@ const OverviewSidebar = (
                   setWorkspaceSideBarDropdownIsShowing((prev) => {
                     return {
                       ...prev,
-                      [workspace.name]: !prev[workspace.name],
+                      [workspace?.name]: !prev[workspace?.name],
                     };
                   })
                 }
@@ -198,15 +198,15 @@ const OverviewSidebar = (
                   >
                     <div className="bg-black opacity-30 absolute w-full h-full rounded" />
                     <p className="z-50 rounded text-sm text-white font-bold font-sans">
-                      {workspace.name[0]}
+                      {workspace?.name[0]}
                     </p>
                   </div>
                   <h1 className="font-medium font-sans text-sm text-[#172b4d] flex-1">
-                    {workspace.name}
+                    {workspace?.name}
                   </h1>
                 </div>
 
-                {workspaceSideBarDropdownIsShowing[workspace.name] ? (
+                {workspaceSideBarDropdownIsShowing[workspace?.name] ? (
                   <FontAwesomeIcon
                     icon={faAngleUp}
                     size="sm"
@@ -223,7 +223,7 @@ const OverviewSidebar = (
 
               {workspaceBtns.map((eachBtn, index) => {
                 return (
-                  workspaceSideBarDropdownIsShowing[workspace.name] && (
+                  workspaceSideBarDropdownIsShowing[workspace?.name] && (
                     <a
                       key={index}
                       className={`px-3 py-1 pl-[25%] mb-[8px] flex justify-start items-center rounded-lg ${
@@ -231,7 +231,9 @@ const OverviewSidebar = (
                           ? "cursor-not-allowed"
                           : "cursor-pointer hover:bg-gray-200"
                       } `}
-                      onClick={() => navigate(`/w/${workspace.shortname}/Home`)}
+                      onClick={() =>
+                        navigate(`/w/${workspace?.shortname}/Home`)
+                      }
                     >
                       <span className="pr-2">{eachBtn.icon}</span>
                       <span className="text-[#172b4d] font-medium font-sans text-sm ">

@@ -22,8 +22,9 @@ export const updateFirebaseDoc = async (updatedWorkspaceData) => {
   );
   console.log(localWorkspaceIdArr);
 
-  const updatedFirebaseData = firebaseWorkspaceData?.workspaces?.map(
+  let updatedFirebaseData = firebaseWorkspaceData?.workspaces?.map(
     (eachFirebaseWorkspace) => {
+      console.log(eachFirebaseWorkspace.id);
       if (!localWorkspaceIdArr?.includes(eachFirebaseWorkspace.id)) {
         console.log(eachFirebaseWorkspace);
         return eachFirebaseWorkspace;
@@ -40,6 +41,27 @@ export const updateFirebaseDoc = async (updatedWorkspaceData) => {
       return { ...updatedWorkspaceData?.workspaces[indexOfLocalWorkspace] };
     }
   );
+
+  console.log(updatedFirebaseData);
+
+  const firebaseWorkspaceIdArr = firebaseWorkspaceData?.workspaces?.map(
+    (each) => each?.id
+  );
+
+  console.log(firebaseWorkspaceIdArr);
+
+  const uniqueDataInUpdatedWorkspaceData =
+    updatedWorkspaceData?.workspaces?.filter((eachWorkspace) => {
+      return !firebaseWorkspaceIdArr?.includes(eachWorkspace?.id);
+    });
+
+  console.log(uniqueDataInUpdatedWorkspaceData);
+
+  updatedFirebaseData =
+    uniqueDataInUpdatedWorkspaceData &&
+    uniqueDataInUpdatedWorkspaceData?.length !== 0
+      ? [...updatedFirebaseData, ...uniqueDataInUpdatedWorkspaceData]
+      : [...updatedFirebaseData];
 
   console.log(updatedFirebaseData);
 

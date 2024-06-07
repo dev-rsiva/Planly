@@ -4,10 +4,10 @@ import { sortedLabels } from "./labelColors";
 export const cardData = {};
 
 data.workspaces?.forEach((workspace) =>
-  workspace.boards.forEach((board) =>
-    board.lists.forEach((list) =>
-      list.cards.forEach((card) => {
-        cardData[card.id] = {
+  workspace?.boards?.forEach((board) =>
+    board?.lists?.forEach((list) =>
+      list?.cards?.forEach((card) => {
+        cardData[card?.id] = {
           description: "",
           Activities: [],
           labels: sortedLabels,

@@ -7,8 +7,8 @@ const sendInvitationEmail = async (recipientEmail, workspaceId) => {
     to: recipientEmail,
     from: "your-email@example.com", // Use the email address or domain you verified with SendGrid
     subject: "You are invited to join our workspace",
-    text: `You have been invited to join the workspace. Click the link to accept the invitation: https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}`,
-    html: `<strong>You have been invited to join the workspace. Click the link to accept the invitation: <a href="https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}">Accept Invitation</a></strong>`,
+    text: `You have been invited to join the workspace?. Click the link to accept the invitation: https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}`,
+    html: `<strong>You have been invited to join the workspace?. Click the link to accept the invitation: <a href="https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}">Accept Invitation</a></strong>`,
   };
 
   try {
@@ -29,8 +29,8 @@ export default sendInvitationEmail;
 //   //     to: recipientEmail,
 //   //     from: "dailydealsind2019@gmail.com",
 //   //     subject: "You are invited to join our workspace",
-//   //     text: `You have been invited to join the workspace. Click the link to accept the invitation: https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}`,
-//   //     html: `<strong>You have been invited to join the workspace. Click the link to accept the invitation: <a href="https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}">Accept Invitation</a></strong>`,
+//   //     text: `You have been invited to join the workspace?. Click the link to accept the invitation: https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}`,
+//   //     html: `<strong>You have been invited to join the workspace?. Click the link to accept the invitation: <a href="https://your-app.com/accept-invite?workspaceId=${workspaceId}&email=${recipientEmail}">Accept Invitation</a></strong>`,
 //   //   };
 //   const msg = {
 //     to: "siva.torres@gmail.com", // Change to your recipient

@@ -8,7 +8,8 @@ import dataContext from "../utills/dataContext.js";
 import { updateFirebaseDoc } from "../utills/updateFirebase";
 
 const Boards = () => {
-  const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  const { workspaceData, setWorkspaceData, setShowWorkspaceHeading } =
+    useContext(dataContext);
   console.log(workspaceData);
   const paramObj = useParams();
 
@@ -17,13 +18,13 @@ const Boards = () => {
       (workspace) =>
         workspace?.boards?.some((board) =>
           board?.lists?.some((list) =>
-            list?.cards?.some((card) => card.id === paramObj.cardId)
+            list?.cards?.some((card) => card?.id === paramObj.cardId)
           )
         )
     );
     let workspaceDataFromBoardsUrl = workspaceData?.workspaces?.find(
       (workspace) =>
-        workspace?.boards?.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
     );
 
     return paramObj.boardId
@@ -34,21 +35,21 @@ const Boards = () => {
   const [boardInfo, setBoardInfo] = useState(() => {
     let boardInfoFromBoardsUrl = workspaceData?.workspaces
       .find((workspace) =>
-        workspace.boards?.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
       )
-      ?.boards?.find((board) => board.id === paramObj.boardId);
+      ?.boards?.find((board) => board?.id === paramObj.boardId);
 
     let boardInfoFromCardssUrl = workspaceData?.workspaces
       .find((workspace) =>
         workspace?.boards?.some((board) =>
           board?.lists?.some((list) =>
-            list?.cards?.some((card) => card.id === paramObj.cardId)
+            list?.cards?.some((card) => card?.id === paramObj.cardId)
           )
         )
       )
-      ?.boards.find((board) =>
+      ?.boards?.find((board) =>
         board?.lists?.some((list) =>
-          list?.cards?.some((card) => card.id === paramObj.cardId)
+          list?.cards?.some((card) => card?.id === paramObj.cardId)
         )
       );
 
@@ -73,12 +74,12 @@ const Boards = () => {
     const updatedWorkspaceData = {
       ...workspaceData,
       workspaces: workspaceData?.workspaces?.map((eachWorkspace) => {
-        const boardIndex = eachWorkspace.boards.findIndex(
-          (eachBoard) => eachBoard.id === boardInfo.id
+        const boardIndex = eachWorkspace?.boards?.findIndex(
+          (eachBoard) => eachBoard?.id === boardInfo.id
         );
 
         if (boardIndex !== -1) {
-          let updatedBoards = [...eachWorkspace.boards];
+          let updatedBoards = [...eachWorkspace?.boards];
 
           updatedBoards[boardIndex] = {
             ...updatedBoards[boardIndex],
@@ -106,7 +107,7 @@ const Boards = () => {
 
   useEffect(() => {
     const currWorkspace = workspaceData?.workspaces?.find((workspace) =>
-      workspace?.boards?.some((board) => board.id === paramObj.boardId)
+      workspace?.boards?.some((board) => board?.id === paramObj.boardId)
     );
 
     setWorkspaceInfo((prev) => {
@@ -115,9 +116,9 @@ const Boards = () => {
 
     const currBoard = workspaceData?.workspaces
       ?.find((workspace) =>
-        workspace.boards?.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
       )
-      ?.boards.find((board) => board.id === paramObj.boardId);
+      ?.boards?.find((board) => board?.id === paramObj.boardId);
 
     setBoardInfo((prev) => {
       return { ...prev, ...currBoard };
@@ -126,11 +127,14 @@ const Boards = () => {
 
   return (
     <div
-      className={`flex relative top-[45px]`}
+      className={`flex relative top-[45px] bg-slate-50`}
       // style={{ backgroundImage: `url(${boardInfo.backgroundImg})` }}
     >
-      <div className="mr-2 flex h-[85vh] ">
-        <Sidebar workspaceInfo={workspaceInfo} />
+      <div className="flex h-[85vh] ">
+        <Sidebar
+          workspaceInfo={workspaceInfo}
+          setShowWorkspaceHeading={setShowWorkspaceHeading}
+        />
         <hr
           style={{
             borderRightWidth: "1px",
@@ -147,6 +151,8 @@ const Boards = () => {
           workspaceInfo={workspaceInfo}
           boardInfo={boardInfo}
         />
+        <hr className="border-b-gray-50 text-center mx-auto mb-3" />
+
         <div className="fixed">
           <Lists
             workspaceData={workspaceData}

@@ -1,4 +1,5 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { visibilityDetails } from "../../utills/visibilityData.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +15,8 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import dataContext from "../../utills/dataContext";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
+import BoardMenu from "./BoardMenu";
+import ShareCardComp from "./ShareCardComp";
 
 const BoardHeading = ({ boardInfo, workspaceInfo }) => {
   // const data = visibilityDetails?.map((each) => {
@@ -32,13 +35,22 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
 
   // console.log(data);
 
+  const [showUserName, setShowUserName] = useState(false);
   const [showBoardVisibility, setShowBoardVisibility] = useState(false);
+  const [showBoardMenu, setShowBoardMenu] = useState(false);
+  const [showShareBoardComp, setShowShareBoardComp] = useState(false);
+
   const [boardVisibility, setBoardVisibility] = useState(null);
   console.log(boardInfo, boardVisibility);
   console.log(showBoardVisibility);
   const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
   console.log(user);
   console.log(workspaceData);
+
+  const boardMenuBtnRef = useRef();
+  const shareBtnRef = useRef();
+
+  const paramObj = useParams();
 
   // setWorkspaceData(null);
 
@@ -79,8 +91,8 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
 
     updatedWorkspaceInfo.boards = [...updatedWorkspaceInfo.boards];
 
-    const indexOfCurrBoard = updatedWorkspaceInfo.boards.findIndex(
-      (eachBoard) => eachBoard.id === boardInfo.id
+    const indexOfCurrBoard = updatedWorkspaceInfo.boards?.findIndex(
+      (eachBoard) => eachBoard?.id === boardInfo.id
     );
     updatedWorkspaceInfo.boards[indexOfCurrBoard] = updatedBoardInfo;
 
@@ -96,6 +108,36 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
     console.log(updatedboardMemberInfo);
     console.log(updatedBoardInfo);
     console.log(updatedWorkspaceInfo);
+    console.log(updatedWorkspaceData);
+
+    updateFirebaseDoc(updatedWorkspaceData);
+  };
+
+  const toggleBoardStar = (e) => {
+    console.log("toggle board start started");
+    e.stopPropagation();
+
+    const updatedWorkspaceData = { ...workspaceData };
+
+    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces.map(
+      (eachWorkspace) => {
+        if (eachWorkspace?.id !== workspaceInfo?.id) {
+          return eachWorkspace;
+        }
+
+        return {
+          ...eachWorkspace,
+          boards: eachWorkspace?.boards?.map((eachBoard) => {
+            if (eachBoard?.id !== boardInfo.id) {
+              return eachBoard;
+            }
+
+            return { ...eachBoard, starred: !eachBoard?.starred };
+          }),
+        };
+      }
+    );
+
     console.log(updatedWorkspaceData);
 
     updateFirebaseDoc(updatedWorkspaceData);
@@ -124,26 +166,43 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
   }, [boardInfo]);
 
   return (
-    <div className="flex justify-between items-center px-[30px] py-3">
+    <div className="relative flex justify-between items-center px-[30px] py-3 h-[60px]">
       <div className="flex items-center">
-        <div className="pr-4 font-sans text-lg text-[#172b4d] font-bold">
+        <div className="pr-4 font-sans text-lg text-[rgb(23,43,77)] font-bold cursor-default">
           <h1>{boardInfo && boardInfo?.title}</h1>
         </div>
-        <div className="pr-4">
-          <FontAwesomeIcon
+        <div className="pr-4" onClick={(e) => toggleBoardStar(e)}>
+          {/* <FontAwesomeIcon
             icon={faStar}
             className="text-sm font-semibold text-[#172b4d] font-sans"
-          />
+          /> */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill={boardInfo?.starred ? "#E2B203" : "none"} // "none" for transparent fill
+            viewBox="0 0 24 24"
+            stroke={boardInfo?.starred ? "#E2B203" : "#172b4d"} // Set the stroke color to white
+            strokeWidth="2"
+            className="w-5 h-5 cursor-pointer"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+            />
+          </svg>
         </div>
         <div className="pr-4 relative">
           <div
-            className="cursor-pointer"
+            className="cursor-pointer flex gap-2 justify-center items-center hover:bg-gray-200 rounded px-3 py-2"
             onClick={() => setShowBoardVisibility(!showBoardVisibility)}
           >
             <FontAwesomeIcon
               icon={faUserGroup}
               className="text-sm font-semibold text-[#172b4d] font-sans"
             />
+            <p className="text-[#172b4d] font-sans text-sm font-semibold">
+              Change Visibility
+            </p>
           </div>
 
           <div className="absolute top-[150%] border border-gray-200 z-50 bg-white rounded-lg shadow-lg">
@@ -208,14 +267,15 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
                           let indexOfCurrWorkspace =
                             updatedWorkspaceData.workspaces?.findIndex(
                               (eachWorkspace) =>
-                                eachWorkspace.id === workspaceInfo.id
+                                eachWorkspace?.id === workspaceInfo?.id
                             );
 
-                          let updatedBoards = [...workspaceInfo.boards];
+                          let updatedBoards = [...workspaceInfo?.boards];
 
-                          let indexOfCurrBoard = workspaceInfo.boards.findIndex(
-                            (eachBoard) => eachBoard.id === boardInfo.id
-                          );
+                          let indexOfCurrBoard =
+                            workspaceInfo?.boards?.findIndex(
+                              (eachBoard) => eachBoard?.id === boardInfo.id
+                            );
                           console.log(indexOfCurrBoard);
                           console.log(indexOfCurrWorkspace);
                           updatedBoards[indexOfCurrBoard] = {
@@ -253,7 +313,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
             )}
           </div>
         </div>
-        <div className="mr-4 bg-[#DFE1E6] rounded-[4px] px-4 py-2 font-sans text-sm text-[#172b4d] font-semibold">
+        {/* <div className="mr-4 bg-[#DFE1E6] rounded-[4px] px-4 py-2 font-sans text-sm text-[#172b4d] font-semibold">
           <button>Board</button>
         </div>
         <div className="mr-4 bg-[#DFE1E6] rounded-[4px] px-2 py-2 flex justify-between items-center">
@@ -261,19 +321,19 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
             icon={faAngleDown}
             className="text-lg text-[#172b4d]"
           />
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-between items-center">
-        <FontAwesomeIcon
+        {/* <FontAwesomeIcon
           icon={faRocket}
           className="pr-4 text-sm font-semibold text-[#172b4d] font-sans"
         />
         <FontAwesomeIcon
           icon={faBoltLightning}
           className="pr-4 text-sm font-semibold text-[#172b4d] font-sans"
-        />
-        <div className="pr-4 flex items-center">
+        /> */}
+        {/* <div className="pr-4 flex items-center">
           <FontAwesomeIcon
             icon={faFilter}
             className="pr-2 text-sm font-semibold text-[#172b4d] font-sans"
@@ -281,17 +341,29 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
           <p className="flex text-sm font-semibold text-[#172b4d] font-sans">
             Filters
           </p>
-        </div>
-        <hr className="border h-5 border-gray-400 mr-4"></hr>
-        <div className="mr-2 flex">
+        </div> */}
+        {/* <hr className="border h-5 border-gray-400 mr-4"></hr> */}
+
+        <div
+          className="relative mr-2 flex justify-center items-center"
+          onMouseEnter={() => setShowUserName(true)}
+          onMouseLeave={() => setShowUserName(false)}
+        >
+          {/* <div className="text-[#172b4d] font-sans text-xs font-semibold mr-3">
+            Board Members:
+          </div> */}
           {boardInfo?.members?.map((eachMember) => {
             return (
-              <div className="w-[30px] h-[30px] mr-1 rounded-full bg-blue-600 flex justify-center items-center text-sm font-semibold text-slate-200 font-sans">
-                {eachMember?.name[0] +
-                  eachMember?.name[eachMember.name.length - 1]}
+              <div className="relative w-[30px] h-[30px] mr-1 rounded-full bg-blue-600 flex justify-center items-center text-sm font-semibold text-slate-200 font-sans cursor-pointer">
+                {eachMember?.name[0] + eachMember?.name.slice(-2)}
               </div>
             );
           })}
+          {showUserName && (
+            <div className="absolute top-[140%] left-0 z-50 font-sans text-xs font-semibold text-white bg-[#294474] rounded py-1 px-2">
+              {boardInfo?.members?.map((eachMember) => eachMember?.name)}
+            </div>
+          )}
         </div>
         {!boardInfo?.members?.some(
           (eachMember) => eachMember.userId === user.uid
@@ -303,17 +375,42 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
             Join Board
           </button>
         )}
-        <div className="flex justify-center items-center bg-[#DFE1E6] px-4 py-2 rounded-[3px] mr-4 text-[#172b4d] font-sans text-sm font-semibold">
+        <div
+          ref={shareBtnRef}
+          className="flex justify-center items-center bg-[#DFE1E6] px-4 py-2 rounded-[3px] mr-4 text-[#172b4d] font-sans text-sm font-semibold hover:bg-gray-300 cursor-pointer"
+          onClick={() => setShowShareBoardComp(true)}
+        >
           <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
           <p>Share</p>
         </div>
-        <div>
+        <div
+          ref={boardMenuBtnRef}
+          onClick={() => setShowBoardMenu(!showBoardMenu)}
+          className="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-100"
+        >
           <FontAwesomeIcon
             icon={faEllipsis}
             className="text-sm font-semibold text-[#172b4d] font-sans"
           />
         </div>
       </div>
+      {showBoardMenu && (
+        <BoardMenu
+          setShowBoardMenu={setShowBoardMenu}
+          boardMenuBtnRef={boardMenuBtnRef}
+          workspaceData={workspaceData}
+          paramObj={paramObj}
+          user={user}
+        />
+      )}
+      {showShareBoardComp && (
+        <ShareCardComp
+          shareBtnRef={shareBtnRef}
+          setShowShareCardComp={setShowShareBoardComp}
+          showShareCardComp={showShareBoardComp}
+          fromWhere="board"
+        />
+      )}
     </div>
   );
 };

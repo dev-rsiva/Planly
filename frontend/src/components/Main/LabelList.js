@@ -20,16 +20,17 @@ const LabelList = ({
   createLabelBtn,
   setEditLabelInfo,
   setUserActionOnLabel,
-  // newCardData,
+  newCardData,
 }) => {
   const { workspaceData } = useContext(dataContext);
-  const { newCardData, setNewCardData } = useContext(cardDataContext);
+  // const { newCardData, setNewCardData } = useContext(cardDataContext);
   console.log(newCardData);
   const paramObj = useParams();
 
   const [selectedLabel, setSelectedLabel] = useState([]);
 
   const suggestedColor =
+    newCardData?.labels &&
     newCardData?.labels[Math.floor(Math.random() * 10)]?.color;
 
   const labelListRef = useRef();
@@ -40,7 +41,11 @@ const LabelList = ({
   return (
     <div
       className={`absolute ${
-        newLabelListPosition ? "left-[420px] top-12" : "right-60 top-12"
+        newLabelListPosition === "fromOpenCardLabelsBtn"
+          ? "left-[420px] top-12"
+          : newLabelListPosition === "fromOpenCardPlusBtn"
+          ? "right-60 top-12"
+          : "left-[110%] top-1"
       } w-[300px] bg-white p-4 rounded z-[1801]`}
       ref={labelListRef}
     >
@@ -88,7 +93,7 @@ const LabelList = ({
           Labels
         </h1>
         <div>
-          {newCardData?.labels.map((label) => {
+          {newCardData?.labels?.map((label) => {
             return (
               <div key={label.id} className="flex items-center mb-2">
                 <input
@@ -144,12 +149,12 @@ const LabelList = ({
                     //   );
                     // }
 
-                    let currWorkspace = workspaceData.workspaces?.find(
+                    let currWorkspace = workspaceData?.workspaces?.find(
                       (eachWorkspace) => {
-                        return eachWorkspace.boards.some((eachBoard) => {
-                          return eachBoard.lists.some((eachList) => {
-                            return eachList.cards.some((eachCard) => {
-                              return eachCard.id === paramObj.cardId;
+                        return eachWorkspace?.boards?.some((eachBoard) => {
+                          return eachBoard?.lists?.some((eachList) => {
+                            return eachList?.cards?.some((eachCard) => {
+                              return eachCard?.id === newCardData.id;
                             });
                           });
                         });
@@ -157,52 +162,52 @@ const LabelList = ({
                     );
                     console.log(currWorkspace);
 
-                    let currBoard = currWorkspace.boards.find((eachBoard) => {
-                      return eachBoard.lists.some((eachList) => {
-                        return eachList.cards.some((eachCard) => {
-                          return eachCard.id === paramObj.cardId;
+                    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+                      return eachBoard?.lists?.some((eachList) => {
+                        return eachList?.cards?.some((eachCard) => {
+                          return eachCard?.id === newCardData.id;
                         });
                       });
                     });
                     console.log(currBoard);
 
-                    let currList = currBoard.lists.find((eachList) => {
-                      return eachList.cards.some((eachCard) => {
-                        return eachCard.id === paramObj.cardId;
+                    let currList = currBoard.lists?.find((eachList) => {
+                      return eachList?.cards?.some((eachCard) => {
+                        return eachCard?.id === newCardData.id;
                       });
                     });
                     console.log(currList);
 
                     updatedWorkspaceData.workspaces =
                       updatedWorkspaceData.workspaces?.map((eachWorkspace) => {
-                        if (eachWorkspace.id !== currWorkspace.id) {
+                        if (eachWorkspace?.id !== currWorkspace?.id) {
                           console.log(eachWorkspace);
                           return eachWorkspace;
                         }
                         return {
                           ...eachWorkspace,
-                          boards: eachWorkspace.boards.map((eachBoard) => {
-                            if (eachBoard.id !== currBoard.id) {
+                          boards: eachWorkspace?.boards?.map((eachBoard) => {
+                            if (eachBoard?.id !== currBoard.id) {
                               return eachBoard;
                             }
                             return {
                               ...eachBoard,
-                              lists: eachBoard.lists.map((eachList) => {
-                                if (eachList.id !== currList.id) {
+                              lists: eachBoard?.lists?.map((eachList) => {
+                                if (eachList?.id !== currList?.id) {
                                   return eachList;
                                 }
                                 return {
                                   ...eachList,
-                                  cards: eachList.cards.map((eachCard) => {
-                                    if (eachCard.id !== paramObj.cardId) {
+                                  cards: eachList?.cards?.map((eachCard) => {
+                                    if (eachCard?.id !== newCardData.id) {
                                       console.log(
-                                        eachCard.id !== paramObj.cardId
+                                        eachCard?.id !== newCardData.id
                                       );
                                       return eachCard;
                                     }
                                     return {
                                       ...eachCard,
-                                      labels: eachCard.labels.map(
+                                      labels: eachCard?.labels.map(
                                         (eachLabel) => {
                                           if (eachLabel.id !== label.id) {
                                             return eachLabel;
@@ -269,20 +274,22 @@ const LabelList = ({
           })}
         </div>
       </div>
-      <div
-        className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 py-2 rounded-md font-sans text-sm font-semibold text-[#172b4d]"
-        ref={createLabelBtn}
-        onClick={(e) => {
-          setUserActionOnLabel("createLabel");
-          setCreateLabelIsShowing(true);
-          setLabelListIsShowing(false);
-          setEditLabelInfo((prev) => {
-            return { ...prev, color: "#4BCE97" };
-          });
-        }}
-      >
-        <button>Create a new label</button>
-      </div>
+      {newLabelListPosition !== "fromListsComponent" && (
+        <div
+          className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 py-2 rounded-md font-sans text-sm font-semibold text-[#172b4d]"
+          ref={createLabelBtn}
+          onClick={(e) => {
+            setUserActionOnLabel("createLabel");
+            setCreateLabelIsShowing(true);
+            setLabelListIsShowing(false);
+            setEditLabelInfo((prev) => {
+              return { ...prev, color: "#4BCE97" };
+            });
+          }}
+        >
+          <button>Create a new label</button>
+        </div>
+      )}
     </div>
   );
 };

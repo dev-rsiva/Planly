@@ -11,6 +11,8 @@ import Boards from "../pages/Boards.js";
 import OpenCard from "../components/Main/OpenCard.js";
 import ListOfBoard from "../components/Main/ListOfBoard.js";
 import Members from "../components/Main/Members.js";
+import Settings from "../components/Main/Settings.js";
+import Table from "../components/Main/Table.js";
 import TemplateHomePage from "../components/Main/TemplateHomePage.js";
 import WorkspaceHome from "../pages/WorkspaceHome.js";
 import App from "../App.js";
@@ -34,7 +36,18 @@ export const appRouter = createBrowserRouter([
             path: "/w/:workspaceShortName/:workspaceName",
             element: <ListOfBoard />,
           },
-          { path: "Members", element: <Members /> },
+          {
+            path: "/w/:workspaceShortName/:workspaceName/Members",
+            element: <Members />,
+          },
+          {
+            path: "/w/:workspaceShortName/:workspaceName/Settings",
+            element: <Settings />,
+          },
+          {
+            path: "/w/:workspaceShortName/:workspaceName/Views",
+            element: <Table />,
+          },
         ],
       },
       { path: "/w/:workspaceShortName/Home", element: <WorkspaceHome /> },

@@ -9,7 +9,7 @@ const StarredBoard = ({ starredBoard }) => {
   const { workspaceData, setWorkspaceData } = useContext(dataContext);
 
   const workspaceName = workspaceData?.workspaces?.find((workspace) =>
-    workspace?.boards.find((board) => board.title === starredBoard.title)
+    workspace?.boards?.find((board) => board?.title === starredBoard.title)
   ).name;
 
   return (
@@ -29,13 +29,13 @@ const StarredBoard = ({ starredBoard }) => {
           // setWorkspaceData((prev) => {
           const updatedWorkspaceData = {
             ...workspaceData,
-            workspaces: workspaceData.workspaces?.map((eachWorkspace) => {
-              const boardIndex = eachWorkspace.boards.findIndex(
-                (eachBoard) => eachBoard.id === starredBoard.id
+            workspaces: workspaceData?.workspaces?.map((eachWorkspace) => {
+              const boardIndex = eachWorkspace?.boards?.findIndex(
+                (eachBoard) => eachBoard?.id === starredBoard.id
               );
 
               if (boardIndex !== -1) {
-                let updatedBoards = [...eachWorkspace.boards];
+                let updatedBoards = [...eachWorkspace?.boards];
 
                 updatedBoards[boardIndex] = {
                   ...updatedBoards[boardIndex],

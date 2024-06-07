@@ -48,7 +48,7 @@ const Checklists = ({ newCardData }) => {
   console.log(currIndexOfChecklist);
   return (
     <div>
-      {newCardData?.checklists.map((eachChecklist, indexOfChecklist) => {
+      {newCardData?.checklists?.map((eachChecklist, indexOfChecklist) => {
         return (
           <Checklist
             checklist={eachChecklist}

@@ -24,8 +24,6 @@ const Template = () => {
   const shareCardRef = useRef();
   const shareBtn = useRef();
 
-
-
   const {
     createBoardWithTemplateCard,
     setCreateBoardWithTemplateCard,
@@ -35,7 +33,6 @@ const Template = () => {
   } = useContext(dataContext);
 
   const { templateSelected, setTemplateSelected } = useContext(dataContext);
-
 
   const renderParagraphs = (text) => {
     return text?.split("\n\n")?.map((eachPara) => {
@@ -53,7 +50,6 @@ const Template = () => {
   useEffect(() => {
     const handleOutsideClick = (e) => {
       e.stopPropagation();
-
 
       if (
         shareCardRef?.current &&
@@ -139,7 +135,10 @@ const Template = () => {
                   className="text-sans w-full text-sm text-custom font-semibold flex-1 mr-2 border-gray-400 border-2 rounded py-2 my-2 px-2 
                   outline-none focus:border-blue-600"
                 />
-                <button className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-sm font-sans rounded py-2 px-3 text-white font-semibold">
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-sm font-sans rounded py-2 px-3 text-white font-semibold"
+                  onClick={() => navigator.clipboard.writeText(currUrl)}
+                >
                   Copy
                 </button>
               </div>

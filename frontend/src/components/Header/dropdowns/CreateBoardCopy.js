@@ -39,7 +39,7 @@ const CreateBoardCopy = ({
       ).name
     : paramObj.boardId
     ? workspaceData?.workspaces?.find((workspace) =>
-        workspace?.boards.some((board) => board.id === paramObj.boardId)
+        workspace?.boards?.some((board) => board?.id === paramObj.boardId)
       ).name
     : workspaceData?.workspaces[0].name;
 
@@ -330,7 +330,7 @@ const CreateBoardCopy = ({
       <div className="flex flex-col">
         <p className="mb-3">
           This Workspace has 4 boards remaining. Free Workspaces can only have
-          10 open boards. For unlimited boards, upgrade your Workspace.
+          10 open boards?. For unlimited boards, upgrade your Workspace.
         </p>
         <button className="bg-blue-600 rounded py-1 px-3 mb-3">
           Start free trial

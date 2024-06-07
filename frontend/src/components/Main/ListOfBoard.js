@@ -42,7 +42,7 @@ const ListOfBoard = () => {
     }
 
     if (sortOption === "Alphabetically Z-A") {
-      return workspaceInfo?.boards.sort((a, b) =>
+      return workspaceInfo?.boards?.sort((a, b) =>
         b.title.localeCompare(a.title)
       );
     }
@@ -188,7 +188,7 @@ const ListOfBoard = () => {
         </div>
         {(activeFeature === "search"
           ? workspaceInfo?.boards?.filter((board) =>
-              board.title.toLowerCase().includes(searchQuery.toLowerCase())
+              board?.title.toLowerCase().includes(searchQuery.toLowerCase())
             )
           : activeFeature === "sortBy"
           ? sortBoards(sortBy)

@@ -39,7 +39,7 @@ const Starred = ({ setNavItemStatus }) => {
                     return updatedNavItemStatus;
                   });
                   navigate(
-                    `/b/${eachBoard.id}/${eachBoard.title.replace(/ /g, "-")}`
+                    `/b/${eachBoard?.id}/${eachBoard?.title.replace(/ /g, "-")}`
                   );
                 }}
               >
@@ -93,7 +93,7 @@ const Starred = ({ setNavItemStatus }) => {
                   return updatedNavItemStatus;
                 });
                 navigate(
-                  `/b/${eachBoard.id}/${eachBoard.title.replace(/ /g, "-")}`
+                  `/b/${eachBoard?.id}/${eachBoard?.title.replace(/ /g, "-")}`
                 );
               }}
             >

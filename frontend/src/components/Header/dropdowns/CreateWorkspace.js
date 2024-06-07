@@ -56,7 +56,6 @@ const CreateWorkspace = ({
   }
 
   function updatedWorkspaceData() {
-    console.log(data);
     let firstTwoChar = workspaceDetails.name.slice(0, 3);
 
     let workspaceIntitalData = {
@@ -108,7 +107,7 @@ const CreateWorkspace = ({
       boards: [],
     };
 
-    console.log(data);
+    console.log(workspaceIntitalData);
     // setWorkspaceData((prev) => {
     let updatedData = { ...workspaceData };
     console.log(updatedData);
@@ -118,10 +117,12 @@ const CreateWorkspace = ({
     ];
     console.log("firebase");
 
+    console.log(updatedData);
+
     updateFirebaseDoc(updatedData);
     //   return updatedData;
     // });
-    console.log(data);
+
     setCreateDropdownDetails((prev) => {
       let updatedCreateDropdownDetails = [...prev];
       updatedCreateDropdownDetails[2] = {
@@ -133,7 +134,13 @@ const CreateWorkspace = ({
       };
       return updatedCreateDropdownDetails;
     });
-    console.log(data);
+
+    console.log(
+      `/w/${workspaceIntitalData.shortname}/${workspaceIntitalData.name.replace(
+        / /g,
+        "-"
+      )}`
+    );
     navigate(
       `/w/${workspaceIntitalData.shortname}/${workspaceIntitalData.name.replace(
         / /g,

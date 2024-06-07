@@ -10,12 +10,12 @@ const Lists = ({ workspaceData, setWorkspaceData, boardInfo }) => {
       <div className="flex" style={{ width: "fit-content" }}>
         {boardInfo?.lists?.map((list, i) => {
           return (
-            <div className={`mr-2 mb-2`} key={list.id}>
+            <div className={`mr-2 mb-2`} key={list?.id}>
               <List
                 workspaceData={workspaceData}
                 setWorkspaceData={setWorkspaceData}
                 list={list}
-                listId={list.id}
+                listId={list?.id}
                 i={i}
                 boardInfo={boardInfo}
               />

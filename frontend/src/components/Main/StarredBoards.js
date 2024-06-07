@@ -24,10 +24,10 @@ const StarredBoards = ({ renderFrom }) => {
       : renderFrom === "workspaceStarredBoards"
       ? workspaceData?.workspaces
           .find(
-            (workspace) => workspace.shortname === paramObj.workspaceShortName
+            (workspace) => workspace?.shortname === paramObj.workspaceShortName
           )
-          .boards.filter((eachBoard) => {
-            return eachBoard.starred;
+          .boards?.filter((eachBoard) => {
+            return eachBoard?.starred;
           })
 
           .flat()
@@ -49,10 +49,10 @@ const StarredBoards = ({ renderFrom }) => {
           <div className="flex flex-wrap">
             {starredBoards.flat().map((eachBoard, index) => {
               console.log(eachBoard);
-              const workspaceInfo = workspaceData.workspaces?.find(
+              const workspaceInfo = workspaceData?.workspaces?.find(
                 (eachWorkspace) => {
-                  return eachWorkspace.boards.some((currBoard) => {
-                    return currBoard.id === eachBoard.id;
+                  return eachWorkspace?.boards?.some((currBoard) => {
+                    return currBoard.id === eachBoard?.id;
                   });
                 }
               );

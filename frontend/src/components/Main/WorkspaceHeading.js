@@ -51,7 +51,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
 
     let shortNameIsNotTaken = workspaceData?.workspaces
       ?.filter((eachWorkspace, index) => {
-        return workspaceInfo?.id !== eachWorkspace.id;
+        return workspaceInfo?.id !== eachWorkspace?.id;
       })
       .every((workspace) => {
         console.log(workspace?.shortname?.toLowerCase().slice(0, 3));
@@ -65,17 +65,17 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
     setIsShortNameTaken(shortNameIsNotTaken ? false : true);
 
     if (shortNameIsNotTaken) {
-      const currWorkspaceIndex = workspaceData.workspaces?.findIndex(
+      const currWorkspaceIndex = workspaceData?.workspaces?.findIndex(
         (eachWorkspace) => {
           console.log(
-            eachWorkspace.id.split(" ").join("").toLowerCase().toString()
+            eachWorkspace?.id.split(" ").join("").toLowerCase().toString()
           );
           console.log(
-            workspaceInfo.id.split(" ").join("").toLowerCase().toString()
+            workspaceInfo?.id.split(" ").join("").toLowerCase().toString()
           );
           return (
-            eachWorkspace.id.split(" ").join("").toLowerCase().toString() ==
-            workspaceInfo.id.split(" ").join("").toLowerCase().toString()
+            eachWorkspace?.id.split(" ").join("").toLowerCase().toString() ==
+            workspaceInfo?.id.split(" ").join("").toLowerCase().toString()
           );
         }
       );
@@ -130,7 +130,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   useEffect(() => {}, [editedData]);
 
   return (
-    <div className="px-[120px] py-8">
+    <div className="px-[120px] py-8 min-w-[850px]">
       {!displayWorkspaceEdit && (
         <div className="flex justify-between">
           <div>
@@ -204,20 +204,20 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
         </div>
       )}
       {displayWorkspaceEdit && (
-        <div>
+        <div className="font-sans text-xs font-semibold text-[#172b4d]">
           <div className="mb-4">
-            <h3>Name *</h3>
+            <h3 className="mb-1">Name *</h3>
             <input
-              className="min-w-[240px] border-2 border-gray-300 rounded px-2 py-1"
+              className="min-w-[240px] focus:border-blue-500 outline-none border-2 border-gray-300 rounded px-2 py-1 text-sm font-normal"
               value={editedData?.name}
               onChange={(e) => handleChange(e.target.value, "name")}
             />
           </div>
 
           <div className="mb-4">
-            <h3> Short name *</h3>
+            <h3 className="mb-1"> Short name *</h3>
             <input
-              className={`min-w-[240px] border-2 border-gray-300 ${
+              className={`min-w-[240px] focus:border-blue-500 outline-none border-2 border-gray-300 text-sm font-normal ${
                 isShortNameTaken ? "border-red-700" : ""
               } rounded px-2 py-1`}
               value={editedData?.shortname}
@@ -229,18 +229,18 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
           </div>
 
           <div className="mb-4">
-            <h3>Website (optional) </h3>
+            <h3 className="mb-1">Website (optional) </h3>
             <input
-              className="min-w-[240px] border-2 border-gray-300 rounded px-2 py-1"
+              className="min-w-[240px] focus:border-blue-500 outline-none border-2 border-gray-300 rounded px-2 py-1 text-sm font-normal"
               value={editedData?.website}
               onChange={(e) => handleChange(e.target.value, "website")}
             />
           </div>
 
           <div className="mb-4">
-            <h3> Description (optional)</h3>
+            <h3 className="mb-1"> Description (optional)</h3>
             <input
-              className="min-w-[240px] border-2 border-gray-300 rounded px-2 py-1 pb-4"
+              className="min-w-[240px] focus:border-blue-500 outline-none border-2 border-gray-300 rounded px-2 py-1 pb-4 text-sm font-normal"
               value={editedData?.description}
               onChange={(e) => handleChange(e.target.value, "description")}
             />

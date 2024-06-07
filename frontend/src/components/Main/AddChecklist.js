@@ -11,11 +11,16 @@ import dataContext from "../../utills/dataContext.js";
 import generateUniqueNumber from "../../utills/generateUniqueNum";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
 
-const AddChecklist = ({ showAddChecklist, setShowAddChecklist }) => {
+const AddChecklist = ({
+  showAddChecklist,
+  setShowAddChecklist,
+  checklistBtnRef,
+}) => {
   const [checklistTitle, setChecklistTitle] = useState("");
 
   const { workspaceData } = useContext(dataContext);
   const paramObj = useParams();
+  const checklistRef = useRef();
 
   const addChecklist = () => {
     let newChecklist = {
@@ -27,8 +32,8 @@ const AddChecklist = ({ showAddChecklist, setShowAddChecklist }) => {
       items: [],
     };
     const generatedObj = (card) => {
-      console.log({ ...card, checklists: [...card.checklists, newChecklist] });
-      return { ...card, checklists: [...card.checklists, newChecklist] };
+      console.log({ ...card, checklists: [...card?.checklists, newChecklist] });
+      return { ...card, checklists: [...card?.checklists, newChecklist] };
     };
 
     let updatedWorkspaceData = createUpdatedWorkspaceDataType1(
@@ -43,9 +48,27 @@ const AddChecklist = ({ showAddChecklist, setShowAddChecklist }) => {
     setShowAddChecklist(false);
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      e.stopPropagation();
+      if (
+        !checklistRef?.current?.contains(e.target) &&
+        !checklistBtnRef?.current?.contains(e.target)
+      ) {
+        setShowAddChecklist(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
   return (
     <>
-      <div className="absolute right-60 top-36 bg-white p-4 rounded w-[300px] z-[1801]">
+      <div
+        ref={checklistRef}
+        className="absolute right-60 top-36 bg-white p-4 rounded w-[300px] z-[1801]"
+      >
         <div className="flex justify-between items-center mb-3">
           <p className="flex-grow text-center font-sans text-sm font-semibold text-[#172b4d]">
             Add checklist

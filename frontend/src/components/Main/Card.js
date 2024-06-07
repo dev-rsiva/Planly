@@ -4,19 +4,78 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faPencil, faFileLines } from "@fortawesome/free-solid-svg-icons";
 import { cardData } from "../../utills/cardData.js";
+import Labels from "./Labels.js";
+import CardMembersComp from "./CardMembersComp.js";
+import MoveCardComp from "./MoveCardComp.js";
+import CopyCardComp from "./CopyCardComp.js";
+import DatesCard from "./DatesCard.js";
 
-const Card = ({ workspaceData, setWorkspaceData, list, card, cardId, i }) => {
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
+import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+
+const Card = ({
+  workspaceData,
+  setWorkspaceData,
+  boardInfo,
+  list,
+  card,
+  cardId,
+  i,
+}) => {
+  console.log(list);
   const [editIconIsVisible, setEditIconIsVisible] = useState(false);
   const [editCardIsVisible, setEditCardIsVisible] = useState(false);
   const [zIndex, setZindex] = useState(false);
 
   // const [showOpenCard, setShowOpenCard] = useState(false);
 
+  const [labelsIsShowing, setLabelsIsShowing] = useState(false);
+  const [showCardMembersComp, setShowCardMembersComp] = useState(false);
+  const [showMoveCardComp, setShowMoveCardComp] = useState(false);
+  const [showCopyCardComp, setShowCopyCardComp] = useState(false);
+  const [showDatesCard, setShowDatesCard] = useState(false);
+
+  const workspaceInfo = workspaceData?.workspaces?.find((workspace) =>
+    workspace?.boards?.some((eachBoard) => eachBoard?.id === boardInfo.id)
+  );
+  console.log(workspaceInfo);
   const openCardContext = createContext();
 
   const navigate = useNavigate();
 
   const inputField = useRef(null);
+  const labelsBtnRef = useRef(null);
+  const changeMembersBtnRef = useRef(null);
+  const moveCardBtnRef = useRef(null);
+  const copyCardBtnRef = useRef(null);
+  const datesBtnRef = useRef(null);
+
+  const addCardMember = (e, member) => {
+    e.stopPropagation();
+    if (
+      card?.members.some((eachMember) => eachMember.userId === member.userId)
+    ) {
+      console.log("already a card member");
+
+      return;
+    }
+
+    console.log("card member started adding");
+
+    const generatedObj = (card) => {
+      return { ...card, members: [...card?.members, member] };
+    };
+
+    let updatedWorkspaceData = createUpdatedWorkspaceDataType1(
+      generatedObj,
+      workspaceData,
+      { cardId: card?.id }
+    );
+
+    console.log(updatedWorkspaceData);
+    updateFirebaseDoc(updatedWorkspaceData);
+    // setShowCardMembersComp(false);
+  };
 
   const foucsInput = () => {
     if (inputField.current) {
@@ -32,7 +91,7 @@ const Card = ({ workspaceData, setWorkspaceData, list, card, cardId, i }) => {
   }, [editCardIsVisible]);
 
   return (
-    <div key={card.id}>
+    <div key={card?.id} className="relative">
       <div>
         <div
           className="flex justify-between items-center min-h-[40px] px-2 py-1 rounded-xl mr-2 mb-2 bg-white border-2 border-slate-300 shadow-lg hover:border-2 border-transparent hover:border-blue-700 hover:cursor-pointer"
@@ -42,11 +101,11 @@ const Card = ({ workspaceData, setWorkspaceData, list, card, cardId, i }) => {
           onMouseLeave={() => setEditIconIsVisible(false)}
           onClick={() => {
             // setShowOpenCard(!showOpenCard);
-            navigate(`/c/${card.id}/${card.title}`);
+            navigate(`/c/${card?.id}/${card?.title}`);
           }}
         >
           <h1 className="font-sans text-sm font-base text-[#172b4d]">
-            {card.title}
+            {card?.title}
           </h1>
           {editIconIsVisible && (
             <div
@@ -73,7 +132,13 @@ const Card = ({ workspaceData, setWorkspaceData, list, card, cardId, i }) => {
                 zIndex ? "z-40" : ""
               }`}
               onClick={() => {
-                setEditCardIsVisible(false);
+                if (
+                  !labelsIsShowing &&
+                  !showCardMembersComp &&
+                  !showCopyCardComp
+                ) {
+                  setEditCardIsVisible(false);
+                }
               }}
             />
             <div
@@ -85,54 +150,143 @@ const Card = ({ workspaceData, setWorkspaceData, list, card, cardId, i }) => {
                 <div className="absolute w-[260px] bg-white rounded p-2 mb-2">
                   <input
                     ref={inputField}
-                    value={card.title}
+                    value={card?.title}
                     onChange={() => {}}
-                    className="border-none bg-transparent whitespace-normal font-sans text-sm font-semibold text-[#172b4d]"
+                    className="border-2 border-blue-600 rounded p-2 outline-none bg-transparent whitespace-normal font-sans text-sm font-semibold text-[#172b4d]"
                   />
                   <FontAwesomeIcon
                     icon={faFileLines}
                     className="mb-[2px] pl-1"
                   />
                 </div>
-                <div className="absolute top-[50px]">
-                  <button className="whitespace-nowrap px-2 py-1 bg-blue-600 rounded mb-1 text-white">
+                <div className="absolute top-[65px]">
+                  <button className="whitespace-nowrap px-3 py-1 bg-blue-600 rounded mb-1 font-sans font-semibold text-white">
                     Save
                   </button>
                 </div>
               </div>
 
-              <div className="absolute left-[100%] flex flex-col">
+              <div className="absolute left-[110%] flex flex-col font-sans text-sm font-semibold text-[#172b4d]">
                 <button
-                  className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1"
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
                   onClick={() => {
-                    navigate(`/c/${card.id}/${card.title}`);
+                    navigate(`/c/${card?.id}/${card?.title}`);
                   }}
                 >
                   Open card
                 </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
+                <button
+                  ref={labelsBtnRef}
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLabelsIsShowing(true);
+                  }}
+                >
                   Edit labels
                 </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
+                <button
+                  ref={changeMembersBtnRef}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowCardMembersComp(true);
+                  }}
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
+                >
                   Change members
                 </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
+                {/* <button className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300">
                   Change cover
-                </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
+                </button> */}
+                <button
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
+                  ref={moveCardBtnRef}
+                  onClick={() => setShowMoveCardComp(true)}
+                >
                   Move
                 </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
+                <button
+                  ref={copyCardBtnRef}
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
+                  onClick={() => setShowCopyCardComp(true)}
+                >
                   Copy
                 </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
-                  Edited dates
+                <button
+                  ref={datesBtnRef}
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
+                  onClick={() => {
+                    setShowDatesCard(!showDatesCard);
+                  }}
+                >
+                  Edit dates
                 </button>
-                <button className="whitespace-nowrap px-2 py-1 bg-gray-200 rounded mb-1">
+                {/* <button className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300">
                   Archive
-                </button>
+                </button> */}
               </div>
             </div>
+
+            {labelsIsShowing && (
+              <Labels
+                setLabelsIsShowing={setLabelsIsShowing}
+                labelsBtnRef={labelsBtnRef}
+                cardInfo={card}
+                newLabelListPosition="fromListsComponent"
+                // chooseLabelRef={chooseLabelRef}
+                // createLabelBtn={createLabelBtn}
+              />
+            )}
+            {showCardMembersComp && (
+              <CardMembersComp
+                addCardMember={addCardMember}
+                fromWhere="ListsComp"
+                workspaceData={workspaceData}
+                workspaceInfo={workspaceInfo}
+                boardInfo={boardInfo}
+                listInfo={list}
+                cardInfo={card}
+                plusBtnRef={changeMembersBtnRef}
+                membersBtnRef={changeMembersBtnRef}
+                setShowCardMembersComp={setShowCardMembersComp}
+                showCardMembersComp={showCardMembersComp}
+              />
+            )}
+
+            {showMoveCardComp && (
+              <MoveCardComp
+                fromWhere="listsComponent"
+                setShowMoveCardComp={setShowMoveCardComp}
+                workspaceData={workspaceData}
+                workspaceInfo={workspaceInfo}
+                boardInfo={boardInfo}
+                listInfo={list}
+                cardInfo={card}
+                moveCardBtnRef={moveCardBtnRef}
+              />
+            )}
+
+            {showCopyCardComp && (
+              <CopyCardComp
+                fromWhere="listsComponent"
+                setShowCopyCardComp={setShowCopyCardComp}
+                workspaceData={workspaceData}
+                workspaceInfo={workspaceInfo}
+                boardInfo={boardInfo}
+                listInfo={list}
+                cardInfo={card}
+                copyCardBtnRef={copyCardBtnRef}
+              />
+            )}
+            {showDatesCard && (
+              <DatesCard
+                fromWhere="listsComponent"
+                datesBtnRef={datesBtnRef}
+                showDatesCard={showDatesCard}
+                setShowDatesCard={setShowDatesCard}
+                newCardData={card}
+              />
+            )}
           </>
         )}
 

@@ -21,7 +21,7 @@ const DisplayAddCard = ({
     user,
     // allCardData, setAllCardData
   } = useContext(dataContext);
-
+  console.log(user);
   const paramObj = useParams();
   const addCardInput = useRef();
 
@@ -35,7 +35,7 @@ const DisplayAddCard = ({
       Activities: [],
       labels: sortedLabels,
       checklists: [],
-      members: [user],
+      members: [],
       covers: [],
       dates: { start: null, due: null },
       attachments: [],
@@ -65,18 +65,20 @@ const DisplayAddCard = ({
     // setWorkspaceData((prev) => {
     let updatedworkspaceData = { ...workspaceData };
     const workspace = updatedworkspaceData.workspaces?.find((workspace) =>
-      workspace.boards.some((board) =>
-        board.lists.some((eachlist) => eachlist.id === list.id)
+      workspace?.boards?.some((board) =>
+        board?.lists?.some((eachlist) => eachlist.id === list?.id)
       )
     );
-    const board = workspace.boards.find((board) => board.id === boardInfo.id);
-
-    const listToBeAdded = board.lists.find(
-      (eachList) => eachList.id === list.id
+    const board = workspace?.boards?.find(
+      (board) => board?.id === boardInfo.id
     );
-    showAddCardInput.top && listToBeAdded.cards.unshift(newCard);
 
-    showAddCardInput.bottom && listToBeAdded.cards.push(newCard);
+    const listToBeAdded = board?.lists?.find(
+      (eachList) => eachList?.id === list?.id
+    );
+    showAddCardInput.top && listToBeAdded.cards?.unshift(newCard);
+
+    showAddCardInput.bottom && listToBeAdded.cards?.push(newCard);
 
     setCardTitle("");
     addCardInput.current.focus();
@@ -103,7 +105,7 @@ const DisplayAddCard = ({
       <div className="mb-2">
         <input
           ref={addCardInput}
-          placeholder="Enter a title for this card..."
+          placeholder="Enter a title for this card?..."
           value={cardTitle}
           type="text"
           className="w-full rounded-md p-2 font-sans text-sm font-semibold text-[#172b4d] focus:outline-none shadow-sm border border-gray-100 focus:border-2 focus:border-blue-500"

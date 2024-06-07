@@ -61,7 +61,7 @@ const DisplayInviteToWorkspace = ({
       <button
         className="w-full font-sans text-sm font-medium text-white bg-blue-600 rounded mr-4 h-[33px]"
         onClick={() => {
-          sendInvitation(inviteWorkspaceRef.current.value, workspaceInfo.id);
+          sendInvitation(inviteWorkspaceRef.current.value, workspaceInfo?.id);
           setShowInviteWorkspace(false);
         }}
       >

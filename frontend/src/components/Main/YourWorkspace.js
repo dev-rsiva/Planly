@@ -15,10 +15,10 @@ const YourWorkspace = ({ workspace }) => {
             className={`relative w-[40px] h-[40px] rounded mr-3 flex justify-center items-center font-bold text-white text-xl`}
           >
             <div className="bg-black opacity-30 absolute w-full h-full rounded" />
-            <p className="z-50 rounded">{workspace.name[0]}</p>
+            <p className="z-50 rounded">{workspace?.name[0]}</p>
           </div>
           <h1 className="font-bold text-base text-[#172b4d]">
-            {workspace.name}
+            {workspace?.name}
           </h1>
         </div>
         <div className="flex">
@@ -32,7 +32,7 @@ const YourWorkspace = ({ workspace }) => {
                     : "cursor-pointer hover:bg-gray-300"
                 }`}
                 onClick={() => {
-                  navigate(`/w/${workspace.shortname}/Home`);
+                  navigate(`/w/${workspace?.shortname}/Home`);
                   window.scrollTo(0, 0);
                 }}
               >

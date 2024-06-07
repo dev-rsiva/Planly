@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -20,12 +20,13 @@ import { data } from "../../utills/utills.js";
 import { faTrello } from "@fortawesome/free-brands-svg-icons";
 import dataContext from "../../utills/dataContext.js";
 
-const Sidebar = ({ workspaceInfo }) => {
+const Sidebar = ({ workspaceInfo, setShowWorkspaceHeading }) => {
   const {
     createDropdownDetails,
     setCreateDropdownDetails,
     createBoardSourceClick,
     setCreateBoardSourceClick,
+    user,
   } = useContext(dataContext);
 
   const workspaceSideBarBtns = [
@@ -44,32 +45,36 @@ const Sidebar = ({ workspaceInfo }) => {
           className=""
         />
       ),
-      iconAtRightEnd: (
-        <FontAwesomeIcon icon={faPlus} className="" size={"sm"} />
-      ),
+      iconAtRightEnd: "",
+      // iconAtRightEnd: (
+      //   <FontAwesomeIcon icon={faPlus} className="" size={"sm"} />
+      // ),
     },
     {
       btnName: "Workspace settings",
       icon: <FontAwesomeIcon icon={faGear} size={"sm"} color="#455570" />,
-      iconAtRightEnd: <FontAwesomeIcon icon={faAngleDown} size={"sm"} />,
+      iconAtRightEnd: "",
+      // iconAtRightEnd: <FontAwesomeIcon icon={faAngleDown} size={"sm"} />,
     },
     {
       btnName: "Table",
       icon: <FontAwesomeIcon icon={faTable} size={"sm"} color="#455570" />,
       iconAtRightEnd: "",
     },
-    {
-      btnName: "Calendar",
-      icon: <FontAwesomeIcon icon={faCalendar} size={"sm"} color="#455570" />,
-      iconAtRightEnd: "",
-    },
+    // {
+    //   btnName: "Calendar",
+    //   icon: <FontAwesomeIcon icon={faCalendar} size={"sm"} color="#455570" />,
+    //   iconAtRightEnd: "",
+    // },
   ];
 
   const navigate = useNavigate();
 
+  console.log(workspaceInfo);
+
   return (
     <div>
-      <div className="w-[262px] flex justify-between items-center py-3 pl-4 pr-6">
+      <div className="w-[262px] flex justify-between items-center py-3 pl-4 pr-6 h-[60px] bg-gray-100">
         <div className="flex">
           <div
             style={{
@@ -84,17 +89,18 @@ const Sidebar = ({ workspaceInfo }) => {
           </div>
           <div className="flex flex-col">
             <h1 className="font-semibold font-sans text-sm text-[#172b4d] flex-1">
-              {workspaceInfo?.name}
+              {workspaceInfo?.name?.slice(0, 23)}
+              {workspaceInfo?.name?.length > 23 && "..."}
             </h1>
             <h1 className="font-base font-sans text-[12px] text-[#172b4d] flex-1">
               Free
             </h1>
           </div>
         </div>
-        <FontAwesomeIcon
+        {/* <FontAwesomeIcon
           icon={faAngleLeft}
           className="mb-[2px] pl-1 text-xs text-gray-600"
-        />
+        /> */}
       </div>
       <hr className="mb-4" />
 
@@ -108,10 +114,35 @@ const Sidebar = ({ workspaceInfo }) => {
                 ${
                   eachBtn.btnName ===
                   ("Members" || "Workspace settings" || "Table" || "Calendar")
-                    ? "cursor-not-allowed"
+                    ? "cursor-pointer"
                     : "cursor-pointer"
                 }`}
-                onClick={() => navigate(`/w/${workspaceInfo?.shortname}/Home`)}
+                onClick={() => {
+                  if (eachBtn.btnName === "Boards") {
+                    console.log("navigating to workspace");
+                    navigate(
+                      `/w/${
+                        workspaceInfo?.shortname
+                      }/${workspaceInfo?.name.replace(/ /g, "-")}`
+                    );
+                  }
+                  if (eachBtn.btnName === "Members") {
+                    console.log("navigating to Members");
+                    navigate(
+                      `/w/${
+                        workspaceInfo?.shortname
+                      }/${workspaceInfo?.name.replace(/ /g, "-")}/Members`
+                    );
+                  }
+                  if (eachBtn.btnName === "Workspace settings") {
+                    console.log("navigating to Workspace settings");
+                    navigate(
+                      `/w/${
+                        workspaceInfo?.shortname
+                      }/${workspaceInfo?.name.replace(/ /g, "-")}/Settings`
+                    );
+                  }
+                }}
               >
                 <span className="w-7">{eachBtn.icon}</span>
                 <div className="w-full flex justify-between items-center pr-4">
@@ -120,7 +151,7 @@ const Sidebar = ({ workspaceInfo }) => {
                       eachBtn.btnName === "Workspace settings"
                         ? "font-semibold"
                         : "font-normal"
-                    } font-sans text-sm cursor-not-allowed`}
+                    } font-sans text-sm`}
                   >
                     {eachBtn.btnName}
                   </span>
@@ -138,8 +169,18 @@ const Sidebar = ({ workspaceInfo }) => {
               return (
                 <div
                   key={index}
-                  className="py-1 pl-5 mb-[4px] flex justify-start items-center hover:bg-gray-200 cursor-not-allowed"
-                  onClick={() => navigate(`/w/${workspace.shortname}/Home`)}
+                  className="py-1 pl-5 mb-[4px] flex justify-start items-center hover:bg-gray-200 cursor-pointer"
+                  onClick={() => {
+                    if (eachBtn.btnName === "Table") {
+                      console.log("navigating to Table");
+                      setShowWorkspaceHeading(false);
+                      navigate(
+                        `/w/${
+                          workspaceInfo?.shortname
+                        }/${workspaceInfo?.name.replace(/ /g, "-")}/Views`
+                      );
+                    }
+                  }}
                 >
                   <span className="w-7">{eachBtn.icon}</span>
                   <div className="w-full flex justify-between items-center pr-4">
@@ -185,6 +226,9 @@ const Sidebar = ({ workspaceInfo }) => {
           </div>
           <div>
             {workspaceInfo?.boards
+              ?.filter((board) =>
+                board?.members?.some((member) => member?.userId === user?.uid)
+              )
               ?.sort((a, b) => {
                 if (a.starred === b.starred) {
                   return 0;
@@ -201,7 +245,7 @@ const Sidebar = ({ workspaceInfo }) => {
                     className="flex items-center py-2 pl-3 rounded hover:bg-gray-300 cursor-pointer"
                     onClick={() => {
                       navigate(
-                        `/b/${eachBoard.id}/${eachBoard.title.replace(
+                        `/b/${eachBoard?.id}/${eachBoard?.title?.replace(
                           / /g,
                           "-"
                         )}`
@@ -209,7 +253,7 @@ const Sidebar = ({ workspaceInfo }) => {
                     }}
                   >
                     <img
-                      src={eachBoard.backgroundImg}
+                      src={eachBoard?.backgroundImg}
                       className="w-[26px] h-[21px] rounded mr-2"
                     />
                     <div className="flex justify-between items-center flex-1 mr-[2px]">
@@ -219,7 +263,7 @@ const Sidebar = ({ workspaceInfo }) => {
                       >
                         {eachBoard?.title}
                       </p>
-                      {eachBoard.starred && (
+                      {eachBoard?.starred && (
                         <FontAwesomeIcon
                           icon={faStar}
                           size={"sm"}

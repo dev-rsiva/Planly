@@ -43,6 +43,10 @@ import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import DatesCard from "./DatesCard";
 import AddChecklist from "./AddChecklist";
 import ChecklistContainer from "./ChecklistContainer";
+import MoveCardComp from "./MoveCardComp";
+import CopyCardComp from "./CopyCardComp";
+import ShareCardComp from "./ShareCardComp";
+import CardMembersComp from "./CardMembersComp";
 
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
@@ -56,9 +60,16 @@ const OpenCard = () => {
   const writeCommentRef = useRef();
   const editCommentRef = useRef();
   const labelsBtnRef = useRef();
-  const chooseLabelRef = useRef();
-  const createLabelBtn = useRef();
+  // const chooseLabelRef = useRef();
+  // const createLabelBtn = useRef();
   const datesBtnRef = useRef();
+  const checklistBtnRef = useRef();
+  const moveCardBtnRef = useRef();
+  const copyCardBtnRef = useRef();
+  const shareBtnRef = useRef();
+  const membersBtnRef = useRef();
+  const joinBtnRef = useRef();
+  const plusBtnRef = useRef();
 
   // const { allCardData, setAllCardData } = useContext(dataContext);
   // console.log(allCardData);
@@ -92,15 +103,42 @@ const OpenCard = () => {
   });
 
   const [labelsIsShowing, setLabelsIsShowing] = useState(false);
-  const [newLabelListPosition, setNewLabelListPosition] = useState(false);
+  const [newLabelListPosition, setNewLabelListPosition] = useState(null);
   console.log(newLabelListPosition);
   console.log(labelsIsShowing);
   const [showDatesCard, setShowDatesCard] = useState(false);
   const [showAddChecklist, setShowAddChecklist] = useState(false);
+  const [showMoveCardComp, setShowMoveCardComp] = useState(false);
+  const [showCopyCardComp, setShowCopyCardComp] = useState(false);
+  const [showShareCardComp, setShowShareCardComp] = useState(false);
+  const [showCardMembersComp, setShowCardMembersComp] = useState(false);
 
   const [watchBtnIsHovered, setWatchBtnIsHovered] = useState(false);
   const [showActivity, setShowActivity] = useState(true);
+  const [fromWhere, setFromWhere] = useState("");
 
+  const workspaceInfo = workspaceData?.workspaces?.find((workspace) =>
+    workspace?.boards?.some((board) =>
+      board?.lists?.some((list) =>
+        list?.cards?.some((card) => {
+          return card?.id === paramObj.cardId;
+        })
+      )
+    )
+  );
+
+  const boardInfo = workspaceInfo?.boards?.find((board) =>
+    board?.lists?.some((list) =>
+      list?.cards?.some((card) => card?.id === paramObj.cardId)
+    )
+  );
+  console.log(boardInfo);
+  const listInfo = boardInfo?.lists?.find((list) =>
+    list?.cards?.some((card) => card?.id === paramObj.cardId)
+  );
+
+  const cardInfo = listInfo?.cards?.find((card) => card?.id == paramObj.cardId);
+  console.log(cardInfo);
   const isWatching = newCardData?.watchers?.some(
     (eachWatcher) => eachWatcher?.userId === user?.uid
   );
@@ -143,6 +181,7 @@ const OpenCard = () => {
   const commentList = useMemo(
     () =>
       newCardData?.Activities?.map((eachActivity) => {
+        console.log(eachActivity);
         return (
           <div className="flex mb-4">
             <div
@@ -172,26 +211,28 @@ const OpenCard = () => {
                     <p>{eachActivity?.comment}</p>
                   </div>
 
-                  <div>
-                    <button
-                      className="text-xs text-[#172b4d] mr-2 underline"
-                      onClick={() => {
-                        setEditCommentFor((prev) => {
-                          return {
-                            ...prev,
-                            showInput: true,
-                            id: eachActivity.id,
-                            comment: eachActivity.comment,
-                          };
-                        });
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button className="text-xs text-[#172b4d] mr-2 underline">
-                      Delete
-                    </button>
-                  </div>
+                  {eachActivity.user.userId === user.uid && (
+                    <div>
+                      <button
+                        className="text-xs text-[#172b4d] mr-2 underline"
+                        onClick={() => {
+                          setEditCommentFor((prev) => {
+                            return {
+                              ...prev,
+                              showInput: true,
+                              id: eachActivity.id,
+                              comment: eachActivity.comment,
+                            };
+                          });
+                        }}
+                      >
+                        Edit
+                      </button>
+                      {/* <button className="text-xs text-[#172b4d] mr-2 underline">
+                        Delete
+                      </button> */}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -274,7 +315,7 @@ const OpenCard = () => {
 
       return {
         ...card,
-        watchers: card.watchers
+        watchers: card?.watchers
           ? [
               ...card?.watchers,
               {
@@ -313,109 +354,56 @@ const OpenCard = () => {
     // });
     let updatedWorkspaceData = { ...workspaceData };
 
-    // let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
-    //   return eachWorkspace.boards.some((eachBoard) => {
-    //     return eachBoard.lists.some((eachList) => {
-    //       return eachList.cards.some((eachCard) => {
-    //         return eachCard.id === paramObj.cardId;
-    //       });
-    //     });
-    //   });
-    // });
-
-    // // });
-
-    // console.log(currWorkspace);
-
-    // let updatedBoards = currWorkspace.boards.map((eachBoard) => {
-    //   return {
-    //     ...eachBoard,
-    //     lists: eachBoard.lists.map((eachList) => {
-    //       return {
-    //         ...eachList,
-    //         cards: eachList.cards.map((eachCard) => {
-    //           if (eachCard.id !== paramObj.cardId) {
-    //             return eachCard;
-    //           }
-    //           let updatedCard = {
-    //             ...newCardData,
-    //             description: cardDesc,
-    //           };
-
-    //           return updatedCard;
-    //         }),
-    //       };
-    //     }),
-    //   };
-    // });
-
-    // console.log(updatedBoards);
-
-    // currWorkspace = { ...currWorkspace, boards: updatedBoards };
-    // console.log(currWorkspace);
-
-    // let currWorkspaceIndex = workspaceData.workspaces?.findIndex(
-    //   (eachWorkspace) => {
-    //     return eachWorkspace.id === currWorkspace.id;
-    //   }
-    // );
-
-    // console.log(currWorkspaceIndex);
-
-    // updatedWorkspaceData.workspaces[currWorkspaceIndex] = currWorkspace;
-
-    // console.log(updatedWorkspaceData);
-
-    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
-      return eachWorkspace.boards.some((eachBoard) => {
-        return eachBoard.lists.some((eachList) => {
-          return eachList.cards.some((eachCard) => {
-            return eachCard.id === paramObj.cardId;
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.lists?.some((eachList) => {
+          return eachList?.cards?.some((eachCard) => {
+            return eachCard?.id === paramObj.cardId;
           });
         });
       });
     });
     console.log(currWorkspace);
 
-    let currBoard = currWorkspace.boards.find((eachBoard) => {
-      return eachBoard.lists.some((eachList) => {
-        return eachList.cards.some((eachCard) => {
-          return eachCard.id === paramObj.cardId;
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.lists?.some((eachList) => {
+        return eachList?.cards?.some((eachCard) => {
+          return eachCard?.id === paramObj.cardId;
         });
       });
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists.find((eachList) => {
-      return eachList.cards.some((eachCard) => {
-        return eachCard.id === paramObj.cardId;
+    let currList = currBoard.lists?.find((eachList) => {
+      return eachList?.cards?.some((eachCard) => {
+        return eachCard?.id === paramObj.cardId;
       });
     });
     console.log(currList);
 
     updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
       (eachWorkspace) => {
-        if (eachWorkspace.id !== currWorkspace.id) {
+        if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
           return eachWorkspace;
         }
         return {
           ...eachWorkspace,
-          boards: eachWorkspace.boards.map((eachBoard) => {
-            if (eachBoard.id !== currBoard.id) {
+          boards: eachWorkspace?.boards?.map((eachBoard) => {
+            if (eachBoard?.id !== currBoard.id) {
               return eachBoard;
             }
             return {
               ...eachBoard,
-              lists: eachBoard.lists.map((eachList) => {
-                if (eachList.id !== currList.id) {
+              lists: eachBoard?.lists?.map((eachList) => {
+                if (eachList?.id !== currList?.id) {
                   return eachList;
                 }
                 return {
                   ...eachList,
-                  cards: eachList.cards.map((eachCard) => {
-                    if (eachCard.id !== paramObj.cardId) {
-                      console.log(eachCard.id !== paramObj.cardId);
+                  cards: eachList?.cards?.map((eachCard) => {
+                    if (eachCard?.id !== paramObj.cardId) {
+                      console.log(eachCard?.id !== paramObj.cardId);
                       return eachCard;
                     }
                     return {
@@ -463,62 +451,62 @@ const OpenCard = () => {
     };
     console.log(newActivity);
 
-    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
-      return eachWorkspace.boards.some((eachBoard) => {
-        return eachBoard.lists.some((eachList) => {
-          return eachList.cards.some((eachCard) => {
-            return eachCard.id === paramObj.cardId;
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.lists?.some((eachList) => {
+          return eachList?.cards?.some((eachCard) => {
+            return eachCard?.id === paramObj.cardId;
           });
         });
       });
     });
     console.log(currWorkspace);
 
-    let currBoard = currWorkspace.boards.find((eachBoard) => {
-      return eachBoard.lists.some((eachList) => {
-        return eachList.cards.some((eachCard) => {
-          return eachCard.id === paramObj.cardId;
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.lists?.some((eachList) => {
+        return eachList?.cards?.some((eachCard) => {
+          return eachCard?.id === paramObj.cardId;
         });
       });
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists.find((eachList) => {
-      return eachList.cards.some((eachCard) => {
-        return eachCard.id === paramObj.cardId;
+    let currList = currBoard.lists?.find((eachList) => {
+      return eachList?.cards?.some((eachCard) => {
+        return eachCard?.id === paramObj.cardId;
       });
     });
     console.log(currList);
 
     updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
       (eachWorkspace) => {
-        if (eachWorkspace.id !== currWorkspace.id) {
+        if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
           return eachWorkspace;
         }
         return {
           ...eachWorkspace,
-          boards: eachWorkspace.boards.map((eachBoard) => {
-            if (eachBoard.id !== currBoard.id) {
+          boards: eachWorkspace?.boards?.map((eachBoard) => {
+            if (eachBoard?.id !== currBoard.id) {
               return eachBoard;
             }
             return {
               ...eachBoard,
-              lists: eachBoard.lists.map((eachList) => {
-                if (eachList.id !== currList.id) {
+              lists: eachBoard?.lists?.map((eachList) => {
+                if (eachList?.id !== currList?.id) {
                   return eachList;
                 }
                 return {
                   ...eachList,
-                  cards: eachList.cards.map((eachCard) => {
-                    if (eachCard.id !== paramObj.cardId) {
-                      console.log(eachCard.id !== paramObj.cardId);
+                  cards: eachList?.cards?.map((eachCard) => {
+                    if (eachCard?.id !== paramObj.cardId) {
+                      console.log(eachCard?.id !== paramObj.cardId);
                       return eachCard;
                     }
                     console.log({ ...eachCard, Activities: newActivity });
                     return {
                       ...eachCard,
-                      Activities: [newActivity, ...eachCard.Activities],
+                      Activities: [newActivity, ...eachCard?.Activities],
                     };
                   }),
                 };
@@ -596,62 +584,62 @@ const OpenCard = () => {
     // };
     // console.log(newActivity);
 
-    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
-      return eachWorkspace.boards.some((eachBoard) => {
-        return eachBoard.lists.some((eachList) => {
-          return eachList.cards.some((eachCard) => {
-            return eachCard.id === paramObj.cardId;
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.lists?.some((eachList) => {
+          return eachList?.cards?.some((eachCard) => {
+            return eachCard?.id === paramObj.cardId;
           });
         });
       });
     });
     console.log(currWorkspace);
 
-    let currBoard = currWorkspace.boards.find((eachBoard) => {
-      return eachBoard.lists.some((eachList) => {
-        return eachList.cards.some((eachCard) => {
-          return eachCard.id === paramObj.cardId;
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.lists?.some((eachList) => {
+        return eachList?.cards?.some((eachCard) => {
+          return eachCard?.id === paramObj.cardId;
         });
       });
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists.find((eachList) => {
-      return eachList.cards.some((eachCard) => {
-        return eachCard.id === paramObj.cardId;
+    let currList = currBoard.lists?.find((eachList) => {
+      return eachList?.cards?.some((eachCard) => {
+        return eachCard?.id === paramObj.cardId;
       });
     });
     console.log(currList);
 
     updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
       (eachWorkspace) => {
-        if (eachWorkspace.id !== currWorkspace.id) {
+        if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
           return eachWorkspace;
         }
         return {
           ...eachWorkspace,
-          boards: eachWorkspace.boards.map((eachBoard) => {
-            if (eachBoard.id !== currBoard.id) {
+          boards: eachWorkspace?.boards?.map((eachBoard) => {
+            if (eachBoard?.id !== currBoard.id) {
               return eachBoard;
             }
             return {
               ...eachBoard,
-              lists: eachBoard.lists.map((eachList) => {
-                if (eachList.id !== currList.id) {
+              lists: eachBoard?.lists?.map((eachList) => {
+                if (eachList?.id !== currList?.id) {
                   return eachList;
                 }
                 return {
                   ...eachList,
-                  cards: eachList.cards.map((eachCard) => {
-                    if (eachCard.id !== paramObj.cardId) {
-                      console.log(eachCard.id !== paramObj.cardId);
+                  cards: eachList?.cards?.map((eachCard) => {
+                    if (eachCard?.id !== paramObj.cardId) {
+                      console.log(eachCard?.id !== paramObj.cardId);
                       return eachCard;
                     }
                     // console.log({ ...eachCard, Activities: newActivity });
                     return {
                       ...eachCard,
-                      Activities: eachCard.Activities.map((eachActivity) => {
+                      Activities: eachCard?.Activities.map((eachActivity) => {
                         if (eachActivity?.id !== editCommentFor.id) {
                           return eachActivity;
                         }
@@ -686,31 +674,6 @@ const OpenCard = () => {
       return { ...prev, id: "" };
     });
   }
-
-  // function formatTimeDifference(time) {
-  //   console.log("formatTimeDifference");
-  //   console.log(time);
-  //   const now = new Date();
-  //   console.log(now);
-  //   const commentDate = new Date(time);
-  //   console.log(commentDate);
-  //   const timeDifference = now - commentDate;
-  //   console.log(timeDifference);
-  //   const seconds = Math.floor(timeDifference / 1000);
-  //   const minutes = Math.floor(seconds / 60);
-  //   const hours = Math.floor(minutes / 60);
-  //   const days = Math.floor(hours / 24);
-
-  //   if (days > 0) {
-  //     return `${days} ${days === 1 ? "day" : "days"} ago`;
-  //   } else if (hours > 0) {
-  //     return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
-  //   } else if (minutes > 0) {
-  //     return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
-  //   } else {
-  //     return "Just now";
-  //   }
-  // }
 
   function formatTimeDifference(commentTimestamp) {
     console.log("formatTimeDifference called with:", commentTimestamp);
@@ -752,6 +715,33 @@ const OpenCard = () => {
     }
   }
 
+  const addCardMember = (e, member) => {
+    e.stopPropagation();
+    if (
+      cardInfo.members.some((eachMember) => eachMember.userId === member.userId)
+    ) {
+      console.log("already a card member");
+
+      return;
+    }
+
+    console.log("card member started adding");
+
+    const generatedObj = (card) => {
+      return { ...card, members: [...card?.members, member] };
+    };
+
+    let updatedWorkspaceData = createUpdatedWorkspaceDataType1(
+      generatedObj,
+      workspaceData,
+      paramObj
+    );
+
+    console.log(updatedWorkspaceData);
+    updateFirebaseDoc(updatedWorkspaceData);
+    // setShowCardMembersComp(false);
+  };
+
   useEffect(() => {
     if (writeCommentRef.current) {
       writeCommentRef?.current?.focus();
@@ -771,30 +761,6 @@ const OpenCard = () => {
   }, [cardDescDetails?.showInput]);
 
   useEffect(() => {
-    const workspaceInfo = workspaceData?.workspaces?.find((workspace) =>
-      workspace?.boards?.some((board) =>
-        board?.lists?.some((list) =>
-          list?.cards?.some((card) => {
-            return card.id === paramObj.cardId;
-          })
-        )
-      )
-    );
-
-    const boardInfo = workspaceInfo?.boards?.find((board) =>
-      board?.lists?.some((list) =>
-        list?.cards?.some((card) => card.id === paramObj.cardId)
-      )
-    );
-
-    const listInfo = boardInfo?.lists?.find((list) =>
-      list?.cards?.some((card) => card.id === paramObj.cardId)
-    );
-
-    const cardInfo = listInfo?.cards?.find(
-      (card) => card.id == paramObj.cardId
-    );
-
     setCardDetails(cardInfo);
     setListDetails(listInfo);
 
@@ -848,11 +814,11 @@ const OpenCard = () => {
             </div>
           </div>
 
-          <div className="flex justify-between ">
+          <div className="flex justify-between items-center">
             <div className="flex flex-col mr-2 w-full">
-              <div className="flex items-center mb-4 p-2 ml-[42px] ">
+              <div className="flex flex-wrap items-center mb-4 p-2 ml-[42px] ">
                 {labelsForThisCard && labelsForThisCard.length > 0 && (
-                  <div className="mr-4 ">
+                  <div className="mr-4 mb-4">
                     <div className="mb-2 font-semibold text-xs">Labels</div>
 
                     <div className="flex">
@@ -872,10 +838,10 @@ const OpenCard = () => {
                         className="w-[30px] h-[30px] bg-gray-400 rounded flex justify-center items-center"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setNewLabelListPosition(true);
+                          setNewLabelListPosition("fromOpenCardPlusBtn");
                           setLabelsIsShowing(true);
                         }}
-                        ref={chooseLabelRef}
+                        // ref={chooseLabelRef}
                       >
                         <FontAwesomeIcon icon={faPlus} size={"sm"} />
                       </div>
@@ -883,7 +849,38 @@ const OpenCard = () => {
                   </div>
                 )}
 
-                <div className="flex flex-col">
+                {cardInfo?.members?.length !== 0 && (
+                  <div className="flex flex-col mr-4 mb-4">
+                    <div className="mb-2 font-sans text-xs font-semibold text-[#172b4d]">
+                      Members
+                    </div>
+                    <div className="flex">
+                      {cardInfo?.members?.map((eachMember) => {
+                        return (
+                          <div className="flex justify-center text-sm font-semibold items-center rounded-full min-w-[30px] w-[30px] h-[30px] mr-2">
+                            <img
+                              src={eachMember?.photoURL}
+                              className="w-full"
+                            />
+                          </div>
+                        );
+                      })}
+
+                      <div
+                        ref={plusBtnRef}
+                        className="flex justify-center bg-gray-200 text-[#172b4d] hover:bg-gray-300 font-semibold items-center rounded-full min-w-[30px] w-[30px] h-[30px] mr-2 cursor-pointer"
+                        onClick={() => {
+                          setFromWhere("plusBtn");
+                          setShowCardMembersComp(true);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col mb-4">
                   <div className="mb-2 font-sans text-xs font-semibold text-[#172b4d]">
                     Notifications
                   </div>
@@ -946,35 +943,41 @@ const OpenCard = () => {
                           onChange={() => {
                             let updatedWorkspaceData = { ...workspaceData };
 
-                            let currWorkspace = workspaceData.workspaces?.find(
+                            let currWorkspace = workspaceData?.workspaces?.find(
                               (eachWorkspace) => {
-                                return eachWorkspace.boards.some(
+                                return eachWorkspace?.boards?.some(
                                   (eachBoard) => {
-                                    return eachBoard.lists.some((eachList) => {
-                                      return eachList.cards.some((eachCard) => {
-                                        return eachCard.id === paramObj.cardId;
-                                      });
-                                    });
+                                    return eachBoard?.lists?.some(
+                                      (eachList) => {
+                                        return eachList?.cards?.some(
+                                          (eachCard) => {
+                                            return (
+                                              eachCard?.id === paramObj.cardId
+                                            );
+                                          }
+                                        );
+                                      }
+                                    );
                                   }
                                 );
                               }
                             );
                             console.log(currWorkspace);
 
-                            let currBoard = currWorkspace.boards.find(
+                            let currBoard = currWorkspace?.boards?.find(
                               (eachBoard) => {
-                                return eachBoard.lists.some((eachList) => {
-                                  return eachList.cards.some((eachCard) => {
-                                    return eachCard.id === paramObj.cardId;
+                                return eachBoard?.lists?.some((eachList) => {
+                                  return eachList?.cards?.some((eachCard) => {
+                                    return eachCard?.id === paramObj.cardId;
                                   });
                                 });
                               }
                             );
                             console.log(currBoard);
 
-                            let currList = currBoard.lists.find((eachList) => {
-                              return eachList.cards.some((eachCard) => {
-                                return eachCard.id === paramObj.cardId;
+                            let currList = currBoard.lists?.find((eachList) => {
+                              return eachList?.cards?.some((eachCard) => {
+                                return eachCard?.id === paramObj.cardId;
                               });
                             });
                             console.log(currList);
@@ -982,34 +985,36 @@ const OpenCard = () => {
                             updatedWorkspaceData.workspaces =
                               updatedWorkspaceData.workspaces?.map(
                                 (eachWorkspace) => {
-                                  if (eachWorkspace.id !== currWorkspace.id) {
+                                  if (eachWorkspace?.id !== currWorkspace?.id) {
                                     console.log(eachWorkspace);
                                     return eachWorkspace;
                                   }
                                   return {
                                     ...eachWorkspace,
-                                    boards: eachWorkspace.boards.map(
+                                    boards: eachWorkspace?.boards?.map(
                                       (eachBoard) => {
-                                        if (eachBoard.id !== currBoard.id) {
+                                        if (eachBoard?.id !== currBoard.id) {
                                           return eachBoard;
                                         }
                                         return {
                                           ...eachBoard,
-                                          lists: eachBoard.lists.map(
+                                          lists: eachBoard?.lists?.map(
                                             (eachList) => {
-                                              if (eachList.id !== currList.id) {
+                                              if (
+                                                eachList?.id !== currList?.id
+                                              ) {
                                                 return eachList;
                                               }
                                               return {
                                                 ...eachList,
-                                                cards: eachList.cards.map(
+                                                cards: eachList?.cards?.map(
                                                   (eachCard) => {
                                                     if (
-                                                      eachCard.id !==
+                                                      eachCard?.id !==
                                                       paramObj.cardId
                                                     ) {
                                                       console.log(
-                                                        eachCard.id !==
+                                                        eachCard?.id !==
                                                           paramObj.cardId
                                                       );
                                                       return eachCard;
@@ -1018,9 +1023,9 @@ const OpenCard = () => {
                                                     return {
                                                       ...eachCard,
                                                       dates: {
-                                                        ...eachCard.dates,
+                                                        ...eachCard?.dates,
                                                         status:
-                                                          eachCard.dates
+                                                          eachCard?.dates
                                                             .status ===
                                                           "Overdue"
                                                             ? "Completed"
@@ -1275,22 +1280,64 @@ const OpenCard = () => {
 
             <div className="h-full">
               <div className="pb-1">
+                {!cardInfo?.members?.some(
+                  (eachMember) => eachMember?.id === user?.userId
+                ) && (
+                  <div>
+                    <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
+                      Suggested
+                    </p>
+                    <div
+                      ref={joinBtnRef}
+                      className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                      onClick={(e) => {
+                        console.log(user);
+                        //remove the role property from member as the card does not have role.
+                        let member = {
+                          userId: user?.uid,
+                          name: user?.displayName,
+                          email: user?.email,
+                          photoURL: user?.photoURL,
+                        };
+
+                        addCardMember(e, member);
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        size="sm"
+                        className="mr-2 "
+                      />
+                      <p className="font-sans text-sm font-semibold text-[#172b4d]">
+                        Join
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
                   Add to card
                 </p>
-                {/* <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                <div
+                  ref={membersBtnRef}
+                  className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                  onClick={() => {
+                    setFromWhere("membersBtn");
+                    setShowCardMembersComp(true);
+                  }}
+                >
                   <FontAwesomeIcon icon={faUser} size="sm" className="mr-2 " />
                   <p className="font-sans text-sm font-semibold text-[#172b4d]">
                     Members
                   </p>
-                </div> */}
+                </div>
 
                 <div
                   className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setLabelsIsShowing(true);
-                    setNewLabelListPosition(false);
+                    setNewLabelListPosition("fromOpenCardLabelsBtn");
                   }}
                   ref={labelsBtnRef}
                 >
@@ -1301,6 +1348,7 @@ const OpenCard = () => {
                 </div>
 
                 <div
+                  ref={checklistBtnRef}
                   className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
                   onClick={() => setShowAddChecklist(true)}
                 >
@@ -1332,7 +1380,11 @@ const OpenCard = () => {
                 <p className="pb-1 font-sans text-xs font-semibold text-[#172b4d]">
                   Actions
                 </p>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                <div
+                  ref={moveCardBtnRef}
+                  className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                  onClick={() => setShowMoveCardComp(true)}
+                >
                   <FontAwesomeIcon
                     icon={faArrowRight}
                     size="sm"
@@ -1343,14 +1395,18 @@ const OpenCard = () => {
                   </p>
                 </div>
 
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                <div
+                  ref={copyCardBtnRef}
+                  className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                  onClick={() => setShowCopyCardComp(true)}
+                >
                   <FontAwesomeIcon icon={faCopy} size="sm" className="mr-2 " />
                   <p className="font-sans text-sm font-semibold text-[#172b4d]">
                     Copy
                   </p>
                 </div>
 
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                {/* <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
                   <FontAwesomeIcon
                     icon={faFileInvoice}
                     size="sm"
@@ -1369,8 +1425,12 @@ const OpenCard = () => {
                   <p className="font-sans text-sm font-semibold text-[#172b4d]">
                     Archive
                   </p>
-                </div>
-                <div className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2">
+                </div> */}
+                <div
+                  ref={shareBtnRef}
+                  className="flex justify-start items-center bg-gray-300 rounded px-2 py-[6px] w-[175px] mb-2 cursor-pointer"
+                  onClick={() => setShowShareCardComp(true)}
+                >
                   <FontAwesomeIcon
                     icon={faShareNodes}
                     size="sm"
@@ -1391,13 +1451,14 @@ const OpenCard = () => {
             labelsBtnRef={labelsBtnRef}
             cardInfo={cardDetails}
             newLabelListPosition={newLabelListPosition}
-            chooseLabelRef={chooseLabelRef}
-            createLabelBtn={createLabelBtn}
+            // chooseLabelRef={chooseLabelRef}
+            // createLabelBtn={createLabelBtn}
           />
         )}
 
         {showDatesCard && (
           <DatesCard
+            fromWhere="openCardComponent"
             datesBtnRef={datesBtnRef}
             showDatesCard={showDatesCard}
             setShowDatesCard={setShowDatesCard}
@@ -1408,6 +1469,54 @@ const OpenCard = () => {
           <AddChecklist
             setShowAddChecklist={setShowAddChecklist}
             showAddChecklist={showAddChecklist}
+            checklistBtnRef={checklistBtnRef}
+          />
+        )}
+        {showMoveCardComp && (
+          <MoveCardComp
+            fromWhere="openCardComponent"
+            setShowMoveCardComp={setShowMoveCardComp}
+            workspaceData={workspaceData}
+            workspaceInfo={workspaceInfo}
+            boardInfo={boardInfo}
+            listInfo={listInfo}
+            moveCardBtnRef={moveCardBtnRef}
+            cardInfo={newCardData}
+          />
+        )}
+        {showCopyCardComp && (
+          <CopyCardComp
+            fromWhere="openCardComponent"
+            setShowCopyCardComp={setShowCopyCardComp}
+            workspaceData={workspaceData}
+            workspaceInfo={workspaceInfo}
+            boardInfo={boardInfo}
+            listInfo={listInfo}
+            copyCardBtnRef={copyCardBtnRef}
+          />
+        )}
+        {showShareCardComp && (
+          <ShareCardComp
+            shareBtnRef={shareBtnRef}
+            setShowShareCardComp={setShowShareCardComp}
+            showShareCardComp={showShareCardComp}
+            fromWhere="card"
+          />
+        )}
+
+        {showCardMembersComp && (
+          <CardMembersComp
+            addCardMember={addCardMember}
+            fromWhere={fromWhere}
+            workspaceData={workspaceData}
+            workspaceInfo={workspaceInfo}
+            boardInfo={boardInfo}
+            listInfo={listInfo}
+            cardInfo={cardInfo}
+            plusBtnRef={plusBtnRef}
+            membersBtnRef={membersBtnRef}
+            setShowCardMembersComp={setShowCardMembersComp}
+            showCardMembersComp={showCardMembersComp}
           />
         )}
       </cardDataContext.Provider>

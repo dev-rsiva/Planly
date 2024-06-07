@@ -13,6 +13,7 @@ const DatesCard = ({
   showDatesCard,
   setShowDatesCard,
   newCardData,
+  fromWhere,
 }) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -95,62 +96,62 @@ const DatesCard = ({
 
     let updatedWorkspaceData = { ...workspaceData };
 
-    let currWorkspace = workspaceData.workspaces?.find((eachWorkspace) => {
-      return eachWorkspace.boards.some((eachBoard) => {
-        return eachBoard.lists.some((eachList) => {
-          return eachList.cards.some((eachCard) => {
-            return eachCard.id === paramObj.cardId;
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.lists?.some((eachList) => {
+          return eachList?.cards?.some((eachCard) => {
+            return eachCard?.id === newCardData.id;
           });
         });
       });
     });
     console.log(currWorkspace);
 
-    let currBoard = currWorkspace.boards.find((eachBoard) => {
-      return eachBoard.lists.some((eachList) => {
-        return eachList.cards.some((eachCard) => {
-          return eachCard.id === paramObj.cardId;
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.lists?.some((eachList) => {
+        return eachList?.cards?.some((eachCard) => {
+          return eachCard?.id === newCardData.id;
         });
       });
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists.find((eachList) => {
-      return eachList.cards.some((eachCard) => {
-        return eachCard.id === paramObj.cardId;
+    let currList = currBoard.lists?.find((eachList) => {
+      return eachList?.cards?.some((eachCard) => {
+        return eachCard?.id === newCardData.id;
       });
     });
     console.log(currList);
 
     updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
       (eachWorkspace) => {
-        if (eachWorkspace.id !== currWorkspace.id) {
+        if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
           return eachWorkspace;
         }
         return {
           ...eachWorkspace,
-          boards: eachWorkspace.boards.map((eachBoard) => {
-            if (eachBoard.id !== currBoard.id) {
+          boards: eachWorkspace?.boards?.map((eachBoard) => {
+            if (eachBoard?.id !== currBoard.id) {
               return eachBoard;
             }
             return {
               ...eachBoard,
-              lists: eachBoard.lists.map((eachList) => {
-                if (eachList.id !== currList.id) {
+              lists: eachBoard?.lists?.map((eachList) => {
+                if (eachList?.id !== currList?.id) {
                   return eachList;
                 }
                 return {
                   ...eachList,
-                  cards: eachList.cards.map((eachCard) => {
-                    if (eachCard.id !== paramObj.cardId) {
-                      console.log(eachCard.id !== paramObj.cardId);
+                  cards: eachList?.cards?.map((eachCard) => {
+                    if (eachCard?.id !== newCardData.id) {
+                      console.log(eachCard?.id !== newCardData.id);
                       return eachCard;
                     }
                     return {
                       ...eachCard,
                       dates: {
-                        ...eachCard.dates,
+                        ...eachCard?.dates,
                         start: saveItems.startDate ? formatDate(startDate) : "",
                         startObj: saveItems.startDate ? startDate : "",
                         due: saveItems.endDate ? formatDate(endDate) : "",
@@ -219,6 +220,8 @@ const DatesCard = ({
     setInputTime(newCardData?.dueDateTime ? newCardData?.dueDateTime : "");
   }, [newCardData]);
 
+  //Selecting dates from DatePicker is closing the card, so do not apply outside click functionality.
+
   // useEffect(() => {
   //   const handleOutsideClick = (e) => {
   //     e.stopPropagation();
@@ -242,7 +245,11 @@ const DatesCard = ({
     <>
       <div
         ref={datesCardRef}
-        className="absolute right-60 top-36 bg-white p-4 rounded w-[300px] z-[1801]"
+        className={`absolute ${
+          fromWhere === "openCardComponent"
+            ? "right-60 top-36"
+            : "left-[110%] top-1"
+        }   bg-white p-4 rounded w-[300px] z-[1801]`}
       >
         <div className="flex justify-between items-center mb-3">
           <p className="flex-grow text-center font-sans text-sm font-semibold text-[#172b4d]">
@@ -356,7 +363,7 @@ const DatesCard = ({
               <option className="py-2 cursor-pointer">2 Day before</option>
             </select>
             <p className="text-sm font-sans text-[#172b4d] mt-2">
-              Reminders will be sent to all members and watchers of this card.
+              Reminders will be sent to all members and watchers of this card?.
             </p>
           </div>
         </div> */}

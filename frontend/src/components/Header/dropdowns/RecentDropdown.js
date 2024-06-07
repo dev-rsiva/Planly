@@ -11,7 +11,7 @@ const Recent = ({ setNavItemStatus }) => {
   const recentlyViewedBoards = workspaceData?.workspaces
     .map((workspace) => {
       return workspace?.boards?.filter((eachBoard, index) => {
-        return eachBoard?.viewedAt !== "" && !eachBoard.starred;
+        return eachBoard?.viewedAt !== "" && !eachBoard?.starred;
       });
     })
     .flat();
@@ -42,12 +42,12 @@ const Recent = ({ setNavItemStatus }) => {
                     return updatedNavItemStatus;
                   });
                   navigate(
-                    `/b/${eachBoard.id}/${eachBoard.title.replace(/ /g, "-")}`
+                    `/b/${eachBoard?.id}/${eachBoard?.title.replace(/ /g, "-")}`
                   );
                 }}
               >
                 <img
-                  src={eachBoard.backgroundImg}
+                  src={eachBoard?.backgroundImg}
                   className="w-[40px] h-[33px] rounded mr-2"
                 />
                 <div className="flex flex-col flex-1 mr-[2px]">
@@ -61,7 +61,7 @@ const Recent = ({ setNavItemStatus }) => {
                     {
                       workspaceData?.workspaces?.find((workspace) =>
                         workspace?.boards?.some(
-                          (board) => board.id === eachBoard.id
+                          (board) => board?.id === eachBoard?.id
                         )
                       ).name
                     }

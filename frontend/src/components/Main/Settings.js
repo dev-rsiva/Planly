@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef, useNavigate } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import dataContext from "../../utills/dataContext";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -9,45 +9,141 @@ import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import CommonBoard from "./CommonBoard";
+import DeleteWorkspace from "./DeleteWorkspace";
 
-const Members = () => {
+const Settings = () => {
   const [showBoardsOfUser, setShowBoardsOfUser] = useState("");
+  const [showDeleteWorkspace, setShowDeleteWorkspace] = useState(false);
+
   const [userBoards, setUserBoards] = useState([]);
   const navigate = useNavigate();
+  const paramObj = useParams();
+
+  console.log(paramObj);
   const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
-  const [workspaceInfo] = useOutletContext();
+
+  const workspaceInfo = workspaceData?.workspaces?.find(
+    (eachWorkspace) => eachWorkspace?.shortname === paramObj?.workspaceShortName
+  );
+
   console.log(workspaceInfo);
+
   return (
     <div className="px-[34px] pt-[40px] ">
       <div className="mb-6">
-        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
-          {`Workspace Members(${workspaceInfo?.members?.length})`}
+        <h1 className="font-sans text-2xl text-[#44546f] font-semibold pr-2 mb-8">
+          Workspace Settings
         </h1>
+        {/* <hr className="border-b-gray-50 text-center mx-auto my-3" /> */}
+
+        <div>
+          <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+            Workspace Visibility
+          </h1>
+          <hr className="border-b-gray-50 text-center mx-auto my-3" />
+
+          <p className="font-sans text-sm text-[#44546f] pr-2">
+            Private - This Workspace is private. It's not indexed or visible to
+            those outside the Workspace.
+          </p>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+          Invite members to join you
+        </h1>
+        <hr className="border-b-gray-50 text-center mx-auto my-3" />
         <p className="font-sans text-sm text-[#44546f] pr-2">
-          Workspace members can view and join all Workspace visible boards and
-          create new boards in the Workspace. Adding new members will
-          automatically update your billing.
+          Only people with these email domains can join this Workspace.
         </p>
       </div>
-      <hr className="border-b-gray-50 text-center mx-auto my-6" />
 
-      {workspaceInfo?.admins?.some((admin) => admin?.userId === user?.uid) && (
-        <>
-          <div className="mb-6">
-            <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
-              Invite members to join you
-            </h1>
-            <p className="font-sans text-sm text-[#44546f] pr-2">
-              Anyone with an invite link can join this paid Workspace. You’ll be
-              billed for each member that joins. You can also disable and create
-              a new invite link for this Workspace at any time.
-            </p>
-          </div>
-          <hr className="border-b-gray-50 text-center mx-auto my-6" />
-        </>
-      )}
+      <div className="mb-6">
+        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+          Board creation restrictions
+        </h1>
+        <hr className="border-b-gray-50 text-center mx-auto my-3" />
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Only Workspace admins can create public boards?.
+        </p>
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Any Workspace member can create Workspace visible boards?.
+        </p>
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Any Workspace member can create private boards?.
+        </p>
+      </div>
 
-      <div className="flex justify-between mb-4">
+      <div className="mb-6">
+        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+          Board deletion restrictions
+        </h1>
+        <hr className="border-b-gray-50 text-center mx-auto my-3" />
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Only Workspace admins can delete public boards?.
+        </p>
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Only Workspace admins can delete Workspace visible boards?.
+        </p>
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Only Workspace admins can delete private boards?.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+          Sharing boards with guests
+        </h1>
+        <hr className="border-b-gray-50 text-center mx-auto my-3" />
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Anybody can send or receive invitations to boards in this Workspace.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+          Slack workspaces restrictions
+        </h1>
+        <hr className="border-b-gray-50 text-center mx-auto my-3" />
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Any Workspace member can link and unlink this Trello Workspace with
+          Slack workspaces.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h1 className="font-sans text-xl text-[#44546f] font-semibold pr-2 mb-2">
+          Slack workspaces linking
+        </h1>
+        <hr className="border-b-gray-50 text-center mx-auto my-3" />
+        <p className="font-sans text-sm text-[#44546f] pr-2 py-2">
+          Link your Slack and Trello Workspaces together to collaborate on
+          Trello projects from within Slack. Learn more
+        </p>
+      </div>
+
+      <div className="mb-6 relative">
+        <p
+          className="w-[155px] font-sans text-base text-red-700 hover:text-blue-700 hover:underline font-semibold pr-2 mb-2 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDeleteWorkspace(true);
+          }}
+        >
+          Delete Workspace ?
+        </p>
+        {showDeleteWorkspace && (
+          <DeleteWorkspace
+            setShowDeleteWorkspace={setShowDeleteWorkspace}
+            workspaceInfo={workspaceInfo}
+            workspaceData={workspaceData}
+            user={user}
+          />
+        )}
+      </div>
+
+      {/* <div className="flex justify-between mb-4">
         <div className="flex items-center">
           <div className="mr-2 w-[400px]">
             {workspaceInfo?.members?.map((eachUser) => {
@@ -77,12 +173,13 @@ const Members = () => {
                         setShowBoardsOfUser(eachUser.userId);
 
                         setUserBoards((prev) => {
-                          let allWorkspaceBoards =
-                            workspaceInfo?.boards?.filter((eachBoard) => {
-                              return eachBoard?.members.some((eachMember) => {
+                          let allWorkspaceBoards = workspaceInfo?.boards?.filter(
+                            (eachBoard) => {
+                              return  eachBoard?.members.some((eachMember) => {
                                 return eachMember.userId === eachUser.userId;
                               });
-                            });
+                            }
+                          );
 
                           console.log(allWorkspaceBoards);
 
@@ -131,11 +228,8 @@ const Members = () => {
                                       setShowBoardsOfUser(null);
                                       navigate(
                                         `/b/${
-                                          eachBoard?.id
-                                        }/${eachBoard?.title.replace(
-                                          / /g,
-                                          "-"
-                                        )}`
+                                           eachBoard?.id
+                                        }/${ eachBoard?.title.replace(/ /g, "-")}`
                                       );
                                     }}
                                   >
@@ -168,9 +262,9 @@ const Members = () => {
             })}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default Members;
+export default Settings;

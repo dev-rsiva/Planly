@@ -25,21 +25,23 @@ const CreateList = ({ boardInfo }) => {
       id: generateUniqueNumber(listTitle, 5),
       title: listTitle,
       cards: [],
+      watching: false,
     };
 
     // setWorkspaceData((prev) => {
     let updatedWorkspaceData = { ...workspaceData };
 
     const currWorkspace = updatedWorkspaceData.workspaces?.find((workspace) => {
-      return workspace.boards.some((board) => board.id === boardInfo.id);
+      return workspace?.boards?.some((board) => board?.id === boardInfo.id);
     });
 
     currWorkspace?.boards
-      .find((board) => board.id === boardInfo.id)
-      .lists.push(newList);
+      .find((board) => board?.id === boardInfo.id)
+      .lists?.push(newList);
 
     let currWorkspaceIndex = updatedWorkspaceData.workspaces?.findIndex(
-      (workspace) => workspace.boards.some((board) => board.id === boardInfo.id)
+      (workspace) =>
+        workspace?.boards?.some((board) => board?.id === boardInfo.id)
     );
 
     updatedWorkspaceData.workspaces[currWorkspaceIndex] = currWorkspace;
