@@ -46,20 +46,20 @@ const MoveListComp = ({
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists?.find((eachList) => {
+    let currList = currBoard?.lists?.find((eachList) => {
       return eachList?.id === listInfo.id;
     });
     console.log(currList);
 
     console.log(updatedWorkspaceData);
-    let filteredData = updatedWorkspaceData.workspaces.map((workspace) => {
+    let filteredData = updatedWorkspaceData?.workspaces?.map((workspace) => {
       if (workspace?.id !== currWorkspace?.id) {
         return workspace;
       }
       return {
         ...workspace,
         boards: workspace?.boards?.map((board) => {
-          if (board?.id !== currBoard.id) {
+          if (board?.id !== currBoard?.id) {
             return board;
           }
           return {

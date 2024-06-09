@@ -17,22 +17,22 @@ const FeatureCategories = () => {
       </div>
 
       <div className="flex mb-4">
-        {templatesData.templates.map((templateCategory) => {
+        {templatesData?.templates.map((templateCategory) => {
           return (
             <div
               className="flex flex-col items-center mr-4 mb-4 cursor-pointer"
               onClick={() =>
-                navigate(`/templates/${templateCategory.templateCategory}`)
+                navigate(`/templates/${templateCategory?.templateCategory}`)
               }
             >
               <div className="w-[105px] h-[105px]">
                 <img
-                  src={templateCategory.categoryImage}
+                  src={templateCategory?.categoryImage}
                   className="w-full h-full object-cover overflow-hidden rounded-sm hover:shadow-md hover:shadow-gray-400"
                 />
               </div>
               <h1 className="font-sans text-xs text-custom p-1">
-                {templateCategory.templateCategory}
+                {templateCategory?.templateCategory}
               </h1>
             </div>
           );

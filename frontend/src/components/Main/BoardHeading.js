@@ -17,6 +17,8 @@ import dataContext from "../../utills/dataContext";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import BoardMenu from "./BoardMenu";
 import ShareCardComp from "./ShareCardComp";
+import generateUniqueNumber from "../../utills/generateUniqueNum.js";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase.js";
 
 const BoardHeading = ({ boardInfo, workspaceInfo }) => {
   // const data = visibilityDetails?.map((each) => {
@@ -54,12 +56,18 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
 
   // setWorkspaceData(null);
 
-  const updateBoardMembers = () => {
+  const addHighlight = (type, highlight) => {
+    console.log(highlight);
+    updateHighlightsDatabase(type, highlight, workspaceData);
+  };
+
+  const updateBoardMembers = (e) => {
+    e.stopPropagation();
     if (!workspaceData || !boardInfo) {
       return;
     }
 
-    const check = boardInfo.members.some((member) => {
+    const check = boardInfo.members?.some((member) => {
       console.log(member.userId);
       console.log(user.uid);
       console.log(member.userId === user.uid);
@@ -67,11 +75,14 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
     });
     console.log(check);
 
-    if (boardInfo.members.some((member) => member.userId === user.uid)) {
+    if (boardInfo.members?.some((member) => member.userId === user.uid)) {
+      console.log("returning");
       return;
     }
 
     if (boardInfo.admins.some((member) => member.userId === user.uid)) {
+      console.log("returning");
+
       return;
     }
 
@@ -111,6 +122,36 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
     console.log(updatedWorkspaceData);
 
     updateFirebaseDoc(updatedWorkspaceData);
+
+    addHighlight("board", {
+      id: generateUniqueNumber("joining_board_", 5),
+      type: "joining_board",
+      details: {
+        userId: user?.uid,
+        memberName: user?.displayName,
+        workspaceId: workspaceInfo?.id,
+        workspaceName: workspaceInfo?.name,
+        boardId: boardInfo?.id,
+        boardName: boardInfo?.title,
+        boardStarred: boardInfo?.starred,
+        boardBackgroundImg: boardInfo?.backgroundImg,
+        cardId: "",
+        cardName: "",
+        cardInfo: "",
+        listId: "",
+        listName: "",
+        listInfo: "",
+        timestamp: new Date().toISOString(),
+        inviter: "",
+        invitedMember: "",
+        comment: "",
+        checklistName: "",
+        itemName: "",
+        startDate: "",
+        dueDate: "",
+        description: "",
+      },
+    });
   };
 
   const toggleBoardStar = (e) => {
@@ -119,7 +160,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
 
     const updatedWorkspaceData = { ...workspaceData };
 
-    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces.map(
+    updatedWorkspaceData.workspaces = updatedWorkspaceData?.workspaces?.map(
       (eachWorkspace) => {
         if (eachWorkspace?.id !== workspaceInfo?.id) {
           return eachWorkspace;
@@ -370,7 +411,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
         ) && (
           <button
             className="bg-blue-600 px-4 py-2 rounded text-white text-sm font-semibold mx-3"
-            onClick={() => updateBoardMembers()}
+            onClick={(e) => updateBoardMembers(e)}
           >
             Join Board
           </button>

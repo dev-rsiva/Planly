@@ -4,6 +4,7 @@ import {
   useRef,
   useContext,
   useMemo,
+  useLayoutEffect,
   createContext,
 } from "react";
 import { useParams } from "react-router-dom";
@@ -47,9 +48,10 @@ import MoveCardComp from "./MoveCardComp";
 import CopyCardComp from "./CopyCardComp";
 import ShareCardComp from "./ShareCardComp";
 import CardMembersComp from "./CardMembersComp";
-
+import html2canvas from "html2canvas";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
 
 const OpenCard = () => {
   const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
@@ -70,6 +72,7 @@ const OpenCard = () => {
   const membersBtnRef = useRef();
   const joinBtnRef = useRef();
   const plusBtnRef = useRef();
+  const openCardRef = useRef();
 
   // const { allCardData, setAllCardData } = useContext(dataContext);
   // console.log(allCardData);
@@ -374,14 +377,14 @@ const OpenCard = () => {
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists?.find((eachList) => {
+    let currList = currBoard?.lists?.find((eachList) => {
       return eachList?.cards?.some((eachCard) => {
         return eachCard?.id === paramObj.cardId;
       });
     });
     console.log(currList);
 
-    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+    updatedWorkspaceData.workspaces = updatedWorkspaceData?.workspaces?.map(
       (eachWorkspace) => {
         if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
@@ -390,7 +393,7 @@ const OpenCard = () => {
         return {
           ...eachWorkspace,
           boards: eachWorkspace?.boards?.map((eachBoard) => {
-            if (eachBoard?.id !== currBoard.id) {
+            if (eachBoard?.id !== currBoard?.id) {
               return eachBoard;
             }
             return {
@@ -421,7 +424,49 @@ const OpenCard = () => {
 
     console.log(updatedWorkspaceData);
 
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("adding_card_description", 5),
+        type: "adding_card_description",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          checklistName: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
 
     setCardDescDetails((prev) => {
       return {
@@ -433,7 +478,8 @@ const OpenCard = () => {
     });
   }
 
-  function addComment() {
+  function addComment(e) {
+    e.stopPropagation();
     // setAllCardData((prev) => {
 
     let updatedWorkspaceData = { ...workspaceData };
@@ -471,14 +517,14 @@ const OpenCard = () => {
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists?.find((eachList) => {
+    let currList = currBoard?.lists?.find((eachList) => {
       return eachList?.cards?.some((eachCard) => {
         return eachCard?.id === paramObj.cardId;
       });
     });
     console.log(currList);
 
-    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+    updatedWorkspaceData.workspaces = updatedWorkspaceData?.workspaces?.map(
       (eachWorkspace) => {
         if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
@@ -487,7 +533,7 @@ const OpenCard = () => {
         return {
           ...eachWorkspace,
           boards: eachWorkspace?.boards?.map((eachBoard) => {
-            if (eachBoard?.id !== currBoard.id) {
+            if (eachBoard?.id !== currBoard?.id) {
               return eachBoard;
             }
             return {
@@ -519,7 +565,52 @@ const OpenCard = () => {
 
     console.log(updatedWorkspaceData);
 
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    console.log(comment);
+    console.log(comment.trim());
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("commenting_card", 5),
+        type: "commenting_card",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardComment: comment.trim(),
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          checklistName: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
 
     // setNewCardData((prev) => {
     //   let updatedNewCardData = { ...prev };
@@ -604,14 +695,14 @@ const OpenCard = () => {
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists?.find((eachList) => {
+    let currList = currBoard?.lists?.find((eachList) => {
       return eachList?.cards?.some((eachCard) => {
         return eachCard?.id === paramObj.cardId;
       });
     });
     console.log(currList);
 
-    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+    updatedWorkspaceData.workspaces = updatedWorkspaceData?.workspaces?.map(
       (eachWorkspace) => {
         if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
@@ -620,7 +711,7 @@ const OpenCard = () => {
         return {
           ...eachWorkspace,
           boards: eachWorkspace?.boards?.map((eachBoard) => {
-            if (eachBoard?.id !== currBoard.id) {
+            if (eachBoard?.id !== currBoard?.id) {
               return eachBoard;
             }
             return {
@@ -661,7 +752,52 @@ const OpenCard = () => {
 
     console.log(updatedWorkspaceData);
 
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    console.log(comment);
+    console.log(comment.trim());
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("updating_card_comment", 5),
+        type: "updating_card_comment",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardComment: editCommentFor.comment.trim(),
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          checklistName: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
 
     // setNewCardData((prev) => {
     //   return {
@@ -715,10 +851,18 @@ const OpenCard = () => {
     }
   }
 
-  const addCardMember = (e, member) => {
+  const addHighlight = (type, highlight, updatedWorkspaceData) => {
+    console.log(highlight);
+    updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+  };
+
+  const addCardMember = async (e, member) => {
+    console.log(member);
     e.stopPropagation();
     if (
-      cardInfo.members.some((eachMember) => eachMember.userId === member.userId)
+      cardInfo?.members?.some(
+        (eachMember) => eachMember.userId === member.userId
+      )
     ) {
       console.log("already a card member");
 
@@ -728,6 +872,8 @@ const OpenCard = () => {
     console.log("card member started adding");
 
     const generatedObj = (card) => {
+      console.log(card);
+      console.log({ ...card, members: [...card?.members, member] });
       return { ...card, members: [...card?.members, member] };
     };
 
@@ -738,8 +884,43 @@ const OpenCard = () => {
     );
 
     console.log(updatedWorkspaceData);
-    updateFirebaseDoc(updatedWorkspaceData);
-    // setShowCardMembersComp(false);
+    // await updateFirebaseDoc(updatedWorkspaceData);
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("adding_card_member", 5),
+        type: "adding_card_member",
+        details: {
+          userId: user?.uid,
+          memberName: member?.name,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: [...cardInfo?.members, member],
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: user?.displayName,
+          invitedMember: "",
+          comment: "",
+          checklistName: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
   };
 
   useEffect(() => {
@@ -766,24 +947,52 @@ const OpenCard = () => {
 
     // if (allCardData) {
     // setNewCardData(allCardData[cardInfo?.id]);
-    // setCardDesc(allCardData[cardInfo.id]?.description?.trim());
+    // setCardDesc(allCardData[cardInfo?.id]?.description?.trim());
     setNewCardData(cardInfo);
     setCardDesc(cardInfo?.description?.trim());
 
     // }
   }, [workspaceData]);
 
+  // useLayoutEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     captureComponentSnapshot(openCardRef.current);
+  //   }, 2000); // Adjust the delay as needed
+
+  //   return () => clearTimeout(timeoutId);
+  // }, []); // Run only once after the component is mounted
+
+  // const captureComponentSnapshot = (componentNode) => {
+  //   if (!componentNode) return;
+  //   html2canvas(componentNode).then((canvas) => {
+  //     const snapshotURL = canvas.toDataURL("image/png");
+  //     console.log(snapshotURL);
+  //   });
+  // };
+
   return (
     <>
       <Boards />
-      <cardDataContext.Provider value={{ newCardData, setNewCardData }}>
+      <cardDataContext.Provider
+        value={{
+          workspaceInfo,
+          boardInfo,
+          listInfo,
+          cardInfo,
+          newCardData,
+          setNewCardData,
+        }}
+      >
         <div
           className="fixed left-0 top-0 right-0 bottom-0 bg-black bg-opacity-60 z-[999]"
           onClick={() => {
             navigate(-1);
           }}
         ></div>
-        <div className="absolute flex flex-col w-[770px] h-[550px] overflow-auto top-1/2 left-1/2 translate-x-[-50%] translate-y-[-46%] bg-[#F0F1F4] z-[1005] rounded-lg p-6">
+        <div
+          ref={openCardRef}
+          className="absolute flex flex-col w-[770px] h-[550px] overflow-auto top-1/2 left-1/2 translate-x-[-50%] translate-y-[-46%] bg-[#F0F1F4] z-[1005] rounded-lg p-6"
+        >
           <div className="flex justify-between mb-4 p-2">
             <div className="flex items-start ">
               <FontAwesomeIcon
@@ -975,11 +1184,13 @@ const OpenCard = () => {
                             );
                             console.log(currBoard);
 
-                            let currList = currBoard.lists?.find((eachList) => {
-                              return eachList?.cards?.some((eachCard) => {
-                                return eachCard?.id === paramObj.cardId;
-                              });
-                            });
+                            let currList = currBoard?.lists?.find(
+                              (eachList) => {
+                                return eachList?.cards?.some((eachCard) => {
+                                  return eachCard?.id === paramObj.cardId;
+                                });
+                              }
+                            );
                             console.log(currList);
 
                             updatedWorkspaceData.workspaces =
@@ -993,7 +1204,7 @@ const OpenCard = () => {
                                     ...eachWorkspace,
                                     boards: eachWorkspace?.boards?.map(
                                       (eachBoard) => {
-                                        if (eachBoard?.id !== currBoard.id) {
+                                        if (eachBoard?.id !== currBoard?.id) {
                                           return eachBoard;
                                         }
                                         return {
@@ -1247,19 +1458,19 @@ const OpenCard = () => {
                           <button
                             className={`rounded cursor-pointer py-1 px-2 border-blue-400 mr-4 ${
                               comment.trim() === ""
-                                ? "bg-blue-400 text-white"
+                                ? "bg-gray-400 text-gray-600"
                                 : "bg-blue-600 text-white"
                             }`}
                             disabled={comment.trim() === ""}
-                            onClick={() => {
-                              addComment();
+                            onClick={(e) => {
+                              addComment(e);
                             }}
                           >
                             Save
                           </button>
 
                           <button
-                            className="bg-gray-500 rounded py-1 px-2 text-white border-blue-400 hover:bg-gray-600 hover:text-white mr-4"
+                            className="bg-gray-400 rounded py-1 px-2 text-gray-600 border-blue-400 hover:bg-gray-500 hover:text-slate-100 mr-4"
                             onClick={() => {
                               setCommentDetails((prev) => {
                                 return { ...prev, showInput: false };
@@ -1463,6 +1674,10 @@ const OpenCard = () => {
             showDatesCard={showDatesCard}
             setShowDatesCard={setShowDatesCard}
             newCardData={newCardData}
+            workspaceInfo={workspaceInfo}
+            boardInfo={boardInfo}
+            listInfo={listInfo}
+            cardInfo={newCardData}
           />
         )}
         {showAddChecklist && (
@@ -1470,6 +1685,10 @@ const OpenCard = () => {
             setShowAddChecklist={setShowAddChecklist}
             showAddChecklist={showAddChecklist}
             checklistBtnRef={checklistBtnRef}
+            workspaceInfo={workspaceInfo}
+            boardInfo={boardInfo}
+            listInfo={listInfo}
+            cardInfo={newCardData}
           />
         )}
         {showMoveCardComp && (
@@ -1492,6 +1711,7 @@ const OpenCard = () => {
             workspaceInfo={workspaceInfo}
             boardInfo={boardInfo}
             listInfo={listInfo}
+            cardInfo={newCardData}
             copyCardBtnRef={copyCardBtnRef}
           />
         )}

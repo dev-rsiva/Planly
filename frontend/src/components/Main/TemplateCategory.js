@@ -11,7 +11,7 @@ const TemplateCategory = ({ templateCategory }) => {
   );
   return (
     <div className="mb-4 mr-4">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 mr-14">
         <div className="flex items-center">
           <img
             src={templateCategory?.categoryImage}
@@ -25,8 +25,8 @@ const TemplateCategory = ({ templateCategory }) => {
         <button
           className="bg-gray-200 hover:bg-gray-300 py-[6px] px-3 rounded font-sans font-semibold text-custom text-sm"
           onClick={() => {
-            setTemplateCategorySelected(templateCategory.templateCategory);
-            navigate(`/templates/${templateCategory.templateCategory}`);
+            setTemplateCategorySelected(templateCategory?.templateCategory);
+            navigate(`/templates/${templateCategory?.templateCategory}`);
           }}
         >
           {`More templates for ${templateCategory?.templateCategory}`}

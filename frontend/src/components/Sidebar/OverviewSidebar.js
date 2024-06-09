@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,9 @@ const OverviewSidebar = (
   }
 ) => {
   const [hoveredOption, setHoveredOption] = useState("");
-  const { workspaceData, setWorkspaceData } = useContext(dataContext);
+  const { workspaceData, setWorkspaceData, setShowWorkspaceHeading } =
+    useContext(dataContext);
+
   const { sidebarSelection, setSidebarSelection } = useContext(
     sideBarSelectionContext
   );
@@ -31,6 +33,7 @@ const OverviewSidebar = (
   const { templateCategorySelected, setTemplateCategorySelected } =
     useContext(templateCategorySelectionContext) || {};
 
+  const sidebarBtnRef = useRef();
   const navigate = useNavigate();
 
   const sideBardBtns = [
@@ -95,18 +98,27 @@ const OverviewSidebar = (
     "this is heading"
   );
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      e.stopPropagation();
+      if (!sidebarBtnRef?.current?.contains(e.target)) {
+        setSidebarSelection("");
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
   return (
     <div className="w-[262px] fixed">
-      <div>
+      <div ref={sidebarBtnRef}>
         {sideBardBtns.map((eachButton, index) => {
           return (
             <div key={index}>
               <div
-                className={`w-full py-2 pl-4 mb-[8px] flex justify-start items-center rounded-lg ${
-                  hoveredOption === "Home"
-                    ? "cursor-not-allowed"
-                    : "cursor-pointer"
-                }
+                className={`w-full py-2 pl-4 mb-[8px] flex justify-start items-center rounded-lg cursor-pointer
           ${
             sidebarSelection === eachButton.buttonName
               ? "bg-[#e9f2ff] hover:bg-[#e9f2ff]"
@@ -115,6 +127,7 @@ const OverviewSidebar = (
                 onMouseEnter={(e) => setHoveredOption(eachButton.buttonName)}
                 onMouseLeave={(e) => setHoveredOption("")}
                 onClick={(e) => {
+                  e.stopPropagation();
                   setSidebarSelection(e.target.innerText);
                   if (e.target.innerText === "Templates") {
                     setTemplateCategorySelected
@@ -231,9 +244,41 @@ const OverviewSidebar = (
                           ? "cursor-not-allowed"
                           : "cursor-pointer hover:bg-gray-200"
                       } `}
-                      onClick={() =>
-                        navigate(`/w/${workspace?.shortname}/Home`)
-                      }
+                      onClick={() => {
+                        if (eachBtn.buttonName === "Boards") {
+                          console.log("navigating to Home");
+                          navigate(`/w/${workspace?.shortname}/Home`);
+                          window.scrollTo(0, 0);
+                        }
+                        if (eachBtn.buttonName === "Views") {
+                          console.log("navigating to Views");
+                          setShowWorkspaceHeading(false);
+                          navigate(
+                            `/w/${
+                              workspace?.shortname
+                            }/${workspace?.name.replace(/ /g, "-")}/Views`
+                          );
+                          window.scrollTo(0, 0);
+                        }
+                        if (eachBtn.buttonName === "Members") {
+                          console.log("navigating to Members");
+                          navigate(
+                            `/w/${
+                              workspace?.shortname
+                            }/${workspace?.name.replace(/ /g, "-")}/Members`
+                          );
+                          window.scrollTo(0, 0);
+                        }
+                        if (eachBtn.buttonName === "Settings") {
+                          console.log("navigating to Workspace settings");
+                          navigate(
+                            `/w/${
+                              workspace?.shortname
+                            }/${workspace?.name.replace(/ /g, "-")}/Settings`
+                          );
+                          window.scrollTo(0, 0);
+                        }
+                      }}
                     >
                       <span className="pr-2">{eachBtn.icon}</span>
                       <span className="text-[#172b4d] font-medium font-sans text-sm ">

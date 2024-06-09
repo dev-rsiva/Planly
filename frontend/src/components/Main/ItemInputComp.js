@@ -41,12 +41,15 @@ import CreateLabel from "./CreateLabel";
 import Boards from "../../pages/Boards.js";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+import dataContext from "../../utills/dataContext.js";
 
 import DatesCard from "./DatesCard";
 import Items from "./Items";
 import ProgressBarContainer from "./ProgressBarContainer";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
 
 const ItemInputComp = ({
+  checklist,
   item,
   itemTitle,
   setItemTitle,
@@ -58,12 +61,17 @@ const ItemInputComp = ({
   setCurrIndexOfAddItemBtn,
   workspaceData,
   paramObj,
-  checklist,
 }) => {
   console.log(itemTitle);
   const itemInputRef = useRef();
+  const { user } = useContext(dataContext);
+  const { workspaceInfo, boardInfo, listInfo, cardInfo } =
+    useContext(cardDataContext);
 
-  const updateItem = () => {
+  console.log(cardInfo);
+  const updateItem = (e) => {
+    e.stopPropagation();
+
     console.log("udpdating item");
     const generatedObj = (card) => {
       console.log("generate");
@@ -112,7 +120,8 @@ const ItemInputComp = ({
     setItemTitle("");
   };
 
-  const addItem = () => {
+  const addItem = (e) => {
+    e.stopPropagation();
     let newItem = {
       id: generateUniqueNumber(
         itemTitle.trim().split(" ").join("").slice(0, 4),
@@ -145,7 +154,49 @@ const ItemInputComp = ({
     );
     console.log(updatedWorkspaceData);
 
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("adding_checklist_item", 5),
+        type: "adding_checklist_item",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          checklistName: checklist.title,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          itemName: itemTitle.trim(),
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
 
     setCurrIndexOfAddItemBtn(null);
 
@@ -168,14 +219,19 @@ const ItemInputComp = ({
           value={itemTitle}
           className="pl-2 py-2 rounded w-[470px] font-sans text-sm font-semibold text-[#172b4d] mb-4 border-2 border-solid border-blue-500 outline-none"
           placeholder="Add an item"
-          onChange={(e) => setItemTitle(e.target.value)}
+          onChange={(e) => {
+            e.stopPropagation();
+            setItemTitle(e.target.value);
+          }}
+          onClick={(e) => e.stopPropagation()}
         />
         <div className="flex my-2">
           <button
             className="bg-blue-600 rounded py-1 px-2 text-white text-sm font-semibold border-blue-400 hover:bg-blue-700 mr-4"
             onClick={(e) => {
+              console.log("111");
               e.stopPropagation();
-              actionType === "add item" ? addItem() : updateItem();
+              actionType === "add item" ? addItem(e) : updateItem(e);
             }}
           >
             {actionType === "add item" ? "Add" : "Save"}
@@ -183,6 +239,8 @@ const ItemInputComp = ({
           <button
             className="bg-gray-200 rounded py-1 px-2 text-[#172b4d] text-sm font-semibold border border-gray-300 hover:bg-gray-500 mr-4 "
             onClick={(e) => {
+              console.log("222");
+
               e.stopPropagation();
 
               actionType === "add item"

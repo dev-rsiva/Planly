@@ -14,6 +14,27 @@ const BoardMenu = ({
 }) => {
   const navigate = useNavigate();
   const boardMenuRef = useRef();
+  console.log(user);
+
+  const admins = [
+    {
+      photoURL:
+        "https://avataaars.io/?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelRed&clotheType=CollarSweater&eyeType=Hearts&eyebrowType=UnibrowNatural&facialHairColor=Red&facialHairType=BeardMagestic&hairColor=Auburn&hatColor=PastelBlue&mouthType=Eating&skinColor=Tanned&topType=LongHairNotTooLong",
+      userId: "xArzKluSnnYanUFLmMOczSrokpA3",
+      name: "user001",
+      email: "user001@gmail.com",
+      role: "admin",
+    },
+  ];
+
+  const result = admins?.filter((eachMember) => {
+    console.log(user?.uid);
+    console.log(eachMember?.userId);
+    console.log(eachMember?.userId !== user?.uid);
+    return eachMember?.userId !== user?.uid;
+  });
+
+  console.log(result);
 
   const deleteBoard = (e) => {
     e.stopPropagation();
@@ -41,7 +62,7 @@ const BoardMenu = ({
       return {
         ...workspace,
         boards: workspace?.boards?.filter((board) => {
-          return board?.id !== currBoard.id;
+          return board?.id !== currBoard?.id;
         }),
       };
     });
@@ -83,7 +104,7 @@ const BoardMenu = ({
       return {
         ...workspace,
         boards: workspace?.boards?.map((board) => {
-          if (board?.id !== currBoard.id) {
+          if (board?.id !== currBoard?.id) {
             return board;
           }
           return {
@@ -91,14 +112,23 @@ const BoardMenu = ({
             members: board?.members?.filter(
               (eachMember) => eachMember?.userId !== user?.uid
             ),
+            admins: board?.admins?.filter((eachAdmin) => {
+              console.log("Current User ID:", user?.uid);
+              console.log("Admin User ID:", eachAdmin?.userId);
+              console.log(
+                "Should filter out:",
+                eachAdmin?.userId !== user?.uid
+              );
+              return eachAdmin?.userId !== user?.uid;
+            }),
             lists: board?.lists?.map((eachList) => {
               return {
                 ...eachList,
                 cards: eachList?.cards?.map((eachCard) => {
                   return {
                     ...eachCard,
-                    members: eachCard?.members.filter((eachMember) => {
-                      return eachMember.userId !== user.uid;
+                    members: eachCard?.members?.filter((eachMember) => {
+                      return eachMember?.userId !== user?.uid;
                     }),
                   };
                 }),

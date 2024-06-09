@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createContext } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -9,9 +9,11 @@ import CardMembersComp from "./CardMembersComp.js";
 import MoveCardComp from "./MoveCardComp.js";
 import CopyCardComp from "./CopyCardComp.js";
 import DatesCard from "./DatesCard.js";
-
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
+import generateUniqueNumber from "../../utills/generateUniqueNum";
+import dataContext from "../../utills/dataContext.js";
 
 const Card = ({
   workspaceData,
@@ -23,6 +25,9 @@ const Card = ({
   i,
 }) => {
   console.log(list);
+  const { user } = useContext(dataContext);
+
+  const [cardTitle, setCardTitle] = useState(card?.title);
   const [editIconIsVisible, setEditIconIsVisible] = useState(false);
   const [editCardIsVisible, setEditCardIsVisible] = useState(false);
   const [zIndex, setZindex] = useState(false);
@@ -53,7 +58,7 @@ const Card = ({
   const addCardMember = (e, member) => {
     e.stopPropagation();
     if (
-      card?.members.some((eachMember) => eachMember.userId === member.userId)
+      card?.members?.some((eachMember) => eachMember.userId === member.userId)
     ) {
       console.log("already a card member");
 
@@ -73,8 +78,73 @@ const Card = ({
     );
 
     console.log(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("adding_card_member", 5),
+        type: "adding_card_member",
+        details: {
+          userId: user?.uid,
+          memberName: member?.name,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          cardId: card.id,
+          cardName: card?.title,
+          cardLabels: card?.labels,
+          cardMembers: [...card?.members, member],
+          cardInfo: "",
+          listId: list?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: user?.displayName,
+          invitedMember: "",
+          comment: "",
+          checklistName: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
+  };
+
+  const updateCardName = (e) => {
+    e.stopPropagation();
+    if (!cardTitle || cardTitle.trim() === "") {
+      console.log("card title is invalid");
+
+      return;
+    }
+
+    console.log("card title started updating");
+
+    const generatedObj = (card) => {
+      return { ...card, title: cardTitle };
+    };
+
+    let updatedWorkspaceData = createUpdatedWorkspaceDataType1(
+      generatedObj,
+      workspaceData,
+      { cardId: card?.id }
+    );
+
+    console.log(updatedWorkspaceData);
     updateFirebaseDoc(updatedWorkspaceData);
-    // setShowCardMembersComp(false);
+    setEditCardIsVisible(false);
   };
 
   const foucsInput = () => {
@@ -150,8 +220,11 @@ const Card = ({
                 <div className="absolute w-[260px] bg-white rounded p-2 mb-2">
                   <input
                     ref={inputField}
-                    value={card?.title}
-                    onChange={() => {}}
+                    value={cardTitle}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      setCardTitle(e.target.value);
+                    }}
                     className="border-2 border-blue-600 rounded p-2 outline-none bg-transparent whitespace-normal font-sans text-sm font-semibold text-[#172b4d]"
                   />
                   <FontAwesomeIcon
@@ -160,7 +233,10 @@ const Card = ({
                   />
                 </div>
                 <div className="absolute top-[65px]">
-                  <button className="whitespace-nowrap px-3 py-1 bg-blue-600 rounded mb-1 font-sans font-semibold text-white">
+                  <button
+                    className="whitespace-nowrap px-3 py-1 bg-blue-600 rounded mb-1 font-sans font-semibold text-white"
+                    onClick={(e) => updateCardName(e)}
+                  >
                     Save
                   </button>
                 </div>
@@ -285,6 +361,10 @@ const Card = ({
                 showDatesCard={showDatesCard}
                 setShowDatesCard={setShowDatesCard}
                 newCardData={card}
+                workspaceInfo={workspaceInfo}
+                boardInfo={boardInfo}
+                listInfo={list}
+                cardInfo={card}
               />
             )}
           </>

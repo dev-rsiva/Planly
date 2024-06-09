@@ -25,14 +25,14 @@ export const createUpdatedWorkspaceDataType1 = (
   });
   console.log(currBoard);
 
-  let currList = currBoard.lists?.find((eachList) => {
+  let currList = currBoard?.lists?.find((eachList) => {
     return eachList?.cards?.some((eachCard) => {
       return eachCard?.id === paramObj.cardId;
     });
   });
   console.log(currList);
 
-  updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+  updatedWorkspaceData.workspaces = updatedWorkspaceData?.workspaces?.map(
     (eachWorkspace) => {
       if (eachWorkspace?.id !== currWorkspace?.id) {
         console.log(eachWorkspace);
@@ -41,7 +41,7 @@ export const createUpdatedWorkspaceDataType1 = (
       return {
         ...eachWorkspace,
         boards: eachWorkspace?.boards?.map((eachBoard) => {
-          if (eachBoard?.id !== currBoard.id) {
+          if (eachBoard?.id !== currBoard?.id) {
             return eachBoard;
           }
           return {

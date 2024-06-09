@@ -16,9 +16,17 @@ const TemplatesDropdown = ({ setNavItemStatus, setCreateDropdownDetails }) => {
   const [templateListshowing, setTemplateListShowing] = useState(true);
   const navigate = useNavigate();
 
+  if (templatesData?.templates?.length === 0) {
+    return (
+      <p className="font-sans text-sm font-semibold text-[#172b4d]">
+        You have no templates to display.
+      </p>
+    );
+  }
+
   return (
     <div className="absolute top-[160%] left-0 rounded-md shadow-2xl w-[308px] min-w-[308px] border border-gray-200 py-3 max-h-[570px] bg-white">
-            <div className="mb-4 max-h-[400px] overflow-y-auto">
+      <div className="mb-4 max-h-[400px] overflow-y-auto">
         <div className="flex justify-between items-center">
           <p className="mb-4 pl-4 text-sans text-xs text-custom font-medium">
             Top Templates
@@ -48,8 +56,8 @@ const TemplatesDropdown = ({ setNavItemStatus, setCreateDropdownDetails }) => {
 
         {templateListshowing && (
           <ul className="flex flex-col px-2">
-            {templatesData.templates.map((templateCategory) => {
-              return templateCategory.templateList.map((template) => {
+            {templatesData?.templates.map((templateCategory) => {
+              return templateCategory?.templateList?.map((template) => {
                 return (
                   <li
                     className="flex items-center px-2 py-2 rounded cursor-pointer hover:bg-gray-200"

@@ -16,14 +16,14 @@ const Starred = ({ setNavItemStatus }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-2 bg-white z-[1000]">
-      {starredBoards.length === 0 ? (
+    <div className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-2 bg-white z-[1000] max-h-[375px] overflow-y-auto">
+      {starredBoards?.length === 0 ? (
         <p className="font-sans text-sm text-custom font-semibold">
           You have no starred boards
         </p>
       ) : (
         <div>
-          {starredBoards.map((eachBoard, index) => {
+          {starredBoards?.map((eachBoard, index) => {
             return (
               <div
                 className="flex items-center py-2 px-2 rounded hover:bg-gray-100"

@@ -17,6 +17,15 @@ const Members = () => {
   const { workspaceData, setWorkspaceData, user } = useContext(dataContext);
   const [workspaceInfo] = useOutletContext();
   console.log(workspaceInfo);
+
+  if (workspaceInfo?.members?.length === 0) {
+    return (
+      <p className="font-sans text-sm font-semibold text-[#172b4d]">
+        No members belongs to this workspace.
+      </p>
+    );
+  }
+
   return (
     <div className="px-[34px] pt-[40px] ">
       <div className="mb-6">
@@ -79,7 +88,7 @@ const Members = () => {
                         setUserBoards((prev) => {
                           let allWorkspaceBoards =
                             workspaceInfo?.boards?.filter((eachBoard) => {
-                              return eachBoard?.members.some((eachMember) => {
+                              return eachBoard?.members?.some((eachMember) => {
                                 return eachMember.userId === eachUser.userId;
                               });
                             });
@@ -94,7 +103,7 @@ const Members = () => {
                         View Boards
                       </p>
                       {showBoardsOfUser === eachUser.userId && (
-                        <div className="absolute left-[120px] bottom-[-50%] bg-white p-4 rounded w-[300px] z-[1801] border border-gray-200">
+                        <div className="absolute left-[120px] bottom-[-50%] bg-white p-4 rounded w-[300px] max-h-[450px] overflow-y-auto z-[1801] border border-gray-200">
                           <div className="flex justify-between items-center mb-3">
                             <p className="flex-grow text-center font-sans text-sm font-semibold text-[#172b4d]">
                               Workspace Boards

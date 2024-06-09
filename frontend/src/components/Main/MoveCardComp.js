@@ -9,6 +9,9 @@ import dataContext from "../../utills/dataContext";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { useParams } from "react-router-dom";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
+import { cardDataContext } from "../../utills/cardDataContext";
+import generateUniqueNumber from "../../utills/generateUniqueNum";
 
 const MoveCardComp = ({
   fromWhere,
@@ -24,6 +27,7 @@ const MoveCardComp = ({
   const [listTitle, setListTitle] = useState(listInfo.title);
   const [listChoosed, setListChoosed] = useState(listInfo);
   const [boardChoosed, setBoardChoosed] = useState(boardInfo);
+  const { user } = useContext(dataContext);
 
   const moveCardRef = useRef();
   const paramObj = useParams();
@@ -31,7 +35,9 @@ const MoveCardComp = ({
   console.log(listChoosed);
   console.log(boardTitle);
   console.log(cardInfo);
+
   const moveCard = (e) => {
+    console.log("Move card starts");
     e.stopPropagation();
     if (boardChoosed.lists?.length === 0) return;
 
@@ -132,7 +138,49 @@ const MoveCardComp = ({
 
     updatedWorkspaceData.workspaces = movedData;
 
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("card_moved", 5),
+        type: "card_moved",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: targetBoard?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          checklistName: "",
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: targetList?.title,
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
 
     setShowMoveCardComp(false);
   };
@@ -153,6 +201,7 @@ const MoveCardComp = ({
   });
 
   useEffect(() => {
+    setListChoosed(boardChoosed.lists[0]);
     if (boardChoosed.lists?.length === 1) {
       setListChoosed((prev) => {
         return boardChoosed.lists[0];

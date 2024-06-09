@@ -45,6 +45,7 @@ const Login = ({
   // setAllCardData,
   setTemplatesData,
 }) => {
+  console.log(workspaceData);
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
@@ -223,7 +224,7 @@ const Login = ({
   //               eachWorkspace?.settings.visibility === "private" ||
   //               eachWorkspace?.settings.visibility === "public";
 
-  //             const condition2 = eachWorkspace?.members.some((member) => {
+  //             const condition2 = eachWorkspace?.members?.some((member) => {
   //               console.log(member.userId);
   //               console.log(user?.uid);
   //               console.log(member.userId === user?.uid);
@@ -344,7 +345,7 @@ const Login = ({
   //           return (
   //             (workspace?.settings.visibility === "private" ||
   //               workspace?.settings.visibility === "public") &&
-  //             workspace?.members.some((member) => member.userId === user?.uid)
+  //             workspace?.members?.some((member) => member.userId === user?.uid)
   //           );
   //         }),
   //       }));
@@ -389,7 +390,7 @@ const Login = ({
   //               eachWorkspace?.settings.visibility === "private" ||
   //               eachWorkspace?.settings.visibility === "public";
 
-  //             const condition2 = eachWorkspace?.members.some((member) => {
+  //             const condition2 = eachWorkspace?.members?.some((member) => {
   //               console.log(member.userId);
   //               console.log(user?.uid);
   //               console.log(member.userId === user?.uid);
@@ -550,7 +551,7 @@ const Login = ({
 
       const newWorkspaceData = {
         id: generateUniqueNumber("Default Workspace", 5),
-        name: `${user?.displayName} Default Workspace`,
+        name: `${user?.displayName}'s Workspace`,
         shortname: generateUniqueNumber("Default", 5),
         website: "",
         description: "",
@@ -595,6 +596,7 @@ const Login = ({
           guestInvitations: "workspaceMembers",
         },
         boards: [],
+        highlights: [],
       };
       console.log(newWorkspaceData);
 
@@ -620,7 +622,7 @@ const Login = ({
             return (
               (workspace?.settings.visibility === "private" ||
                 workspace?.settings.visibility === "public") &&
-              workspace?.members.some((member) => member.userId === user?.uid)
+              workspace?.members?.some((member) => member.userId === user?.uid)
             );
           }),
         }));
@@ -645,6 +647,7 @@ const Login = ({
     }
   };
 
+  let workspaceDatAtPresent;
   // Function to fetch data from Firestore
   const fetchDataFromFirestore = async (user) => {
     try {
@@ -656,12 +659,22 @@ const Login = ({
           querySnapshot.docs[0].data().workspaces;
         console.log(updatedWorkspaceDataFromFirestore);
 
+        workspaceDatAtPresent = [
+          ...updatedWorkspaceDataFromFirestore.filter((workspace) => {
+            return (
+              (workspace?.settings.visibility === "private" ||
+                workspace?.settings.visibility === "public") &&
+              workspace?.members?.some((member) => member.userId === user?.uid)
+            );
+          }),
+        ];
+
         setWorkspaceData((prev) => ({
           workspaces: updatedWorkspaceDataFromFirestore.filter((workspace) => {
             return (
               (workspace?.settings.visibility === "private" ||
                 workspace?.settings.visibility === "public") &&
-              workspace?.members.some((member) => member.userId === user?.uid)
+              workspace?.members?.some((member) => member.userId === user?.uid)
             );
           }),
         }));
@@ -805,9 +818,12 @@ const Login = ({
 
           // Initialize the default workspace data
           await initializeData(userInfo);
-
+          console.log(workspaceDatAtPresent);
           // Check for and accept pending invitations
-          const hasPendingInvitations = await acceptInvitation(userInfo);
+          const hasPendingInvitations = await acceptInvitation(
+            userInfo,
+            workspaceDatAtPresent
+          );
 
           // Navigate to the main page after processing
           navigate("/");
@@ -837,8 +853,12 @@ const Login = ({
           // Initialize the default workspace data
           // await initializeData(user);
 
+          console.log(workspaceDatAtPresent);
           // Check for and accept pending invitations
-          const hasPendingInvitations = await acceptInvitation(user);
+          const hasPendingInvitations = await acceptInvitation(
+            user,
+            workspaceDatAtPresent
+          );
 
           // Fetch data from Firestore and update local state
           await fetchDataFromFirestore(user);

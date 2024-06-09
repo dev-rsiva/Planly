@@ -130,7 +130,11 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
   useEffect(() => {}, [editedData]);
 
   return (
-    <div className="px-[120px] py-8 min-w-[850px]">
+    <div
+      className={`${
+        fromWorkspace ? "px-[120px] py-8" : "px-[30px] pt-2 pb-12"
+      } min-w-[850px]`}
+    >
       {!displayWorkspaceEdit && (
         <div className="flex justify-between">
           <div>
@@ -143,7 +147,7 @@ const WorkspaceHeading = ({ workspaceInfo, fromWorkspace }) => {
               >
                 <div className="bg-black opacity-30 absolute w-full h-full rounded" />
                 <p className="z-50 rounded text-[32px] text-white font-bold font-sans">
-                  {editedData && editedData.name && editedData?.name[0]}
+                  {editedData && editedData.name && editedData?.name.trim()[0]}
                 </p>
               </div>
 

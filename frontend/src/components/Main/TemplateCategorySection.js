@@ -10,18 +10,15 @@ const TemplateCategorySection = () => {
   const navigate = useNavigate();
   const paramObj = useParams();
 
-
   const { templatesData, setTemplatesData } = useContext(dataContext);
 
-  const templateCategory = templatesData.templates.find((eachCategory) => {
+  const templateCategory = templatesData?.templates.find((eachCategory) => {
     return eachCategory.templateCategory === paramObj.templateCategory;
   });
 
-  const templateDetails = templateCategory.templateList.find((template) => {
-
+  const templateDetails = templateCategory?.templateList?.find((template) => {
     return template.templateId.replace(/ /g, "-") === paramObj.templateId;
   });
-
 
   return (
     <div>
@@ -38,10 +35,10 @@ const TemplateCategorySection = () => {
             <span
               className="hover:underline cursor-pointer"
               onClick={() =>
-                navigate(`/templates/${templateCategory.templateCategory}`)
+                navigate(`/templates/${templateCategory?.templateCategory}`)
               }
             >
-              {templateCategory.templateCategory}
+              {templateCategory?.templateCategory}
             </span>
           )}
 

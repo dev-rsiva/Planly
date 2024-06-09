@@ -17,7 +17,7 @@ const WorkspaceAllBoards = ({ workspaceInfo }) => {
       </div>
       <YourBoards
         workspace={workspaceInfo}
-        renderFrom={"workspaceYourBoards"}
+        renderFrom={"workspaceAllBoards"}
       />
     </div>
   );

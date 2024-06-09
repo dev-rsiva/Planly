@@ -33,22 +33,25 @@ const CopyCardComp = ({
   console.log(boardChoosed);
   console.log(listChoosed);
   console.log(boardTitle);
-
+  console.log(cardInfo);
   const copyCard = (e) => {
     e.stopPropagation();
 
     if (boardChoosed.lists?.length === 0) return;
 
     let updatedWorkspaceData = { ...workspaceData };
+    console.log(cardInfo);
 
     let targetBoard = boardChoosed;
     let targetList = listChoosed;
+    console.log(targetBoard);
+    console.log(targetList);
 
     let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
       return eachWorkspace?.boards?.some((eachBoard) => {
         return eachBoard?.lists?.some((eachList) => {
           return eachList?.cards?.some((eachCard) => {
-            return eachCard?.id === cardInfo.id;
+            return eachCard?.id === cardInfo?.id;
           });
         });
       });
@@ -58,28 +61,28 @@ const CopyCardComp = ({
     let currBoard = currWorkspace?.boards?.find((eachBoard) => {
       return eachBoard?.lists?.some((eachList) => {
         return eachList?.cards?.some((eachCard) => {
-          return eachCard?.id === cardInfo.id;
+          return eachCard?.id === cardInfo?.id;
         });
       });
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists?.find((eachList) => {
+    let currList = currBoard?.lists?.find((eachList) => {
       return eachList?.cards?.some((eachCard) => {
-        return eachCard?.id === cardInfo.id;
+        return eachCard?.id === cardInfo?.id;
       });
     });
     console.log(currList);
 
     let currCard = currList?.cards?.find((eachCard) => {
-      return eachCard?.id === cardInfo.id;
+      return eachCard?.id === cardInfo?.id;
     });
 
     console.log(currCard);
 
     console.log(updatedWorkspaceData);
 
-    let CopiedData = updatedWorkspaceData.workspaces.map((workspace) => {
+    let CopiedData = updatedWorkspaceData?.workspaces?.map((workspace) => {
       if (workspace?.id !== currWorkspace?.id) {
         return workspace;
       }
@@ -140,6 +143,7 @@ const CopyCardComp = ({
   });
 
   useEffect(() => {
+    setListChoosed(boardChoosed.lists[0]);
     if (boardChoosed.lists?.length === 1) {
       setListChoosed((prev) => {
         return boardChoosed.lists[0];

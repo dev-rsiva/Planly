@@ -42,9 +42,9 @@ const LabelList = ({
     <div
       className={`absolute ${
         newLabelListPosition === "fromOpenCardLabelsBtn"
-          ? "left-[420px] top-12"
-          : newLabelListPosition === "fromOpenCardPlusBtn"
           ? "right-60 top-12"
+          : newLabelListPosition === "fromOpenCardPlusBtn"
+          ? "left-[420px] top-12"
           : "left-[110%] top-1"
       } w-[300px] bg-white p-4 rounded z-[1801]`}
       ref={labelListRef}
@@ -125,7 +125,7 @@ const LabelList = ({
                     // };
 
                     // // setAllCardData((prev) => {
-                    //   return { ...prev, [cardInfo.id]: updatedNewCardData };
+                    //   return { ...prev, [cardInfo?.id]: updatedNewCardData };
                     // // });
 
                     //--------------------------xxxxxx----------------------------------//
@@ -171,7 +171,7 @@ const LabelList = ({
                     });
                     console.log(currBoard);
 
-                    let currList = currBoard.lists?.find((eachList) => {
+                    let currList = currBoard?.lists?.find((eachList) => {
                       return eachList?.cards?.some((eachCard) => {
                         return eachCard?.id === newCardData.id;
                       });
@@ -187,7 +187,7 @@ const LabelList = ({
                         return {
                           ...eachWorkspace,
                           boards: eachWorkspace?.boards?.map((eachBoard) => {
-                            if (eachBoard?.id !== currBoard.id) {
+                            if (eachBoard?.id !== currBoard?.id) {
                               return eachBoard;
                             }
                             return {

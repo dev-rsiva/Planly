@@ -9,7 +9,9 @@ import dataContext from "../../utills/dataContext";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import { useParams } from "react-router-dom";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
 import generateUniqueNumber from "../../utills/generateUniqueNum";
+import dataContext from "../../utills/dataContext.js";
 
 const CardMembersComp = ({
   workspaceData,
@@ -24,6 +26,8 @@ const CardMembersComp = ({
   fromWhere,
   addCardMember,
 }) => {
+  const { user } = useContext(dataContext);
+
   const [boardTitle, setBoardTitle] = useState(boardInfo.title);
   const [listTitle, setListTitle] = useState(listInfo.title);
   const [listChoosed, setListChoosed] = useState(listInfo);
@@ -37,13 +41,13 @@ const CardMembersComp = ({
   console.log(listChoosed);
   console.log(boardTitle);
 
-  console.log(cardInfo.members);
+  console.log(cardInfo?.members);
 
   const removeCardMember = (e, member) => {
     e.stopPropagation();
 
     if (
-      !cardInfo.members.some(
+      !cardInfo?.members?.some(
         (eachMember) => eachMember.userId === member.userId
       )
     ) {
@@ -57,7 +61,7 @@ const CardMembersComp = ({
     const generatedObj = (card) => {
       return {
         ...card,
-        members: card?.members.filter(
+        members: card?.members?.filter(
           (eachCardMember) => eachCardMember.userId !== member.userId
         ),
       };
@@ -66,12 +70,55 @@ const CardMembersComp = ({
     let updatedWorkspaceData = createUpdatedWorkspaceDataType1(
       generatedObj,
       workspaceData,
-      { cardId: cardInfo.id }
+      { cardId: cardInfo?.id }
     );
 
     console.log(updatedWorkspaceData);
-    updateFirebaseDoc(updatedWorkspaceData);
-    // setShowCardMembersComp(false);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("removing_card_member", 5),
+        type: "removing_card_member",
+        details: {
+          userId: user?.uid,
+          memberName: member?.name,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members.filter(
+            (eachMember) => eachMember.userId !== member.userId
+          ),
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: user?.displayName,
+          comment: "",
+          checklistName: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
   };
 
   useEffect(() => {
@@ -121,13 +168,13 @@ const CardMembersComp = ({
           />
         </div> */}
 
-        {cardInfo.members.length !== 0 && (
+        {cardInfo?.members?.length !== 0 && cardInfo?.members && (
           <div className="mt-4">
             <p className="font-sans text-xs font-semibold text-gray-500 mb-1">
               Card Members
             </p>
             <div className="max-h-[100px] overflow-y-auto border border-gray-200 py-2 rounded">
-              {cardInfo.members.map((eachMember) => {
+              {cardInfo?.members?.map((eachMember) => {
                 return (
                   <div
                     className="w-full flex justify-between cursor-pointer hover:bg-gray-100 py-2 px-3 rounded"
@@ -155,13 +202,13 @@ const CardMembersComp = ({
           </div>
         )}
 
-        {boardInfo.members.length !== 0 && (
+        {boardInfo.members?.length !== 0 && (
           <div className="mt-4">
             <p className="font-sans text-xs font-semibold text-gray-500 mb-1">
               Board Members
             </p>
             <div className="max-h-[100px] overflow-y-auto border border-gray-200 py-2 rounded">
-              {boardInfo.members.map((eachMember) => {
+              {boardInfo.members?.map((eachMember) => {
                 return (
                   <div
                     className="w-full flex justify-between cursor-pointer hover:bg-gray-100 py-2 px-3 rounded"
@@ -173,6 +220,8 @@ const CardMembersComp = ({
                         email: eachMember?.email,
                         photoURL: eachMember?.photoURL,
                       };
+
+                      console.log(member);
                       addCardMember(e, member);
                     }}
                   >
@@ -198,13 +247,13 @@ const CardMembersComp = ({
           </div>
         )}
 
-        {workspaceInfo?.members.length !== 0 && (
+        {workspaceInfo?.members?.length !== 0 && (
           <div className="mt-4">
             <p className="font-sans text-xs font-semibold text-gray-500 mb-2">
               Workspace Members
             </p>
             <div className="max-h-[100px] overflow-y-auto border border-gray-200 py-2 rounded">
-              {workspaceInfo?.members.map((eachMember) => {
+              {workspaceInfo?.members?.map((eachMember) => {
                 return (
                   <div
                     className="w-full flex justify-between cursor-pointer hover:bg-gray-100 py-2 px-3 rounded"

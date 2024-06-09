@@ -46,6 +46,7 @@ const DisplayAddCard = ({
       assignedTo: [],
       subscribers: [],
       dueDate: "",
+      highlights: [],
     };
 
     // {

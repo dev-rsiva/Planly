@@ -29,11 +29,19 @@ const WorkspacesDropdown = ({
 
   const navigate = useNavigate();
 
+  if (workspaceData?.workspaces?.length === 0) {
+    return (
+      <p className="font-sans text-sm font-semibold text-[#172b4d]">
+        You have no workspaces.
+      </p>
+    );
+  }
+
   return (
     <>
       <div
         id="workspaceDropdown"
-        className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-2 bg-white z-[1000]"
+        className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-2 bg-white z-[1000] max-h-[375px] overflow-y-auto"
       >
         {currWorkspaceInfo?.name && currWorkspaceInfo.name !== "" && (
           <div>
@@ -43,7 +51,7 @@ const WorkspacesDropdown = ({
 
             <div>
               <div
-                className="flex justify-between items-center hover:bg-gray-200 rounded-lg my-[6px] py-[5px] cursor-pointer"
+                className="flex justify-between items-center hover:bg-gray-200 rounded-lg my-[6px] px-2 py-[5px] cursor-pointer"
                 onClick={() => {
                   setNavItemStatus((prev) => {
                     let updatedNavItemStatus = [...prev];
@@ -71,7 +79,7 @@ const WorkspacesDropdown = ({
                   >
                     <div className="bg-black opacity-30 absolute w-full h-full rounded" />
                     <p className="z-50 rounded text-sm text-white font-bold font-sans">
-                      {currWorkspaceInfo?.name[0]}
+                      {currWorkspaceInfo?.name.trim()[0]}
                     </p>
                   </div>
                   <h1 className="font-medium font-sans text-sm text-[#172b4d] flex-1">
@@ -119,7 +127,7 @@ const WorkspacesDropdown = ({
                     >
                       <div className="bg-black opacity-30 absolute w-full h-full rounded" />
                       <p className="z-50 rounded text-sm text-white font-bold font-sans">
-                        {workspace?.name[0]}
+                        {workspace?.name.trim()[0]}
                       </p>
                     </div>
                     <h1 className="font-semibold font-sans text-sm text-[#172b4d] flex-1">

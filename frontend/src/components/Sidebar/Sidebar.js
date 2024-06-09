@@ -84,7 +84,7 @@ const Sidebar = ({ workspaceInfo, setShowWorkspaceHeading }) => {
           >
             <div className="bg-black opacity-30 absolute w-full h-full rounded" />
             <p className="z-50 rounded text-sm text-white font-bold font-sans">
-              {workspaceInfo?.name ? workspaceInfo?.name[0] : ""}
+              {workspaceInfo?.name ? workspaceInfo?.name.trim()[0] : ""}
             </p>
           </div>
           <div className="flex flex-col">

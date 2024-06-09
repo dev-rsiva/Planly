@@ -7,6 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import dataContext from "../../utills/dataContext";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
+import dataContext from "../../utills/dataContext.js";
+import { cardDataContext } from "../../utills/cardDataContext";
+import generateUniqueNumber from "../../utills/generateUniqueNum";
 
 const DatesCard = ({
   datesBtnRef,
@@ -14,7 +18,15 @@ const DatesCard = ({
   setShowDatesCard,
   newCardData,
   fromWhere,
+  workspaceInfo,
+  boardInfo,
+  listInfo,
+  cardInfo,
 }) => {
+  const { user } = useContext(dataContext);
+
+  console.log(workspaceInfo);
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [inputTime, setInputTime] = useState("");
@@ -116,14 +128,14 @@ const DatesCard = ({
     });
     console.log(currBoard);
 
-    let currList = currBoard.lists?.find((eachList) => {
+    let currList = currBoard?.lists?.find((eachList) => {
       return eachList?.cards?.some((eachCard) => {
         return eachCard?.id === newCardData.id;
       });
     });
     console.log(currList);
 
-    updatedWorkspaceData.workspaces = updatedWorkspaceData.workspaces?.map(
+    updatedWorkspaceData.workspaces = updatedWorkspaceData?.workspaces?.map(
       (eachWorkspace) => {
         if (eachWorkspace?.id !== currWorkspace?.id) {
           console.log(eachWorkspace);
@@ -132,7 +144,7 @@ const DatesCard = ({
         return {
           ...eachWorkspace,
           boards: eachWorkspace?.boards?.map((eachBoard) => {
-            if (eachBoard?.id !== currBoard.id) {
+            if (eachBoard?.id !== currBoard?.id) {
               return eachBoard;
             }
             return {
@@ -172,7 +184,50 @@ const DatesCard = ({
 
     console.log(updatedWorkspaceData);
 
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("adding_dates", 5),
+        type: "adding_dates",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          checklistName: "",
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          itemName: "",
+          startDate: formatDate(startDate),
+          dueDate: formatDate(endDate),
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
+
     setShowDatesCard(false);
   };
 

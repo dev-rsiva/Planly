@@ -194,6 +194,7 @@
 // };
 
 // export default acceptInvitation;
+import React, { useState, useRef, useContext } from "react";
 
 import { db } from "./firebase";
 import {
@@ -206,9 +207,14 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
+import { updateHighlightsDatabase } from "./updateHighlightsDatabase";
+import generateUniqueNumber from "./generateUniqueNum";
+import dataContext from "./dataContext.js";
 
 // Function to accept invitation
-const acceptInvitation = async (user) => {
+const acceptInvitation = async (user, workspaceData) => {
+  let globalInvitationsData;
+  let globalUpdatedMembers;
   console.log(
     `Starting to accept invitation for email: ${user.email} and userId: ${user.uid}`
   );
@@ -230,6 +236,8 @@ const acceptInvitation = async (user) => {
 
   const updatePromises = querySnapshot.docs.map(async (invitationDoc) => {
     const invitationData = invitationDoc.data();
+    globalInvitationsData = invitationDoc.data();
+
     console.log(
       `Processing invitation for workspaceId: ${invitationData.workspaceId}`
     );
@@ -258,6 +266,8 @@ const acceptInvitation = async (user) => {
             photoURL: user?.photoURL,
           },
         ];
+
+        globalUpdatedMembers = [...updatedMembers];
 
         const updatedWorkspaces = [...workspaces];
         updatedWorkspaces[workspaceIndex] = {
@@ -291,6 +301,49 @@ const acceptInvitation = async (user) => {
   });
 
   await Promise.all(updatePromises);
+  console.log(workspaceData);
+  const addHighlight = (type, highlight, workspaceData) => {
+    console.log(highlight);
+    updateHighlightsDatabase(type, highlight, workspaceData, user);
+  };
+
+  addHighlight(
+    "workspace",
+    {
+      id: generateUniqueNumber("accepting_invitation", 5),
+      type: "accepting_invitation",
+      details: {
+        userId: user?.uid,
+        memberName: user?.displayName,
+        workspaceId: globalInvitationsData?.workspaceId,
+        workspaceName: globalInvitationsData?.workspaceName,
+        workspaceMembers: globalUpdatedMembers,
+        boardId: "",
+        boardName: "",
+        boardStarred: "",
+        boardBackgroundImg: "",
+        cardId: "",
+        cardName: "",
+        cardLabels: "",
+        cardMembers: "",
+        cardInfo: "",
+        listId: "",
+        listName: "",
+        listInfo: "",
+        timestamp: new Date().toISOString(),
+        inviter: "",
+        invitedMember: "",
+        remover: "",
+        comment: "",
+        checklistName: "",
+        itemName: "",
+        startDate: "",
+        dueDate: "",
+        description: "",
+      },
+    },
+    workspaceData
+  );
 
   return true; // Pending invitations were found and processed
 };

@@ -17,7 +17,7 @@ const Recent = ({ setNavItemStatus }) => {
     .flat();
 
   return (
-    <div className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-2 bg-white z-[1000]">
+    <div className="absolute top-[160%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-2 bg-white z-[1000] max-h-[375px] overflow-y-auto">
       {recentlyViewedBoards.length === 0 ? (
         <p className="font-sans text-sm text-custom font-semibold">
           You have no recently viewed boards

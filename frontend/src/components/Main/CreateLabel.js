@@ -143,7 +143,7 @@ const CreateLabel = ({
 
                 // let updatedNewCardData = { ...prev, labels: updatedLabels };
                 // setAllCardData((prev) => {
-                //   return { ...prev, [cardInfo.id]: updatedNewCardData };
+                //   return { ...prev, [cardInfo?.id]: updatedNewCardData };
                 // });
 
                 // return updatedNewCardData;
@@ -174,7 +174,7 @@ const CreateLabel = ({
                 });
                 console.log(currBoard);
 
-                let currList = currBoard.lists?.find((eachList) => {
+                let currList = currBoard?.lists?.find((eachList) => {
                   return eachList?.cards?.some((eachCard) => {
                     return eachCard?.id === paramObj.cardId;
                   });
@@ -190,7 +190,7 @@ const CreateLabel = ({
                     return {
                       ...eachWorkspace,
                       boards: eachWorkspace?.boards?.map((eachBoard) => {
-                        if (eachBoard?.id !== currBoard.id) {
+                        if (eachBoard?.id !== currBoard?.id) {
                           return eachBoard;
                         }
                         return {
@@ -275,7 +275,7 @@ const CreateLabel = ({
                 });
                 console.log(currBoard);
 
-                let currList = currBoard.lists?.find((eachList) => {
+                let currList = currBoard?.lists?.find((eachList) => {
                   return eachList?.cards?.some((eachCard) => {
                     return eachCard?.id === paramObj.cardId;
                   });
@@ -291,7 +291,7 @@ const CreateLabel = ({
                     return {
                       ...eachWorkspace,
                       boards: eachWorkspace?.boards?.map((eachBoard) => {
-                        if (eachBoard?.id !== currBoard.id) {
+                        if (eachBoard?.id !== currBoard?.id) {
                           return eachBoard;
                         }
                         return {

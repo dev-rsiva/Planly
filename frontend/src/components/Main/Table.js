@@ -38,6 +38,14 @@ const Table = () => {
     };
   }, [setShowWorkspaceHeading]);
 
+  if (cards.length === 0) {
+    return (
+      <p className="font-sans text-sm font-semibold text-[#172b4d] w-full text-center mt-24 ">
+        You have no cards to display in table view.
+      </p>
+    );
+  }
+
   return (
     <div className="flex flex-col mx-4 my-4">
       <h1 className="font-sans text-2xl text-[#172b4d] italic pt-1 pb-4">

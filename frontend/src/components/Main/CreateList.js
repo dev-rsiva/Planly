@@ -31,15 +31,17 @@ const CreateList = ({ boardInfo }) => {
     // setWorkspaceData((prev) => {
     let updatedWorkspaceData = { ...workspaceData };
 
-    const currWorkspace = updatedWorkspaceData.workspaces?.find((workspace) => {
-      return workspace?.boards?.some((board) => board?.id === boardInfo.id);
-    });
+    const currWorkspace = updatedWorkspaceData?.workspaces?.find(
+      (workspace) => {
+        return workspace?.boards?.some((board) => board?.id === boardInfo.id);
+      }
+    );
 
     currWorkspace?.boards
       .find((board) => board?.id === boardInfo.id)
       .lists?.push(newList);
 
-    let currWorkspaceIndex = updatedWorkspaceData.workspaces?.findIndex(
+    let currWorkspaceIndex = updatedWorkspaceData?.workspaces?.findIndex(
       (workspace) =>
         workspace?.boards?.some((board) => board?.id === boardInfo.id)
     );

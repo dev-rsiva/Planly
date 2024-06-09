@@ -114,17 +114,18 @@ const CreateBoard = ({
       starred: false,
       viewedAt: "",
       lists: [],
+      highlights: [],
     };
     console.log(updatedBoard);
     console.log(currWorkspaceName);
 
     let updatedWorkspaceData = { ...workspaceData };
     console.log(updatedWorkspaceData);
-    const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
+    const currWorkspaceData = updatedWorkspaceData?.workspaces?.find(
       (workspace) => workspace?.name === currWorkspaceName
     );
     console.log(currWorkspaceData);
-    const workspaceIndex = updatedWorkspaceData.workspaces?.findIndex(
+    const workspaceIndex = updatedWorkspaceData?.workspaces?.findIndex(
       (workspace) => workspace?.name === currWorkspaceName
     );
     console.log(workspaceIndex);

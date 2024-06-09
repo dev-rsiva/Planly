@@ -50,7 +50,7 @@ export const appRouter = createBrowserRouter([
           },
         ],
       },
-      { path: "/w/:workspaceShortName/Home", element: <WorkspaceHome /> },
+      // { path: "/w/:workspaceShortName/Home", element: <WorkspaceHome /> },
       { path: "/b/:boardId/:boardName", element: <Boards /> },
       { path: "/c/:cardId/:cardName", element: <OpenCard /> },
       {

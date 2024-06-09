@@ -27,6 +27,7 @@ const CreateBoardWithTemplate = ({
   navbarBtn,
   setNavbarBtn,
 }) => {
+  console.log(templateSelected);
   const paramObj = useParams();
 
   const BoardNameRef = useRef();
@@ -64,9 +65,9 @@ const CreateBoardWithTemplate = ({
 
   const [keepCards, setKeepCards] = useState(true);
 
-  const templateCategoryFound = templatesData.templates.find(
+  const templateCategoryFound = templatesData?.templates.find(
     (templateCategory) =>
-      templateCategory.templateList.some((template) => {
+      templateCategory?.templateList?.some((template) => {
         return template.templateId === templateSelected.templateId;
       })
   );
@@ -102,10 +103,11 @@ const CreateBoardWithTemplate = ({
       starred: false,
       viewedAt: "",
       lists: templateSelected.lists,
+      highlights: [],
     };
     // setWorkspaceData((prev) => {
     let updatedWorkspaceData = { ...workspaceData };
-    const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
+    const currWorkspaceData = updatedWorkspaceData?.workspaces?.find(
       (workspace) => workspace?.name === currWorkspaceName
     );
     const workspaceIndex =

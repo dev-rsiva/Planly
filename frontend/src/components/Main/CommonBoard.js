@@ -61,7 +61,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
   console.log(workspaceInfo);
 
   if (board?.visibility === "Workspace") {
-    const isWorkspaceMember = workspaceInfo?.members.some((each) => {
+    const isWorkspaceMember = workspaceInfo?.members?.some((each) => {
       console.log(each.userId);
       console.log(user.uid);
       return each.userId === user.uid;
@@ -74,7 +74,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
   }
 
   if (board?.visibility === "Private") {
-    const isBoardMember = board?.members.some((eachMember) => {
+    const isBoardMember = board?.members?.some((eachMember) => {
       return eachMember.userId === user.uid;
     });
 
@@ -103,7 +103,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
         src={`${board?.backgroundImg}`}
         className="w-full h-full object-cover"
       />
-      <h1 className="absolute left-0 top-0 p-2 font-sans font-bold text-base text-white">
+      <h1 className="absolute left-0 top-0 px-2 py-1 font-sans font-semibold leading-[1.2rem] text-base text-white">
         {board?.title}
       </h1>
 
@@ -168,7 +168,7 @@ const CommonBoard = ({ board, typeOfBoard, workspaceInfo }) => {
         </svg>
       </div>
       {typeOfBoard === "starredBoard" && (
-        <p className="w-[160px] absolute left-0 bottom-0 pb-3 pl-2 text-white text-sm font-normal text-wrap">
+        <p className="w-[160px] absolute left-0 bottom-0 pb-2 pl-2 leading-[1.2rem] text-white text-sm font-normal text-wrap">
           {workspaceName}
         </p>
       )}

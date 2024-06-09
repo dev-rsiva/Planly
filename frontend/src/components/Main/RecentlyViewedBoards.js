@@ -23,6 +23,25 @@ const RecentlyViewedBoards = ({
 
   console.log(recentlyViewedBoards);
 
+  if (recentlyViewedBoards?.length === 0) {
+    return (
+      <div className="mb-12">
+        <div className="flex justify-start items-center mb-4">
+          <FontAwesomeIcon
+            icon={faClock}
+            className="text-gray-600 mr-3 text-lg"
+          />
+          <h1 className="font-bold font-sans text-base text-[#172b4d]">
+            Recently viewed
+          </h1>
+        </div>
+        <p className="font-sans text-sm font-semibold text-[#172b4d] w-full text-center py-8">
+          You have no boards.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       {recentlyViewedBoards?.length > 0 && (
@@ -45,7 +64,7 @@ const RecentlyViewedBoards = ({
                 const workspaceInfo = workspaceData?.workspaces?.find(
                   (eachWorkspace) => {
                     return eachWorkspace?.boards?.some((currBoard) => {
-                      return currBoard.id === eachBoard?.id;
+                      return currBoard?.id === eachBoard?.id;
                     });
                   }
                 );

@@ -21,7 +21,6 @@ const CreateWithTemplate = ({
   setCreateBoardWithTemplateCard,
   setTemplateSelected,
 }) => {
-
   const templateDetails = [
     {
       image:
@@ -91,13 +90,10 @@ const CreateWithTemplate = ({
     visibility: visibilityDetails.find((each) => each.isShowing === true).name,
   });
 
-
   const navigate = useNavigate();
 
   useEffect(() => {
     function handleOutside(e) {
-
-
       if (
         createTemplate?.current &&
         !createTemplate?.current?.contains(e.target)
@@ -120,8 +116,6 @@ const CreateWithTemplate = ({
 
     return () => document.removeEventListener("click", handleOutside);
   }, [createDropdownDetails[1].Template.isShowing]);
-
-
 
   return (
     <div
@@ -205,8 +199,8 @@ const CreateWithTemplate = ({
 
         {templateListshowing && (
           <ul className="flex flex-col px-2">
-            {templatesData.templates.map((templateCategory) => {
-              return templateCategory.templateList.map((template) => {
+            {templatesData?.templates.map((templateCategory) => {
+              return templateCategory?.templateList?.map((template) => {
                 return (
                   <li
                     className="flex items-center px-2 py-2 rounded hover:bg-gray-200 cursor-pointer"

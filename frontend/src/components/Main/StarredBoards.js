@@ -20,18 +20,37 @@ const StarredBoards = ({ renderFrom }) => {
               return eachBoard?.starred;
             });
           })
-          .flat()
+          ?.flat()
       : renderFrom === "workspaceStarredBoards"
       ? workspaceData?.workspaces
-          .find(
-            (workspace) => workspace?.shortname === paramObj.workspaceShortName
+          ?.find(
+            (workspace) => workspace?.shortname === paramObj?.workspaceShortName
           )
-          .boards?.filter((eachBoard) => {
+          ?.boards?.filter((eachBoard) => {
             return eachBoard?.starred;
           })
 
-          .flat()
+          ?.flat()
       : [];
+
+  if (starredBoards?.length === 0) {
+    return (
+      <div className="mb-4">
+        <div className="flex justify-start items-center mb-4 ">
+          <FontAwesomeIcon
+            icon={faStar}
+            className="mr-3 text-lg text-gray-600"
+          />
+          <h1 className="font-bold font-sans text-base text-[#172b4d]">
+            Starred boards
+          </h1>
+        </div>
+        <p className="font-sans text-sm font-semibold text-[#172b4d] w-full text-center py-8">
+          You have no boards.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -47,12 +66,12 @@ const StarredBoards = ({ renderFrom }) => {
             </h1>
           </div>
           <div className="flex flex-wrap">
-            {starredBoards.flat().map((eachBoard, index) => {
+            {starredBoards?.flat().map((eachBoard, index) => {
               console.log(eachBoard);
               const workspaceInfo = workspaceData?.workspaces?.find(
                 (eachWorkspace) => {
                   return eachWorkspace?.boards?.some((currBoard) => {
-                    return currBoard.id === eachBoard?.id;
+                    return currBoard?.id === eachBoard?.id;
                   });
                 }
               );

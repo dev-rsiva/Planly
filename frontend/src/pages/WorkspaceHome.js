@@ -16,18 +16,20 @@ const WorkspaceHome = () => {
   console.log(workspaceData);
   console.log(workspaceInfo);
   return (
-    <div className="flex px-32 mt-8 relative top-[45px]">
+    <div className="flex pl-32 pr-6 mt-8 relative top-[45px]">
       <div className="w-1/4 mr-2">
         <OverviewSidebar />
       </div>
 
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col ml-48">
         <div className="">
           <WorkspaceHeading
             workspaceInfo={workspaceInfo}
             fromWorkspace={false}
           />
         </div>
+        <hr className="mx-30" />
+
         <div>
           <WorkspaceInfo workspaceInfo={workspaceInfo} />
         </div>

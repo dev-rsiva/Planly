@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import dataContext from "../../utills/dataContext";
+
 import { workspaceBtns } from "../../utills/workspaceBtns";
 import YourBoards from "./YourBoards";
 const YourWorkspace = ({ workspace }) => {
   const navigate = useNavigate();
+
+  const { workspaceData, setWorkspaceData, setShowWorkspaceHeading } =
+    useContext(dataContext);
+
   return (
     <div className="mb-14 flex flex-col">
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between mb-4 mr-16">
         <div className="flex items-center">
           <div
             style={{
@@ -32,8 +38,42 @@ const YourWorkspace = ({ workspace }) => {
                     : "cursor-pointer hover:bg-gray-300"
                 }`}
                 onClick={() => {
-                  navigate(`/w/${workspace?.shortname}/Home`);
-                  window.scrollTo(0, 0);
+                  if (eachBtn.buttonName === "Boards") {
+                    console.log("navigating to Home");
+                    navigate(`/w/${workspace?.shortname}/Home`);
+                    window.scrollTo(0, 0);
+                  }
+                  if (eachBtn.buttonName === "Views") {
+                    console.log("navigating to Views");
+                    setShowWorkspaceHeading(false);
+                    navigate(
+                      `/w/${workspace?.shortname}/${workspace?.name.replace(
+                        / /g,
+                        "-"
+                      )}/Views`
+                    );
+                    window.scrollTo(0, 0);
+                  }
+                  if (eachBtn.buttonName === "Members") {
+                    console.log("navigating to Members");
+                    navigate(
+                      `/w/${workspace?.shortname}/${workspace?.name.replace(
+                        / /g,
+                        "-"
+                      )}/Members`
+                    );
+                    window.scrollTo(0, 0);
+                  }
+                  if (eachBtn.buttonName === "Settings") {
+                    console.log("navigating to Workspace settings");
+                    navigate(
+                      `/w/${workspace?.shortname}/${workspace?.name.replace(
+                        / /g,
+                        "-"
+                      )}/Settings`
+                    );
+                    window.scrollTo(0, 0);
+                  }
                 }}
               >
                 <span className="pr-2">{eachBtn.icon}</span>
@@ -46,7 +86,7 @@ const YourWorkspace = ({ workspace }) => {
         </div>
       </div>
 
-      <YourBoards workspace={workspace} />
+      <YourBoards workspace={workspace} renderFrom={"YourWorkspace"} />
     </div>
   );
 };

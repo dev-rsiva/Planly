@@ -105,6 +105,7 @@ const CreateWorkspace = ({
         guestInvitations: "workspaceMembers",
       },
       boards: [],
+      highlights: [],
     };
 
     console.log(workspaceIntitalData);

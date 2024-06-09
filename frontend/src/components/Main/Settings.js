@@ -175,7 +175,7 @@ const Settings = () => {
                         setUserBoards((prev) => {
                           let allWorkspaceBoards = workspaceInfo?.boards?.filter(
                             (eachBoard) => {
-                              return  eachBoard?.members.some((eachMember) => {
+                              return  eachBoard?.members?.some((eachMember) => {
                                 return eachMember.userId === eachUser.userId;
                               });
                             }

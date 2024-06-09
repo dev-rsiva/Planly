@@ -10,19 +10,26 @@ import { updateFirebaseDoc } from "../../utills/updateFirebase";
 import dataContext from "../../utills/dataContext.js";
 import generateUniqueNumber from "../../utills/generateUniqueNum";
 import { createUpdatedWorkspaceDataType1 } from "../../utills/createUpdatedWorkspaceDataType1";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
 
 const AddChecklist = ({
   showAddChecklist,
   setShowAddChecklist,
   checklistBtnRef,
+  workspaceInfo,
+  boardInfo,
+  listInfo,
+  cardInfo,
 }) => {
   const [checklistTitle, setChecklistTitle] = useState("");
 
-  const { workspaceData } = useContext(dataContext);
+  console.log(checklistTitle);
+  const { workspaceData, user } = useContext(dataContext);
   const paramObj = useParams();
   const checklistRef = useRef();
 
-  const addChecklist = () => {
+  const addChecklist = (e) => {
+    e.stopPropagation();
     let newChecklist = {
       id: generateUniqueNumber(
         checklistTitle.trim().split(" ").join("").slice(0, 4),
@@ -44,7 +51,51 @@ const AddChecklist = ({
 
     console.log(updatedWorkspaceData);
     console.log(updateFirebaseDoc);
-    updateFirebaseDoc(updatedWorkspaceData);
+    // updateFirebaseDoc(updatedWorkspaceData);
+
+    console.log(checklistTitle);
+    const addHighlight = (type, highlight, updatedWorkspaceData) => {
+      console.log(highlight);
+      updateHighlightsDatabase(type, highlight, updatedWorkspaceData);
+    };
+
+    addHighlight(
+      "card",
+      {
+        id: generateUniqueNumber("adding_checklist", 5),
+        type: "adding_checklist",
+        details: {
+          userId: user?.uid,
+          memberName: user?.displayName,
+          workspaceId: workspaceInfo?.id,
+          workspaceName: workspaceInfo?.name,
+          boardId: boardInfo?.id,
+          boardName: boardInfo?.title,
+          boardStarred: boardInfo?.starred,
+          boardBackgroundImg: boardInfo?.backgroundImg,
+          checklistName: checklistTitle,
+          cardId: cardInfo.id,
+          cardName: cardInfo?.title,
+          cardLabels: cardInfo?.labels,
+          cardMembers: cardInfo?.members,
+          cardInfo: "",
+          listId: listInfo?.id,
+          listName: "",
+          listInfo: "",
+          timestamp: new Date().toISOString(),
+          inviter: "",
+          invitedMember: "",
+          remover: "",
+          comment: "",
+          itemName: "",
+          startDate: "",
+          dueDate: "",
+          description: "",
+        },
+      },
+      updatedWorkspaceData
+    );
+
     setShowAddChecklist(false);
   };
 
@@ -77,7 +128,10 @@ const AddChecklist = ({
             <FontAwesomeIcon
               icon={faX}
               className="cursor-pointer text-xs"
-              onClick={() => setShowAddChecklist(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowAddChecklist(false);
+              }}
             />
           </div>
         </div>
@@ -111,7 +165,7 @@ const AddChecklist = ({
         <div>
           <button
             className="mt-4 rounded py-2 px-2 my-3 text-sm font-semibold font-sans w-[80px] bg-blue-600 text-white"
-            onClick={() => addChecklist()}
+            onClick={(e) => addChecklist(e)}
           >
             Add
           </button>

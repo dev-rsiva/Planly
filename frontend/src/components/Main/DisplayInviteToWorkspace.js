@@ -1,19 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../../utills/firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import sendInvitationEmail from "../../utills/sendEmail";
+import { updateHighlightsDatabase } from "../../utills/updateHighlightsDatabase";
+import generateUniqueNumber from "../../utills/generateUniqueNum";
+import dataContext from "../../utills/dataContext.js";
 
 const DisplayInviteToWorkspace = ({
   setShowInviteWorkspace,
   workspaceInfo,
 }) => {
+  const { workspaceData, user } = useContext(dataContext);
+
   const inviteWorkspaceRef = useRef(null);
   const [showError, setShowError] = useState(false);
 
   // Function to send invitation
-  const sendInvitation = async (email, workspaceId) => {
+  const sendInvitation = async (email, workspaceId, workspaceName) => {
     const invitationsDocsRef = await getDocs(collection(db, "invitations"));
     console.log(invitationsDocsRef);
     const isMemberAlreadyInvited = invitationsDocsRef.docs
@@ -28,12 +33,57 @@ const DisplayInviteToWorkspace = ({
           email: email,
           workspaceId: workspaceId,
           status: "pending",
+          workspaceName: workspaceName,
+          workspaceMembers: workspaceName,
         });
 
         // Send the invitation email
         //   await sendInvitationEmail(email, workspaceId);
 
         console.log("Invitation sent with ID: ", docRef.id);
+
+        const addHighlight = (type, highlight, workspaceData) => {
+          console.log(highlight);
+          updateHighlightsDatabase(type, highlight, workspaceData);
+        };
+
+        addHighlight(
+          "workspace",
+          {
+            id: generateUniqueNumber("inviting_workspace_member", 5),
+            type: "inviting_workspace_member",
+            details: {
+              userId: user?.uid,
+              memberName: "",
+              workspaceId: workspaceInfo?.id,
+              workspaceName: workspaceInfo?.name,
+              workspaceMembers: workspaceInfo?.members,
+              boardId: "",
+              boardName: "",
+              boardStarred: "",
+              boardBackgroundImg: "",
+              cardId: "",
+              cardName: "",
+              cardLabels: "",
+              cardMembers: "",
+              cardInfo: "",
+              listId: "",
+              listName: "",
+              listInfo: "",
+              timestamp: new Date().toISOString(),
+              inviter: user?.displayName,
+              invitedMember: email,
+              remover: "",
+              comment: "",
+              checklistName: "",
+              itemName: "",
+              startDate: "",
+              dueDate: "",
+              description: "",
+            },
+          },
+          workspaceData
+        );
       } catch (error) {
         console.error("Error sending invitation:", error);
       }
@@ -61,7 +111,12 @@ const DisplayInviteToWorkspace = ({
       <button
         className="w-full font-sans text-sm font-medium text-white bg-blue-600 rounded mr-4 h-[33px]"
         onClick={() => {
-          sendInvitation(inviteWorkspaceRef.current.value, workspaceInfo?.id);
+          sendInvitation(
+            inviteWorkspaceRef.current.value,
+            workspaceInfo?.id,
+            workspaceInfo?.name,
+            workspaceInfo?.members
+          );
           setShowInviteWorkspace(false);
         }}
       >

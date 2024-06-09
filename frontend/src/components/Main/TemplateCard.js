@@ -4,19 +4,18 @@ import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faFile } from "@fortawesome/free-regular-svg-icons";
-import { faEye } from "@fortawesome/free-solid-svg-icons"; 
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import dataContext from "../../utills/dataContext";
 
 const TemplateCard = ({ template }) => {
   const navigate = useNavigate();
 
   const { templatesData, setTemplatesData } = useContext(dataContext);
-  const templateCategory = templatesData.templates.find((templateCategory) =>
-    templateCategory.templateList.some(
+  const templateCategory = templatesData?.templates.find((templateCategory) =>
+    templateCategory?.templateList?.some(
       (eachTemplate) => eachTemplate.templateId === template.templateId
     )
   );
-
 
   return (
     <div
@@ -24,7 +23,7 @@ const TemplateCard = ({ template }) => {
       onClick={() =>
         navigate(
           `/templates/${
-            templateCategory.templateCategory
+            templateCategory?.templateCategory
           }/${template.templateId.replace(/ /g, "-")}`
         )
       }

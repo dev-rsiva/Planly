@@ -4,7 +4,7 @@ const ListOfTemplateCards = () => {
   const [templateCategory] = useOutletContext();
   return (
     <div className="mb-4 mr-4">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 mr-14">
         <div className="flex items-center">
           <img
             src={templateCategory?.categoryImage}

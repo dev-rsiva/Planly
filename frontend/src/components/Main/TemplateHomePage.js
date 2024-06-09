@@ -8,9 +8,8 @@ const TemplateHomePage = () => {
   const [templateCategorySelected, setTemplateCategorySelected] =
     useState("All");
 
-
   return (
-    <div className="flex px-32 mt-8 relative top-[45px] ">
+    <div className="flex pl-32 pr-14 mt-8 relative top-[45px] ">
       <templateCategorySelectionContext.Provider
         value={{ templateCategorySelected, setTemplateCategorySelected }}
       >

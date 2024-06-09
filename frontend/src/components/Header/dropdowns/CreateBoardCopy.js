@@ -83,7 +83,7 @@ const CreateBoardCopy = ({
     };
     setWorkspaceData((prev) => {
       let updatedWorkspaceData = { ...prev };
-      const currWorkspaceData = updatedWorkspaceData.workspaces?.find(
+      const currWorkspaceData = updatedWorkspaceData?.workspaces?.find(
         (workspace) => workspace?.name === currWorkspaceName
       );
       const workspaceIndex =

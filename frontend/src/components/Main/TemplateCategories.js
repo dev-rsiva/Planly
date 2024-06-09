@@ -6,7 +6,7 @@ const TemplateCategories = () => {
   const { templatesData, setTemplatesData } = useContext(dataContext);
   return (
     <div>
-      {templatesData.templates.map((templateCategory) => {
+      {templatesData?.templates.map((templateCategory) => {
         return <TemplateCategory templateCategory={templateCategory} />;
       })}
     </div>

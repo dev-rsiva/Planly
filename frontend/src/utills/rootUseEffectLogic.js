@@ -62,7 +62,7 @@ const rootUseEffectLogic = (
         // Check if the document exists
         if (!querySnapshot.empty) {
           // Document exists
-          if (templatesData.templates) {
+          if (templatesData?.templates) {
             // local state variable data exists, update firebase with local data
             const templatesDocRef = doc(db, "templates", "templatesData");
             await setDoc(templatesDocRef, templatesData);

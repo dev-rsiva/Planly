@@ -69,6 +69,14 @@ const ListOfBoard = () => {
     return () => document.removeEventListener("click", handleOutsideClick);
   }, [activeFeature]);
 
+  if (workspaceInfo?.boards?.length === 0) {
+    return (
+      <p className="font-sans text-sm font-semibold text-[#172b4d] w-full text-center py-8">
+        You have no boards.
+      </p>
+    );
+  }
+
   return (
     <div className="px-[34px] pt-[40px]">
       <div className="mb-[67px]">
@@ -133,7 +141,7 @@ const ListOfBoard = () => {
             </div>
           </div>
 
-          <div className="mr-2 cursor-not-allowed">
+          {/* <div className="mr-2  ">
             <p className="font-sans text-xs text-[#44546f] font-bold pr-2 pb-1">
               Filter by
             </p>
@@ -147,7 +155,7 @@ const ListOfBoard = () => {
                 className="text-custom text-base"
               />
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div>
@@ -183,9 +191,9 @@ const ListOfBoard = () => {
       </div>
 
       <div className="flex flex-wrap mb-8">
-        <div className="w-[195px] h-[95px] mr-4 bg-[#091e420f] hover:bg-gray-300 cursor-pointer flex rounded-[3px] justify-center items-center text-[#172b4d] font-normal font-sans text-sm">
+        {/* <div className="w-[195px] h-[95px] mr-4 bg-[#091e420f] hover:bg-gray-300 cursor-pointer flex rounded-[3px] justify-center items-center text-[#172b4d] font-normal font-sans text-sm">
           Create new board
-        </div>
+        </div> */}
         {(activeFeature === "search"
           ? workspaceInfo?.boards?.filter((board) =>
               board?.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -204,9 +212,9 @@ const ListOfBoard = () => {
           );
         })}
       </div>
-      <button className="cursor-not-allowed bg-gray-200 hover:bg-gray-300 mb-3 py-2 px-4 rounded-sm font-sans text-sm text-custom font-semibold">
+      {/* <button className="cursor-not-allowed bg-gray-200 hover:bg-gray-300 mb-3 py-2 px-4 rounded-sm font-sans text-sm text-custom font-semibold">
         View closed boards
-      </button>
+      </button> */}
     </div>
   );
 };

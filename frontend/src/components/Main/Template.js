@@ -67,7 +67,7 @@ const Template = () => {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 mr-14">
         <div className="flex items-center">
           <img
             src={templateDetails?.templateImage}
