@@ -33,6 +33,7 @@ import { db } from "../utills/firebase";
 import acceptInvitation from "../utills/acceptInvitation";
 
 const Login = ({
+  setIsLoading,
   setIsUserAuthenticated,
   user,
   setUser,
@@ -95,453 +96,6 @@ const Login = ({
     setErrorMessage(null);
   };
 
-  // const initializeData = async (user) => {
-  //   //Initialize Workspace data
-  //   console.log("data initialization started");
-  //   console.log(user?.photoURL);
-  //   try {
-  //     const workspacesDocRef = doc(db, "workspaces", "workspaceData");
-  //     console.log(workspacesDocRef);
-  //     let firstTwoChar = "Default Workspace";
-
-  //     const newWorkspaceData = {
-  //       // id: "Default Workspace",
-  //       id: generateUniqueNumber(firstTwoChar, 5),
-  //       name: user?.displayName + " Default Workspace",
-  //       shortname: generateUniqueNumber("Default", 5),
-  //       website: "",
-  //       description: "",
-  //       businessType: "",
-  //       iconColors: {
-  //         color1: randomGradientColor(),
-  //         color2: randomGradientColor(),
-  //       },
-  //       isPremium: false,
-  //       admins: [
-  //         {
-  //           userId: user?.uid,
-  //           role: "admin",
-  //           name: user?.displayName,
-  //           email: user?.email,
-  //           photoURL: user?.photoURL,
-  //         },
-  //       ],
-  //       members: [
-  //         {
-  //           userId: user?.uid,
-  //           role: "admin",
-  //           name: user?.displayName,
-  //           email: user?.email,
-  //           photoURL: user?.photoURL,
-  //         },
-  //       ], // also role - normal exists.
-  //       settings: {
-  //         visibility: "private",
-  //         membershipRestrictions: "anybody",
-  //         allowedDomains: [], // No domains by default since "anybody" is the default
-  //         boardCreationRestrictions: {
-  //           public: "onlyAdmins",
-  //           workspace: "anyMember",
-  //           private: "anyMember",
-  //         },
-  //         boardDeletionRestrictions: {
-  //           public: "onlyAdmins",
-  //           workspace: "onlyAdmins",
-  //           private: "onlyAdmins",
-  //         },
-  //         guestInvitations: "workspaceMembers",
-  //       },
-
-  //       // settings: {
-  //       //   visibility: "private" / "public",
-  //       //   membershipRestrictions: "anybody" / "specificDomains",
-  //       //   allowedDomains: ["example.com", "example2.com"], // Array of allowed email domains for specificDomains
-  //       //   boardCreationRestrictions: {
-  //       //     public: "anyMember" / "onlyAdmins" / "nobody",
-  //       //     workspace: "anyMember" / "onlyAdmins" / "nobody",
-  //       //     private: "anyMember" / "onlyAdmins" / "nobody",
-  //       //   },
-  //       //   boardDeletionRestrictions: {
-  //       //     public: "anyMember" / "onlyAdmins" / "nobody",
-  //       //     workspace: "anyMember" / "onlyAdmins" / "nobody",
-  //       //     private: "anyMember" / "onlyAdmins" / "nobody",
-  //       //   },
-  //       //   guestInvitations: "anybody" / "workspaceMembers",
-  //       // },
-
-  //       boards: [],
-  //     };
-  //     console.log(newWorkspaceData);
-  //     const workspacesCollectionRef = collection(db, "workspaces");
-  //     const querySnapshot = await getDocs(workspacesCollectionRef);
-  //     console.log(querySnapshot);
-
-  //     if (querySnapshot.empty) {
-  //       //Create new doc for workspaces & add new workspaceData for this user
-  //       await setDoc(workspacesDocRef, { workspaces: [newWorkspaceData] });
-  //       // setGlobalWorkspaceData((prev) => {
-  //       let updatedWorkspaceData = { workspaces: [newWorkspaceData] };
-  //       console.log(updatedWorkspaceData);
-  //       setWorkspaceData(updatedWorkspaceData);
-  //       // return updatedWorkspaceData;
-  //       // });
-  //     } else {
-  //       console.log("Existing workspaces found, updating document");
-  //       const workspacesDocRef2 = doc(db, "workspaces", "workspaceData");
-  //       const queryExistingData = await getDoc(workspacesDocRef2);
-  //       console.log("queryExistingData:", queryExistingData);
-  //       const existingWorkspaces = queryExistingData.data().workspaces;
-  //       console.log("existingWorkspaces:", existingWorkspaces);
-
-  //       const newCopyOfExistingWorkspaces = existingWorkspaces.map(
-  //         (eachWorkspace) => ({
-  //           ...eachWorkspace,
-  //         })
-  //       );
-  //       console.log(
-  //         "newCopyOfExistingWorkspaces:",
-  //         newCopyOfExistingWorkspaces
-  //       );
-
-  //       const updatedWorkspaces = [
-  //         ...newCopyOfExistingWorkspaces,
-  //         newWorkspaceData,
-  //       ];
-  //       console.log("updatedWorkspaces:", updatedWorkspaces);
-
-  //       // setTimeout(async () => {
-  //       await updateDoc(workspacesDocRef2, {
-  //         workspaces: updatedWorkspaces,
-  //       });
-  //       console.log("Document updated successfully");
-  //       // }, 50);
-
-  //       setWorkspaceData((prev) => {
-  //         const updatedWorkspaceData = updatedWorkspaces.filter(
-  //           (eachWorkspace) => {
-  //             console.log(eachWorkspace);
-  //             const condition1 =
-  //               eachWorkspace?.settings.visibility === "private" ||
-  //               eachWorkspace?.settings.visibility === "public";
-
-  //             const condition2 = eachWorkspace?.members?.some((member) => {
-  //               console.log(member.userId);
-  //               console.log(user?.uid);
-  //               console.log(member.userId === user?.uid);
-  //               return member.userId === user?.uid;
-  //             });
-  //             console.log(condition1);
-  //             console.log(condition2);
-  //             console.log(condition1 && condition2);
-
-  //             return condition1 & condition2;
-  //           }
-  //         );
-  //         console.log(updatedWorkspaceData);
-  //         const permittedWorkspaceData = {
-  //           workspaces: updatedWorkspaceData,
-  //         };
-  //         console.log(permittedWorkspaceData);
-  //         // setGlobalWorkspaceData(permittedWorkspaceData);
-  //         return permittedWorkspaceData;
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating Workspaces data in Firestore:", error);
-  //   }
-
-  //   //Initializes templates data
-  //   try {
-  //     const templatesDocRef = doc(db, "templates", "templatesData");
-  //     console.log(templatesDocRef);
-  //     const templatesCollectionRef = collection(db, "templates");
-  //     const querySnapshot = await getDocs(templatesCollectionRef);
-  //     setTemplatesData(allTemplatesData);
-
-  //     if (querySnapshot.empty) {
-  //       await setDoc(templatesDocRef, allTemplatesData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating Templates data in Firestore:", error);
-  //   }
-  // };
-
-  // const initializeData = async (user) => {
-  //   console.log("Data initialization started for user:", user?.email);
-
-  //   try {
-  //     const workspacesDocRef = doc(db, "workspaces", "workspaceData");
-  //     console.log(workspacesDocRef);
-
-  //     const newWorkspaceData = {
-  //       id: generateUniqueNumber("Default Workspace", 5),
-  //       name: `${user?.displayName} Default Workspace`,
-  //       shortname: generateUniqueNumber("Default", 5),
-  //       website: "",
-  //       description: "",
-  //       businessType: "",
-  //       iconColors: {
-  //         color1: randomGradientColor(),
-  //         color2: randomGradientColor(),
-  //       },
-  //       isPremium: false,
-  //       admins: [
-  //         {
-  //           userId: user?.uid,
-  //           role: "admin",
-  //           name: user?.displayName,
-  //           email: user?.email,
-  //           photoURL: user?.photoURL,
-  //         },
-  //       ],
-  //       members: [
-  //         {
-  //           userId: user?.uid,
-  //           role: "admin",
-  //           name: user?.displayName,
-  //           email: user?.email,
-  //           photoURL: user?.photoURL,
-  //         },
-  //       ],
-  //       settings: {
-  //         visibility: "private",
-  //         membershipRestrictions: "anybody",
-  //         allowedDomains: [],
-  //         boardCreationRestrictions: {
-  //           public: "onlyAdmins",
-  //           workspace: "anyMember",
-  //           private: "anyMember",
-  //         },
-  //         boardDeletionRestrictions: {
-  //           public: "onlyAdmins",
-  //           workspace: "onlyAdmins",
-  //           private: "onlyAdmins",
-  //         },
-  //         guestInvitations: "workspaceMembers",
-  //       },
-  //       boards: [],
-  //     };
-  //     console.log(newWorkspaceData);
-
-  //     const querySnapshot = await getDocs(collection(db, "workspaces"));
-  //     console.log(querySnapshot);
-
-  //     if (querySnapshot.empty) {
-  //       await setDoc(workspacesDocRef, { workspaces: [newWorkspaceData] });
-  //       console.log("New workspace created and data initialized");
-
-  //       setWorkspaceData({ workspaces: [newWorkspaceData] });
-  //     } else {
-  //       const workspacesDoc = await getDoc(workspacesDocRef);
-  //       const existingWorkspaces = workspacesDoc.data().workspaces;
-
-  //       const updatedWorkspaces = [...existingWorkspaces, newWorkspaceData];
-  //       console.log("Updated workspaces:", updatedWorkspaces);
-
-  //       await updateDoc(workspacesDocRef, { workspaces: updatedWorkspaces });
-
-  //       setWorkspaceData((prev) => ({
-  //         workspaces: updatedWorkspaces.filter((workspace) => {
-  //           return (
-  //             (workspace?.settings.visibility === "private" ||
-  //               workspace?.settings.visibility === "public") &&
-  //             workspace?.members?.some((member) => member.userId === user?.uid)
-  //           );
-  //         }),
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating Workspaces data in Firestore:", error);
-  //   }
-
-  //   // Initialize templates data
-  //   try {
-  //     const templatesDocRef = doc(db, "templates", "templatesData");
-  //     const templatesCollectionRef = collection(db, "templates");
-  //     const querySnapshot = await getDocs(templatesCollectionRef);
-
-  //     if (querySnapshot.empty) {
-  //       await setDoc(templatesDocRef, allTemplatesData);
-  //     }
-  //     setTemplatesData(allTemplatesData);
-  //   } catch (error) {
-  //     console.error("Error updating Templates data in Firestore:", error);
-  //   }
-  // };
-
-  // const fetchDataFromFirestore = async (user) => {
-  //   //fetch workspace data
-  //   try {
-  //     const workspaceCollectionRef = collection(db, "workspaces");
-  //     const querySnapshot = await getDocs(workspaceCollectionRef);
-
-  //     if (!querySnapshot.empty) {
-  //       // setTimeout(() => {
-  //       const updatedWorkspaceDataFromFirestore =
-  //         querySnapshot.docs[0].data().workspaces;
-  //       console.log(updatedWorkspaceDataFromFirestore);
-  //       // setGlobalWorkspaceData(updatedWorkspaceDataFromFirestore);
-
-  //       setWorkspaceData((prev) => {
-  //         const updatedWorkspaceData = updatedWorkspaceDataFromFirestore.filter(
-  //           (eachWorkspace) => {
-  //             console.log(eachWorkspace);
-  //             const condition1 =
-  //               eachWorkspace?.settings.visibility === "private" ||
-  //               eachWorkspace?.settings.visibility === "public";
-
-  //             const condition2 = eachWorkspace?.members?.some((member) => {
-  //               console.log(member.userId);
-  //               console.log(user?.uid);
-  //               console.log(member.userId === user?.uid);
-  //               return member.userId === user?.uid;
-  //             });
-  //             console.log(condition1);
-  //             console.log(condition2);
-  //             console.log(condition1 && condition2);
-
-  //             return condition1 & condition2;
-  //           }
-  //         );
-  //         console.log(updatedWorkspaceData);
-  //         const permittedWorkspaceData = {
-  //           workspaces: updatedWorkspaceData,
-  //         };
-  //         console.log(permittedWorkspaceData);
-
-  //         return permittedWorkspaceData;
-  //       });
-  //       // }, 1200);
-  //     }
-  //   } catch (error) {
-  //     console.error(
-  //       "Error updating Workspaces data in local state variable:",
-  //       error
-  //     );
-  //   }
-
-  //   //fetch templates data
-  //   try {
-  //     const templatesCollectionRef = collection(db, "templates");
-  //     const querySnapshot = await getDocs(templatesCollectionRef);
-
-  //     if (!querySnapshot.empty) {
-  //       console.log(querySnapshot.docs[0].empty);
-  //       setTemplatesData(querySnapshot.docs[0].data());
-  //     }
-  //   } catch (error) {
-  //     console.error(
-  //       "Error updating Templates data in local state variable:",
-  //       error
-  //     );
-  //   }
-  // };
-
-  // const handleSignInClick = () => {
-  //   //email and password validation
-  //   const message = checkValidData(
-  //     email.current.value,
-  //     password.current.value,
-  //     name.current?.value,
-  //     isSignInForm
-  //   );
-  //   console.log(message);
-  //   //updating the error message, message return null if validation success else return the validation error message when validation fails
-  //   setErrorMessage(message);
-
-  //   //if message returns null, then validation success and allow code execution futher. If message returns validation error message(Eg.Email ID is not valid) then do not allow code execution further
-  //   if (message) return;
-
-  //   if (!isSignInForm) {
-  //     //sign up logic
-  //     createUserWithEmailAndPassword(
-  //       auth,
-  //       email.current.value,
-  //       password.current.value
-  //     )
-  //       .then((userCredential) => {
-  //         // Signed up
-  //         const user = userCredential.user;
-  //         console.log(user);
-
-  //         const obj = {
-  //           displayName: name.current.value,
-  //           photoURL: randomAvatar,
-  //         };
-  //         console.log(obj);
-  //         // Update user profile
-  //         return updateProfile(user, obj);
-  //       })
-  //       .then(() => {
-  //         // Profile updated successfully
-  //         console.log("Profile updated!");
-  //         const userInfo = auth.currentUser;
-  //         console.log(userInfo);
-  //         const { uid, email, displayName, photoURL } = userInfo;
-  //         console.log(uid, email, displayName, photoURL);
-  //         setUser({
-  //           uid: uid,
-  //           email: email,
-  //           displayName: displayName,
-  //           photoURL: photoURL,
-  //         });
-
-  //         // Call update functions for each data type
-  //         console.log(user);
-  //         console.log(userInfo);
-
-  //         if (userInfo) {
-  //           console.log("user is available", userInfo);
-  //           initializeData(userInfo);
-  //           // acceptInvitation(userInfo);
-  //         }
-
-  //         navigate("/");
-  //       })
-  //       .catch((error) => {
-  //         // Handle errors
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         setErrorMessage(errorCode + "-" + errorMessage);
-  //       });
-  //   } else if (isSignInForm) {
-  //     //sign in logic
-  //     signInWithEmailAndPassword(
-  //       auth,
-  //       email.current.value,
-  //       password.current.value
-  //     )
-  //       .then((userCredential) => {
-  //         // Signed in
-  //         const user = userCredential.user;
-  //         console.log(user);
-
-  //         const { uid, email, displayName, photoURL } = user;
-  //         console.log(uid, email, displayName, photoURL);
-  //         setUser({
-  //           uid: uid,
-  //           email: email,
-  //           displayName: displayName,
-  //           photoURL: photoURL,
-  //         });
-
-  //         // Call update functions for each data type
-  //         if (user) {
-  //           fetchDataFromFirestore(user, email);
-  //           // acceptInvitation(user);
-  //         }
-
-  //         navigate("/");
-  //       })
-  //       .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         setErrorMessage(errorCode + "-" + errorMessage);
-  //       });
-  //   }
-  // };
-
-  // Function to initialize data
   const initializeData = async (user) => {
     console.log("Data initialization started for user:", user?.email);
 
@@ -645,6 +199,7 @@ const Login = ({
     } catch (error) {
       console.error("Error updating Templates data in Firestore:", error);
     }
+    setIsLoading(false);
   };
 
   let workspaceDatAtPresent;
@@ -693,88 +248,8 @@ const Login = ({
     } catch (error) {
       console.error("Error fetching Templates data from Firestore:", error);
     }
+    setIsLoading(false);
   };
-
-  // const handleSignInClick = () => {
-  //   const message = checkValidData(
-  //     email.current.value,
-  //     password.current.value,
-  //     name.current?.value,
-  //     isSignInForm
-  //   );
-  //   console.log(message);
-  //   setErrorMessage(message);
-
-  //   if (message) return;
-
-  //   if (!isSignInForm) {
-  //     // Sign up logic
-  //     createUserWithEmailAndPassword(
-  //       auth,
-  //       email.current.value,
-  //       password.current.value
-  //     )
-  //       .then(async (userCredential) => {
-  //         const user = userCredential.user;
-  //         console.log(user);
-
-  //         const obj = {
-  //           displayName: name.current.value,
-  //           photoURL: randomAvatar,
-  //         };
-  //         await updateProfile(user, obj);
-  //         console.log("Profile updated!");
-
-  //         const userInfo = auth.currentUser;
-  //         console.log(userInfo);
-
-  //         setUser({
-  //           uid: userInfo.uid,
-  //           email: userInfo.email,
-  //           displayName: userInfo.displayName,
-  //           photoURL: userInfo.photoURL,
-  //         });
-
-  //         const hasPendingInvitations = await acceptInvitation(userInfo);
-  //         if (!hasPendingInvitations) {
-  //           await initializeData(userInfo);
-  //         }
-  //         navigate("/");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error during sign-up:", error);
-  //         setErrorMessage(`${error.code} - ${error.message}`);
-  //       });
-  //   } else if (isSignInForm) {
-  //     // Sign in logic
-  //     signInWithEmailAndPassword(
-  //       auth,
-  //       email.current.value,
-  //       password.current.value
-  //     )
-  //       .then(async (userCredential) => {
-  //         const user = userCredential.user;
-  //         console.log(user);
-
-  //         setUser({
-  //           uid: user.uid,
-  //           email: user.email,
-  //           displayName: user.displayName,
-  //           photoURL: user.photoURL,
-  //         });
-
-  //         const hasPendingInvitations = await acceptInvitation(user);
-  //         if (!hasPendingInvitations) {
-  //           await fetchDataFromFirestore(user);
-  //         }
-  //         navigate("/");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error during sign-in:", error);
-  //         setErrorMessage(`${error.code} - ${error.message}`);
-  //       });
-  //   }
-  // };
 
   const handleSignInClick = () => {
     const message = checkValidData(
@@ -829,6 +304,7 @@ const Login = ({
           navigate("/");
         })
         .catch((error) => {
+          setIsLoading(false);
           console.error("Error during sign-up:", error);
           setErrorMessage(`${error.code} - ${error.message}`);
         });
@@ -867,6 +343,7 @@ const Login = ({
           navigate("/");
         })
         .catch((error) => {
+          setIsLoading(false);
           console.error("Error during sign-in:", error);
           setErrorMessage(`${error.code} - ${error.message}`);
         });
@@ -942,7 +419,10 @@ const Login = ({
           <div className="my-3">
             <button
               className="w-full bg-blue-700 text-base text-white px-4 py-3 font-medium my-1 rounded"
-              onClick={() => handleSignInClick()}
+              onClick={() => {
+                setIsLoading(true);
+                handleSignInClick();
+              }}
             >
               {isSignInForm ? "Sign In" : "Sign Up"}
             </button>

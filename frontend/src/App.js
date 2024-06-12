@@ -17,7 +17,7 @@ const App = () => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isSignInForm, setIsSignInForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showWorkspaceHeading, setShowWorkspaceHeading] = useState(true);
   const {
     workspaceData,
@@ -52,11 +52,12 @@ const App = () => {
   );
   console.log(workspaceData);
   // if (!isUserAuthenticated) return <Shimmer />;
-  // if (isLoading) return <Shimmer />;
+
   // if (!workspaceData || !allCardData || !templatesData) return <Shimmer />;
   if (!isUserAuthenticated)
     return (
       <Login
+        setIsLoading={setIsLoading}
         setIsUserAuthenticated={setIsUserAuthenticated}
         user={user}
         setIsSignInForm={setIsSignInForm}
@@ -70,6 +71,8 @@ const App = () => {
         setTemplatesData={setTemplatesData}
       />
     );
+
+  if (isLoading) return <Shimmer />;
 
   return (
     <div className="">

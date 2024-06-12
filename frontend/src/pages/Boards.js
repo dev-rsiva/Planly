@@ -157,6 +157,7 @@ const Boards = () => {
           <Lists
             workspaceData={workspaceData}
             setWorkspaceData={setWorkspaceData}
+            workspaceInfo={workspaceInfo}
             boardInfo={boardInfo}
           />
         </div>

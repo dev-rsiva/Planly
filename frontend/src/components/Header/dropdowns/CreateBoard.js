@@ -25,6 +25,8 @@ const CreateBoard = ({
   );
 
   const BoardNameRef = useRef();
+  const BoardDescriptionRef = useRef();
+
   const paramObj = useParams();
 
   const [inputSelection, setInputSelection] = useState("");
@@ -33,6 +35,7 @@ const CreateBoard = ({
   const [editedData, setEditedData] = useState({
     id: "",
     title: "",
+    description: "",
     backgroundImg: currImage,
     // visibility: visibility.find((each) => each.isShowing === true).name,
     visibility: "Workspace",
@@ -89,6 +92,7 @@ const CreateBoard = ({
     const updatedBoard = {
       id: generateUniqueNumber(firstTwoChar, 5),
       title: editedData.title,
+      description: editedData.description,
       backgroundImg: editedData.backgroundImg,
       visibility: editedData.visibility,
       // members: [user],
@@ -303,6 +307,29 @@ const CreateBoard = ({
         />
         <p className="mb-1 font-sans text-xs text-custom">
           Board title required
+        </p>
+      </div>
+
+      <div>
+        <p className="mb-1 font-sans text-xs text-custom font-bold">
+          Board description
+        </p>
+        <textarea
+          ref={BoardDescriptionRef}
+          type="input"
+          className="w-full border-2 rounded pl-2 py-[6px] border-gray-400 focus:outline-none focus:border-blue-600 
+          font-sans text-custom text-sm"
+          rows="4"
+          value={editedData?.description}
+          onChange={(e) =>
+            setEditedData((prev) => {
+              return (prev = { ...prev, description: e.target.value });
+            })
+          }
+          onClick={() => setInputSelection("Board Description")}
+        />
+        <p className="mb-1 font-sans text-xs text-custom">
+          Board description required
         </p>
       </div>
 

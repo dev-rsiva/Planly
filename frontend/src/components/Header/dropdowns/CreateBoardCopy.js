@@ -29,6 +29,7 @@ const CreateBoardCopy = ({
   const [editedData, setEditedData] = useState({
     id: "",
     title: "",
+    description: "",
     backgroundImg: currImage,
     visibility: visibility.find((each) => each.isShowing === true).name,
   });
@@ -77,6 +78,7 @@ const CreateBoardCopy = ({
     const updatedBoard = {
       id: generateUniqueNumber(firstTwoChar, 5),
       title: editedData.title,
+      description: editedData.description,
       backgroundImg: editedData.backgroundImg,
       // visibility: visibility.find((each) => each.isShowing === true).name,
       lists: [],

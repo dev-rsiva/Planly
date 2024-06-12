@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,7 @@ import DisplayAddCard from "./DisplayAddCard.js";
 import ListActionCard from "./ListActionCard.js";
 import CopyListComp from "./CopyListComp";
 import MoveListComp from "./MoveListComp";
+import { updateFirebaseDoc } from "../../utills/updateFirebase";
 
 const List = ({
   workspaceData,
@@ -20,8 +21,11 @@ const List = ({
   currWorkspace,
   setCurrWorkspace,
   i,
+  workspaceInfo,
   boardInfo,
 }) => {
+  const [listTitle, setListTitle] = useState(list?.title);
+  const [showEditListTitle, setShowEditListTitle] = useState(false);
   const [showCopyListComp, setShowCopyListComp] = useState(false);
   const [showMoveListComp, setShowMoveListComp] = useState(false);
   const [showListActionCard, setShowListActionCard] = useState(false);
@@ -33,10 +37,67 @@ const List = ({
     top: false,
     bottom: false,
   });
+  const paramObj = useParams();
+
   const listCard = useRef();
+  const listTitleRef = useRef();
   const listActionCardBtn = useRef();
   const copyListBtnRef = useRef();
   const moveListBtnRef = useRef();
+
+  const updateListTitle = (e) => {
+    e.stopPropagation();
+
+    let updatedWorkspaceData = { ...workspaceData };
+
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.id === paramObj?.boardId;
+      });
+    });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.id === paramObj?.boardId;
+    });
+    console.log(currBoard);
+
+    console.log(updatedWorkspaceData);
+
+    let listTitleUpdatedData = updatedWorkspaceData?.workspaces?.map(
+      (workspace) => {
+        if (workspace?.id !== currWorkspace?.id) {
+          return workspace;
+        }
+        return {
+          ...workspace,
+          boards: workspace?.boards?.map((board) => {
+            if (board?.id !== currBoard?.id) {
+              return board;
+            }
+            return {
+              ...board,
+              lists: board.lists.map((eachList) => {
+                if (eachList.id !== list.id) {
+                  return eachList;
+                }
+
+                return { ...eachList, title: listTitle };
+              }),
+            };
+          }),
+        };
+      }
+    );
+
+    console.log(listTitleUpdatedData);
+
+    updatedWorkspaceData.workspaces = listTitleUpdatedData;
+
+    updateFirebaseDoc(updatedWorkspaceData);
+
+    setShowEditListTitle(false);
+  };
 
   useEffect(() => {
     if (showListActionCard && listCard.current) {
@@ -53,18 +114,48 @@ const List = ({
     }
   }, [showListActionCard]);
 
+  useEffect(() => {
+    if (showEditListTitle) {
+      listTitleRef.current.focus();
+    }
+  }, [showEditListTitle]);
+
   console.log(boardInfo);
   console.log(list);
   return (
     <div
-      className={`relative w-[275px] h-auto bg-[#f1f2f4] rounded-lg px-4 py-4 flex flex-col `}
+      className={`relative w-[325px] h-auto bg-[#f1f2f4] rounded-lg px-4 py-4 flex flex-col`}
       ref={listCard}
     >
       <div className="flex flex-col">
         <div className="flex justify-between items-center mb-3">
-          <h1 className="mr-2 font-sans text-sm font-semibold text-[#172b4d]">
-            {list?.title}
-          </h1>
+          {!showEditListTitle && (
+            <h1
+              className="mr-2 font-sans text-sm font-semibold text-[#172b4d] px-2 py-1 cursor-pointer"
+              onClick={() => setShowEditListTitle(true)}
+            >
+              {list?.title}
+            </h1>
+          )}
+          {showEditListTitle && (
+            <div>
+              <input
+                ref={listTitleRef}
+                type="text"
+                value={listTitle}
+                className="bg-gray-300 p-1 rounded w-full font-sans text-sm font-semibold text-[#172b4d] mb-2 border-2 border-solid border-blue-600 outline-none"
+                placeholder="Add a List title..."
+                onChange={(e) => {
+                  setListTitle(e.target.value);
+                }}
+                onBlur={(e) => {
+                  updateListTitle(e);
+                  setShowEditListTitle(false);
+                }}
+              />
+            </div>
+          )}
+
           <div className="flex items-center">
             {list?.watching && (
               <div className="flex justify-center items-center">
@@ -159,8 +250,10 @@ const List = ({
           copyListBtnRef={copyListBtnRef}
           moveListBtnRef={moveListBtnRef}
           workspaceData={workspaceData}
+          workspaceInfo={workspaceInfo}
           boardInfo={boardInfo}
           listInfo={list}
+          paramObj={paramObj}
         />
       )}
 

@@ -37,6 +37,8 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
 
   // console.log(data);
 
+  const [boardTitle, setBoardTitle] = useState(boardInfo?.title);
+  const [showEditBoardTitle, setShowEditBoardTitle] = useState(false);
   const [showUserName, setShowUserName] = useState(false);
   const [showBoardVisibility, setShowBoardVisibility] = useState(false);
   const [showBoardMenu, setShowBoardMenu] = useState(false);
@@ -51,6 +53,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
 
   const boardMenuBtnRef = useRef();
   const shareBtnRef = useRef();
+  const boardTitleRef = useRef();
 
   const paramObj = useParams();
 
@@ -184,6 +187,54 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
     updateFirebaseDoc(updatedWorkspaceData);
   };
 
+  const updateBoardTitle = (e) => {
+    e.stopPropagation();
+
+    let updatedWorkspaceData = { ...workspaceData };
+
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.id === paramObj?.boardId;
+      });
+    });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.id === paramObj?.boardId;
+    });
+    console.log(currBoard);
+
+    console.log(updatedWorkspaceData);
+
+    let boardTitleUpdatedData = updatedWorkspaceData?.workspaces?.map(
+      (workspace) => {
+        if (workspace?.id !== currWorkspace?.id) {
+          return workspace;
+        }
+        return {
+          ...workspace,
+          boards: workspace?.boards?.map((board) => {
+            if (board?.id !== currBoard?.id) {
+              return board;
+            }
+            return {
+              ...board,
+              title: boardTitle,
+            };
+          }),
+        };
+      }
+    );
+
+    console.log(boardTitleUpdatedData);
+
+    updatedWorkspaceData.workspaces = boardTitleUpdatedData;
+
+    updateFirebaseDoc(updatedWorkspaceData);
+
+    setShowEditBoardTitle(false);
+  };
+
   console.log(boardInfo);
 
   useEffect(() => {
@@ -206,11 +257,51 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
     setBoardVisibility(data);
   }, [boardInfo]);
 
+  useEffect(() => {
+    if (showEditBoardTitle) {
+      boardTitleRef.current.focus();
+    }
+  }, [showEditBoardTitle]);
+
+  // useEffect(() => {
+  //   if (showEditBoardTitle) {
+  //     boardTitleRef.current.focus();
+  //   }
+  // }, [showEditBoardTitle]);
+
   return (
     <div className="relative flex justify-between items-center px-[30px] py-3 h-[60px]">
       <div className="flex items-center">
         <div className="pr-4 font-sans text-lg text-[rgb(23,43,77)] font-bold cursor-default">
-          <h1>{boardInfo && boardInfo?.title}</h1>
+          {!showEditBoardTitle && (
+            <h1
+              className="px-2 py-1 font-sans text-lg text-[rgb(23,43,77)] font-bold cursor-pointer"
+              onClick={() => {
+                setShowEditBoardTitle(true);
+              }}
+            >
+              {boardInfo && boardInfo?.title}
+            </h1>
+          )}
+
+          {showEditBoardTitle && (
+            <div>
+              <input
+                ref={boardTitleRef}
+                type="text"
+                value={boardTitle}
+                className="bg-gray-300 p-1 rounded w-full font-sans text-sm font-semibold text-[#172b4d] mb-2 border-2 border-solid border-blue-600 outline-none"
+                placeholder="Add a List title..."
+                onChange={(e) => {
+                  setBoardTitle(e.target.value);
+                }}
+                onBlur={(e) => {
+                  console.log("blurred");
+                  updateBoardTitle(e);
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="pr-4" onClick={(e) => toggleBoardStar(e)}>
           {/* <FontAwesomeIcon
@@ -437,6 +528,7 @@ const BoardHeading = ({ boardInfo, workspaceInfo }) => {
       </div>
       {showBoardMenu && (
         <BoardMenu
+          boardInfo={boardInfo}
           setShowBoardMenu={setShowBoardMenu}
           boardMenuBtnRef={boardMenuBtnRef}
           workspaceData={workspaceData}

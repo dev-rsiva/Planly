@@ -122,6 +122,80 @@ const Card = ({
     );
   };
 
+  const deleteCard = (e) => {
+    console.log("Delete card starts");
+    e.stopPropagation();
+
+    let updatedWorkspaceData = { ...workspaceData };
+
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.lists?.some((eachList) => {
+          return eachList?.cards?.some((eachCard) => {
+            return eachCard?.id === card?.id;
+          });
+        });
+      });
+    });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.lists?.some((eachList) => {
+        return eachList?.cards?.some((eachCard) => {
+          return eachCard?.id === card?.id;
+        });
+      });
+    });
+    console.log(currBoard);
+
+    let currList = currBoard?.lists?.find((eachList) => {
+      return eachList?.cards?.some((eachCard) => {
+        return eachCard?.id === card?.id;
+      });
+    });
+    console.log(currList);
+
+    let currCard = currList?.cards?.find((eachCard) => {
+      return eachCard?.id === card?.id;
+    });
+
+    console.log(currCard);
+
+    console.log(updatedWorkspaceData);
+    let filteredData = updatedWorkspaceData?.workspaces?.map((workspace) => {
+      if (workspace?.id !== currWorkspace?.id) {
+        return workspace;
+      }
+      return {
+        ...workspace,
+        boards: workspace?.boards?.map((board) => {
+          if (board?.id !== currBoard?.id) {
+            return board;
+          }
+          return {
+            ...board,
+            lists: board?.lists?.map((list) => {
+              if (list?.id !== currList?.id) {
+                return list;
+              }
+              return {
+                ...list,
+                cards: list?.cards?.filter((card) => card?.id !== currCard?.id),
+              };
+            }),
+          };
+        }),
+      };
+    });
+
+    console.log(filteredData);
+
+    updatedWorkspaceData.workspaces = filteredData;
+
+    updateFirebaseDoc(updatedWorkspaceData);
+    setEditCardIsVisible(false);
+  };
+
   const updateCardName = (e) => {
     e.stopPropagation();
     if (!cardTitle || cardTitle.trim() === "") {
@@ -242,7 +316,7 @@ const Card = ({
                 </div>
               </div>
 
-              <div className="absolute left-[110%] flex flex-col font-sans text-sm font-semibold text-[#172b4d]">
+              <div className="absolute left-[270px] flex flex-col font-sans text-sm font-semibold text-[#172b4d]">
                 <button
                   className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
                   onClick={() => {
@@ -300,6 +374,15 @@ const Card = ({
                 {/* <button className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300">
                   Archive
                 </button> */}
+                <button
+                  ref={datesBtnRef}
+                  className="whitespace-nowrap px-2 py-2 bg-gray-200 rounded mb-1 hover:bg-gray-300"
+                  onClick={(e) => {
+                    deleteCard(e);
+                  }}
+                >
+                  Delete this card?
+                </button>
               </div>
             </div>
 

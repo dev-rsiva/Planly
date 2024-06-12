@@ -5,3 +5,5 @@ export const navItemInfo = [
   { Name: "Templates", isShowing: true, dropdownIsShowing: false },
   { Name: "More", isShowing: false, dropdownIsShowing: false },
 ];
+
+export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;

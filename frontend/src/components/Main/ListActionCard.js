@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { updateFirebaseDoc } from "../../utills/updateFirebase";
 
 const ListActionCard = ({
@@ -16,8 +16,10 @@ const ListActionCard = ({
   copyListBtnRef,
   moveListBtnRef,
   workspaceData,
+  workspaceInfo,
   boardInfo,
   listInfo,
+  paramObj,
 }) => {
   const listActionCard = useRef();
 
@@ -76,6 +78,56 @@ const ListActionCard = ({
     updatedWorkspaceData.workspaces = toggledData;
 
     updateFirebaseDoc(updatedWorkspaceData);
+  };
+
+  // deleteList
+
+  const deleteList = (e) => {
+    e.stopPropagation();
+
+    let updatedWorkspaceData = { ...workspaceData };
+
+    let currWorkspace = workspaceData?.workspaces?.find((eachWorkspace) => {
+      return eachWorkspace?.boards?.some((eachBoard) => {
+        return eachBoard?.id === paramObj?.boardId;
+      });
+    });
+    console.log(currWorkspace);
+
+    let currBoard = currWorkspace?.boards?.find((eachBoard) => {
+      return eachBoard?.id === paramObj?.boardId;
+    });
+    console.log(currBoard);
+
+    console.log(updatedWorkspaceData);
+
+    let filteredData = updatedWorkspaceData?.workspaces?.map((workspace) => {
+      if (workspace?.id !== currWorkspace?.id) {
+        return workspace;
+      }
+      return {
+        ...workspace,
+        boards: workspace?.boards?.map((board) => {
+          if (board?.id !== currBoard?.id) {
+            return board;
+          }
+          return {
+            ...board,
+            lists: board.lists.filter((eachList) => {
+              return eachList.id !== listInfo.id;
+            }),
+          };
+        }),
+      };
+    });
+
+    console.log(filteredData);
+
+    updatedWorkspaceData.workspaces = filteredData;
+
+    updateFirebaseDoc(updatedWorkspaceData);
+
+    setShowListActionCard(false);
   };
 
   useEffect(() => {
@@ -160,6 +212,16 @@ const ListActionCard = ({
             <p>Watch</p>
             {listInfo?.watching && (
               <FontAwesomeIcon icon={faCheck} style={{ color: "#172b4d" }} />
+            )}
+          </li>
+
+          <li
+            className="flex items-center justify-between py-2 font-sans text-sm font-semibold text-[#172b4d] cursor-pointer hover:bg-gray-200 p-2 rounded"
+            onClick={(e) => deleteList(e)}
+          >
+            <p>Delete this list</p>
+            {listInfo?.watching && (
+              <FontAwesomeIcon icon={faTrash} style={{ color: "#172b4d" }} />
             )}
           </li>
         </ul>

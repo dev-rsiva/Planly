@@ -159,7 +159,7 @@ const OpenCard = () => {
     if (cardDescDetails?.showDesc && !cardDescDetails?.showInput) {
       return (
         <div
-          className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] font-semibold text-[14px] hover:bg-gray-400 cursor-pointer"
+          className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] h-auto font-semibold text-[14px] hover:bg-gray-400 cursor-pointer"
           onClick={() => {
             setCardDescDetails((prev) => {
               return (prev = { ...prev, showInput: true });
@@ -938,6 +938,10 @@ const OpenCard = () => {
   useEffect(() => {
     if (cardDescDetails?.showInput) {
       descriptionRef.current.focus();
+      descriptionRef.current.setSelectionRange(
+        descriptionRef.current.value.length,
+        descriptionRef.current.value.length
+      );
     }
   }, [cardDescDetails?.showInput]);
 
@@ -1351,17 +1355,18 @@ const OpenCard = () => {
                   {descriptionDisplay}
                   {cardDescDetails?.showInput && (
                     <div>
-                      <input
+                      <textarea
                         ref={descriptionRef}
-                        type="text"
+                        type="input"
                         value={cardDesc}
-                        className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] font-sans text-sm font-semibold text-[#172b4d] mb-4 border-2 border-solid border-blue-600"
+                        className="bg-gray-300 pl-2 pt-2 pb-4 rounded w-[470px] h-[150px] font-sans text-sm font-semibold text-[#172b4d] mb-4 border-2 border-solid outline-none border-blue-600"
                         placeholder="Add a more detailed description..."
+                        row="4"
                         onChange={(e) => setCardDesc(e.target.value)}
                       />
                       <div className="flex">
                         <button
-                          className="bg-blue-600 rounded py-1 px-2 text-white border-blue-400 hover:bg-blue-700 mr-4"
+                          className="bg-blue-600 rounded py-1 px-2 text-white font-semibold border-blue-400 hover:bg-blue-700 mr-4"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateCardDescription();
@@ -1370,7 +1375,7 @@ const OpenCard = () => {
                           Save
                         </button>
                         <button
-                          className="bg-gray-200 rounded py-1 px-2 text-gray-900 border-blue-400 hover:bg-gray-400 mr-4"
+                          className="bg-gray-200 rounded py-1 px-2 font-semibold text-gray-900 border-blue-400 hover:bg-gray-400 mr-4"
                           onClick={() => {
                             setCardDesc(newCardData.description);
                             setCardDescDetails((prev) => {
