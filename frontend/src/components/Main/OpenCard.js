@@ -1298,29 +1298,6 @@ const OpenCard = () => {
                 </div>
               )}
 
-              {/* <div>
-                {(newCardData?.dates?.start || newCardData?.dates?.due) && (
-                  <div className="flex flex-col justify-center items-start">
-                    <div className="font-sans text-sm font-semibold text-[#172b4d]">
-                      {newCardData?.dates?.start && newCardData?.dates?.due
-                        ? "Dates"
-                        : newCardData.dates.start
-                        ? "Start date"
-                        : "due date"}
-                    </div>
-                    <div className="font-sans text-[#172b4d] py-1 px-2 rounded bg-gray-200">
-                      {newCardData?.dates?.start && newCardData?.dates?.due
-                        ? newCardData?.dates?.start +
-                          "-" +
-                          newCardData?.dates?.due
-                        : newCardData?.dates?.start
-                        ? newCardData?.dates?.start
-                        : newCardData?.dates?.due}
-                    </div>
-                  </div>
-                )}
-              </div> */}
-
               <div className="mb-4 p-2 w-full">
                 <div className="flex justify-between items-center mb-4">
                   <div className="flex">
