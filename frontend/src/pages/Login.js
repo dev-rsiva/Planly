@@ -193,6 +193,7 @@ const Login = ({
 
       if (querySnapshot.empty) {
         await setDoc(templatesDocRef, allTemplatesData);
+        setTemplatesData(allTemplatesData);
       } else {
         setTemplatesData(allTemplatesData);
       }
