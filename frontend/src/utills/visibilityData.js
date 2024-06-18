@@ -6,8 +6,7 @@ export const visibilityDetails = [
   },
   {
     name: "Workspace",
-    description:
-      "All memebers of Siva's workspace workspace can see and edit this board",
+    description: "All members of this workspace can see and edit this board",
     isShowing: true,
   },
   {
