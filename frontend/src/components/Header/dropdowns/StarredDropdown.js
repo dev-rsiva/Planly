@@ -13,6 +13,8 @@ const Starred = ({ setNavItemStatus }) => {
     })
     .flat();
 
+  console.log(starredBoards);
+
   const navigate = useNavigate();
 
   return (
@@ -70,7 +72,7 @@ const Starred = ({ setNavItemStatus }) => {
         </div>
       )}
 
-      {workspaceData?.workspaces
+      {/* {workspaceData?.workspaces
         ?.map((eachWorkspace, index) => {
           return eachWorkspace?.boards?.filter((eachBoard) => {
             return eachBoard?.starred;
@@ -120,7 +122,7 @@ const Starred = ({ setNavItemStatus }) => {
               </div>
             </div>
           );
-        })}
+        })} */}
     </div>
     // <div className="absolute top-[200%] left-[0%] rounded-md shadow-2xl min-w-[308px] border border-gray-200 py-2 px-4 bg-white z-[1000]">
     //   <ul>
